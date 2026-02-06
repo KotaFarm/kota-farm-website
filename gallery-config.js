@@ -18,7 +18,7 @@ const galleryItems = [
   },
   {
     "file": "fresh-harvest.jpeg",
-    "caption": "Abundant organic harvest: carrots, greens, cauliflower, radishes"
+    "caption": "Abundant natural harvest: carrots, greens, cauliflower, radishes"
   },
   {
     "file": "fruit-tree.jpeg",
