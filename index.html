@@ -112,6 +112,28 @@
             width: 100%;
         }
 
+        .nav-links a.active {
+            color: var(--earth-dark);
+            font-weight: 600;
+        }
+
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .nav-links a:focus-visible,
+        .logo:focus-visible,
+        .cta-button:focus-visible,
+        .nav-toggle:focus-visible {
+            outline: 2px solid var(--sprout);
+            outline-offset: 3px;
+        }
+
+        .lightbox-close:focus-visible {
+            outline: 2px solid var(--sprout);
+            outline-offset: 3px;
+        }
+
         /* Hamburger button - hidden on desktop */
         .nav-toggle {
             display: none;
@@ -123,7 +145,7 @@
             padding: 10px;
             background: transparent;
             border: 2px solid var(--earth-medium);
-            border-radius: 4px;
+            border-radius: 10px;
             cursor: pointer;
             transition: background 0.3s ease, border-color 0.3s ease;
         }
@@ -181,7 +203,7 @@
             text-align: center;
             max-width: 900px;
             padding: var(--spacing-md);
-            animation: fadeInUp 1s ease-out;
+            animation: fadeInUp 1.2s ease-out;
         }
 
         .hero h1 {
@@ -205,8 +227,8 @@
             color: var(--sand);
             text-decoration: none;
             font-weight: 600;
-            border-radius: 2px;
-            transition: all 0.3s ease;
+            border-radius: 10px;
+            transition: all 0.4s ease-out;
             border: 2px solid var(--earth-dark);
         }
 
@@ -240,6 +262,7 @@
             width: 60px;
             height: 4px;
             background: var(--sprout);
+            border-radius: 2px;
         }
 
         /* What is Permaculture */
@@ -265,7 +288,8 @@
             padding: var(--spacing-md);
             border-left: 4px solid var(--sprout);
             box-shadow: 0 4px 20px rgba(45, 51, 25, 0.08);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.4s ease-out, box-shadow 0.4s ease-out;
+            border-radius: 10px;
         }
 
         .principle-card:hover {
@@ -308,8 +332,8 @@
         .practice-item {
             background: rgba(232, 220, 196, 0.1);
             padding: var(--spacing-md);
-            border-radius: 4px;
-            transition: all 0.3s ease;
+            border-radius: 12px;
+            transition: all 0.4s ease-out;
             border: 1px solid rgba(168, 198, 134, 0.2);
         }
 
@@ -342,13 +366,14 @@
             position: relative;
             overflow: hidden;
             aspect-ratio: 4/3;
-            border-radius: 4px;
+            border-radius: 12px;
             box-shadow: 0 4px 20px rgba(45, 51, 25, 0.15);
-            transition: transform 0.3s ease;
+            transition: transform 0.4s ease-out, box-shadow 0.4s ease-out;
         }
 
         .gallery-item:hover {
-            transform: scale(1.03);
+            transform: translateY(-6px);
+            box-shadow: 0 12px 32px rgba(45, 51, 25, 0.2);
         }
 
         .gallery-item img,
@@ -356,12 +381,12 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.5s ease;
+            transition: transform 0.5s ease-out;
         }
 
         .gallery-item:hover img,
         .gallery-item:hover video {
-            transform: scale(1.1);
+            transform: scale(1.02);
         }
 
         .gallery-caption {
@@ -373,7 +398,7 @@
             color: var(--sand);
             padding: var(--spacing-md);
             transform: translateY(100%);
-            transition: transform 0.3s ease;
+            transition: transform 0.4s ease-out;
         }
 
         .gallery-item:hover .gallery-caption {
@@ -389,6 +414,19 @@
         .step-timeline {
             max-width: 900px;
             margin: var(--spacing-lg) auto 0;
+            position: relative;
+        }
+
+        .step-timeline::before {
+            content: '';
+            position: absolute;
+            left: 29px;
+            top: 30px;
+            bottom: 30px;
+            width: 2px;
+            background: var(--sprout);
+            border-radius: 1px;
+            opacity: 0.6;
         }
 
         .step {
@@ -396,7 +434,7 @@
             gap: var(--spacing-md);
             margin-bottom: var(--spacing-lg);
             opacity: 0;
-            animation: fadeInLeft 0.6s ease-out forwards;
+            animation: fadeInLeft 0.8s ease-out forwards;
         }
 
         .step:nth-child(1) { animation-delay: 0.1s; }
@@ -457,7 +495,7 @@
 
         .workshop-image {
             max-width: 100%;
-            border-radius: 4px;
+            border-radius: 12px;
             box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
             margin-top: var(--spacing-md);
         }
@@ -476,10 +514,10 @@
 
         .news-card {
             background: var(--sand);
-            border-radius: 4px;
+            border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 4px 20px rgba(45, 51, 25, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.4s ease-out, box-shadow 0.4s ease-out;
         }
 
         .news-card:hover {
@@ -528,7 +566,7 @@
         .lightbox-overlay img {
             max-width: 90%;
             max-height: 90vh;
-            border-radius: 4px;
+            border-radius: 12px;
             box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
             object-fit: contain;
         }
@@ -598,7 +636,7 @@
         .map-wrapper {
             max-width: 900px;
             margin: 0 auto;
-            border-radius: 8px;
+            border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 4px 24px rgba(45, 51, 25, 0.12);
             border: 2px solid var(--earth-light);
@@ -725,12 +763,51 @@
         .fade-in {
             opacity: 0;
             transform: translateY(30px);
-            transition: opacity 0.6s ease, transform 0.6s ease;
+            transition: opacity 0.85s ease-out, transform 0.85s ease-out;
         }
 
         .fade-in.visible {
             opacity: 1;
             transform: translateY(0);
+        }
+
+        /* Gallery captions always visible on touch/mobile */
+        @media (max-width: 768px) {
+            .gallery-caption {
+                transform: translateY(0);
+            }
+        }
+
+        /* Footer team photo */
+        .footer-team-photo {
+            max-width: 400px;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            .hero-content,
+            .fade-in,
+            .step,
+            .principle-card,
+            .practice-item,
+            .gallery-item,
+            .news-card {
+                animation: none !important;
+                transition: none !important;
+            }
+            .fade-in {
+                opacity: 1;
+                transform: none;
+            }
+            .fade-in.visible {
+                opacity: 1;
+                transform: none;
+            }
+            .step {
+                opacity: 1;
+            }
         }
     </style>
 </head>
@@ -738,7 +815,7 @@
     <!-- Navigation -->
     <nav id="navbar">
         <div class="nav-container">
-            <a href="#" class="logo">Kota Natural Farm</a>
+            <a href="#top" class="logo">Kota Natural Farm</a>
             <button type="button" class="nav-toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false">
                 <span></span>
                 <span></span>
@@ -757,7 +834,7 @@
     </nav>
 
     <!-- Hero Section -->
-    <section class="hero">
+    <section id="top" class="hero">
         <img src="site-images/hero-background.jpeg" alt="Natural farm landscape" class="hero-bg">
         <div class="hero-content">
             <h1>Kota Natural Farm</h1>
@@ -945,7 +1022,7 @@
     <!-- Footer -->
     <footer>
         <div class="section">
-            <img src="site-images/team-photo.jpeg" alt="Team at Kota Farm" style="max-width: 400px; border-radius: 4px; margin-bottom: 2rem;">
+            <img src="site-images/team-photo.jpeg" alt="Team at Kota Farm" class="footer-team-photo">
             <p style="font-size: 1.1rem; margin-bottom: 1rem;">Kota Natural Farm</p>
             <p>Growing regeneratively. Teaching sustainably. Living harmoniously.</p>
             <p style="margin-top: 2rem; opacity: 0.6; font-size: 0.9rem;">&copy; 2026 Kota Natural Farm. Website created with care for the earth.</p>
@@ -1016,6 +1093,27 @@
                 navbar.classList.remove('scrolled');
             }
         });
+
+        // Highlight current section in nav (scroll spy)
+        const sectionIds = ['top', 'about', 'practices', 'gallery', 'getting-started', 'community', 'news', 'location'];
+        function updateActiveNav() {
+            const scrollY = window.scrollY;
+            let current = 'top';
+            sectionIds.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    const top = el.offsetTop;
+                    const height = el.offsetHeight;
+                    if (scrollY >= top - 120) current = id;
+                }
+            });
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                const href = link.getAttribute('href');
+                link.classList.toggle('active', href === '#' + current || (current === 'top' && href === '#top'));
+            });
+        }
+        window.addEventListener('scroll', updateActiveNav);
+        window.addEventListener('load', updateActiveNav);
 
         // Mobile menu toggle
         const navToggle = document.getElementById('nav-toggle');
