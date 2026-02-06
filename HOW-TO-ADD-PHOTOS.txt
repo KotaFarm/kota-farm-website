@@ -1,0 +1,146 @@
+========================================================
+   HOW TO ADD PHOTOS & VIDEOS TO THE GALLERY
+   Kota Organic Farm Website
+========================================================
+
+
+STEP 1:  Put your photo or video in the "gallery" folder
+-------------------------------------------------------
+   - Open the "gallery" folder (it's inside the website folder)
+   - Copy/paste or drag your photo or video into it
+   - Supported formats: .jpeg, .jpg, .png, .mp4, .webm, .mov
+   - Give it a simple name like: new-trees.jpeg or harvest-day.mp4
+
+
+STEP 2:  Open "gallery-config.js" in any text editor
+-------------------------------------------------------
+   - Right-click the file > Open With > Notepad (or TextEdit on Mac)
+   - You will see a list that looks like this:
+
+     const galleryItems = [
+       {
+         "file": "cover-crops.jpeg",
+         "caption": "Thriving cover crops enrich the soil naturally"
+       },
+       {
+         "file": "green-manure.jpeg",
+         "caption": "Green manure establishing in early season"
+       }
+     ];
+
+
+STEP 3:  Add your new photo to the list
+-------------------------------------------------------
+   - Add a COMMA after the last } in the list
+   - Then add your new entry BEFORE the ];
+   - Example: if you added a photo called "new-trees.jpeg":
+
+     {
+       "file": "new-trees.jpeg",
+       "caption": "Newly planted trees in the food forest"
+     }
+
+   - The "file" must EXACTLY match the file name in the gallery folder
+   - The "caption" is the text that appears when someone hovers over the photo
+
+
+STEP 4:  Save the file and refresh the website
+-------------------------------------------------------
+   - That's it! Open index.html in your browser to see the new photo.
+
+
+========================================================
+   FULL EXAMPLE
+========================================================
+
+   Let's say you want to add two photos: "mango-tree.jpeg" and "farm-sunset.mp4"
+
+   1. Put both files in the "gallery" folder
+
+   2. Open gallery-config.js and add them at the end (before the ];):
+
+   const galleryItems = [
+     {
+       "file": "cover-crops.jpeg",
+       "caption": "Thriving cover crops enrich the soil naturally"
+     },
+     {
+       "file": "green-manure.jpeg",
+       "caption": "Green manure establishing in early season"
+     },
+     ... (other existing entries) ...
+     {
+       "file": "bamboo.jpeg",
+       "caption": "Bamboo provides versatile sustainable materials"
+     },
+     {
+       "file": "mango-tree.jpeg",
+       "caption": "Mango tree growing strong in summer"
+     },
+     {
+       "file": "farm-sunset.mp4",
+       "caption": "Beautiful sunset over the farm"
+     }
+   ];
+
+   3. Save. Done!
+
+
+========================================================
+   TO REMOVE A PHOTO
+========================================================
+   - Delete the photo from the "gallery" folder
+   - Remove its entry from gallery-config.js
+   - Save the file
+
+
+========================================================
+   TO CHANGE THE ORDER
+========================================================
+   - Move entries up or down in gallery-config.js
+   - Photos appear on the website in the same order as the list
+
+
+========================================================
+   FOLDER STRUCTURE
+========================================================
+
+   kota-farm-website/
+   |
+   |-- index.html              <-- The main website (don't need to edit)
+   |-- gallery-config.js       <-- Edit this to add/remove gallery photos
+   |-- HOW-TO-ADD-PHOTOS.txt   <-- This file (instructions)
+   |
+   |-- gallery/                <-- PUT YOUR GALLERY PHOTOS HERE
+   |   |-- cover-crops.jpeg
+   |   |-- green-manure.jpeg
+   |   |-- stone-pathway.jpeg
+   |   |-- fresh-harvest.jpeg
+   |   |-- fruit-tree.jpeg
+   |   |-- vegetable-beds.jpeg
+   |   |-- pomegranate.jpeg
+   |   |-- bamboo.jpeg
+   |   |-- farm-tour.mp4
+   |   |-- (add your new photos here!)
+   |
+   |-- site-images/            <-- Website background images (don't touch)
+       |-- hero-background.jpeg
+       |-- community-workshop.jpeg
+       |-- team-photo.jpeg
+
+
+========================================================
+   TIPS
+========================================================
+   - Use simple file names with no spaces (use dashes instead)
+     Good: new-harvest.jpeg
+     Bad:  New Harvest Photo (2).jpeg
+
+   - Videos are automatically detected (mp4, webm, mov)
+
+   - If something looks broken, check that:
+     1. The file name in gallery-config.js matches exactly
+     2. There's a comma between each entry (but NOT after the last one)
+     3. The file is actually in the gallery folder
+
+========================================================
