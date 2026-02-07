@@ -423,6 +423,65 @@
             opacity: 0.9;
         }
 
+        /* What's growing (plants) — no nav link, discover by scrolling */
+        .plants-section {
+            background: white;
+            padding: var(--spacing-xl) var(--spacing-md);
+        }
+        .plants-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--earth-medium);
+            max-width: 700px;
+            margin: 0 auto var(--spacing-lg);
+        }
+        .plants-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--spacing-md);
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .plant-card {
+            background: var(--sand);
+            padding: var(--spacing-md);
+            border-radius: 12px;
+            border-left: 4px solid var(--sprout);
+            box-shadow: 0 4px 20px rgba(45, 51, 25, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .plant-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(45, 51, 25, 0.12);
+        }
+        .plant-card h3 {
+            font-size: 1.25rem;
+            color: var(--earth-dark);
+            margin-bottom: var(--spacing-xs);
+        }
+        .plant-category {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--earth-medium);
+            background: rgba(168, 198, 134, 0.3);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            margin-bottom: var(--spacing-sm);
+        }
+        .plant-card p {
+            color: var(--earth-medium);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        @media (max-width: 768px) {
+            .plants-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         /* Gallery */
         .gallery-grid {
             display: grid;
@@ -969,7 +1028,8 @@
             .gallery-item,
             .news-card,
             .back-to-top,
-            .skip-link {
+            .skip-link,
+            .plant-card {
                 animation: none !important;
                 transition: none !important;
             }
@@ -1075,6 +1135,17 @@
                     <h3>Mulching</h3>
                     <p>Thick natural mulch layers retain moisture, regulate temperature, feed soil life, and eliminate weeding.</p>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- What's growing — species and permaculture value (no nav link) -->
+    <section id="plants" class="plants-section">
+        <div class="section">
+            <h2 class="section-title fade-in">What's growing</h2>
+            <p class="plants-subtitle fade-in">Species we work with and why they matter in permaculture—diversity in practice.</p>
+            <div class="plants-grid" id="plants-list">
+                <!-- Loaded from plants-config.js -->
             </div>
         </div>
     </section>
@@ -1209,8 +1280,9 @@
         </div>
     </footer>
 
-    <!-- Load gallery config (edit gallery-config.js to add/remove photos) -->
+    <!-- Load configs -->
     <script src="gallery-config.js"></script>
+    <script src="plants-config.js"></script>
 
     <!-- JavaScript -->
     <script>
@@ -1287,6 +1359,33 @@
             });
         }
 
+        // Plants / What's growing — loaded from plants-config.js (no nav link)
+        function loadPlants() {
+            const container = document.getElementById('plants-list');
+            if (!container) return;
+            if (typeof plantsList === 'undefined' || !plantsList.length) {
+                container.innerHTML = '<p style="color: var(--earth-medium); text-align: center;">Plant list could not be loaded.</p>';
+                return;
+            }
+            plantsList.forEach(function(plant) {
+                const card = document.createElement('div');
+                card.className = 'plant-card fade-in';
+                card.innerHTML = '<span class="plant-category">' + escapeHtml(plant.category) + '</span>' +
+                    '<h3>' + escapeHtml(plant.name) + '</h3>' +
+                    '<p>' + escapeHtml(plant.importance) + '</p>';
+                container.appendChild(card);
+            });
+            document.querySelectorAll('#plants-list .fade-in:not(.observed)').forEach(function(el) {
+                observer.observe(el);
+                el.classList.add('observed');
+            });
+        }
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
         // Navbar scroll effect
         const navbar = document.getElementById('navbar');
         window.addEventListener('scroll', () => {
@@ -1310,7 +1409,7 @@
         }
 
         // Highlight current section in nav (scroll spy)
-        const sectionIds = ['top', 'about', 'practices', 'gallery', 'getting-started', 'community', 'news', 'location'];
+        const sectionIds = ['top', 'about', 'practices', 'plants', 'gallery', 'getting-started', 'community', 'news', 'location'];
         function updateActiveNav() {
             const scrollY = window.scrollY;
             let current = 'top';
@@ -1381,8 +1480,9 @@
             });
         });
 
-        // Load the gallery when the page opens
+        // Load the gallery and plants when the page opens
         loadGallery();
+        loadPlants();
 
         // ============================================================
         //  LIGHTBOX WITH NAVIGATION
