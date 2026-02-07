@@ -423,9 +423,9 @@
             opacity: 0.9;
         }
 
-        /* What's growing (plants) — no nav link, discover by scrolling */
+        /* What's growing — bubble cloud; locations from your data only */
         .plants-section {
-            background: white;
+            background: linear-gradient(180deg, #faf8f5 0%, white 100%);
             padding: var(--spacing-xl) var(--spacing-md);
         }
         .plants-subtitle {
@@ -435,51 +435,117 @@
             max-width: 700px;
             margin: 0 auto var(--spacing-lg);
         }
-        .plants-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: var(--spacing-md);
-            max-width: 1400px;
-            margin: 0 auto;
+        .plants-forest-group {
+            margin-bottom: var(--spacing-lg);
         }
-        .plant-card {
-            background: var(--sand);
-            padding: var(--spacing-md);
-            border-radius: 12px;
-            border-left: 4px solid var(--sprout);
-            box-shadow: 0 4px 20px rgba(45, 51, 25, 0.08);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        .plants-forest-group:last-of-type {
+            margin-bottom: 0;
         }
-        .plant-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 24px rgba(45, 51, 25, 0.12);
-        }
-        .plant-card h3 {
-            font-size: 1.25rem;
+        .plants-forest-title {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.5rem;
             color: var(--earth-dark);
-            margin-bottom: var(--spacing-xs);
-        }
-        .plant-category {
-            display: inline-block;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--earth-medium);
-            background: rgba(168, 198, 134, 0.3);
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
             margin-bottom: var(--spacing-sm);
+            text-align: center;
         }
-        .plant-card p {
-            color: var(--earth-medium);
+        .plants-bubbles {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            min-height: 140px;
+        }
+        .plant-tooltip {
+            position: fixed;
+            max-width: min(280px, calc(100vw - 2rem));
+            padding: 0.65rem 0.9rem;
+            background: var(--earth-dark);
+            color: var(--sand);
+            font-size: 0.85rem;
+            line-height: 1.45;
+            border-radius: 10px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.22);
+            z-index: 10000;
+            pointer-events: none;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.15s ease, visibility 0.15s ease;
+        }
+        .plant-tooltip.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        .plant-tooltip.visible.place-top {
+            left: 1rem;
+            right: 1rem;
+            bottom: 1.25rem;
+            top: auto;
+        }
+        .plant-tooltip strong {
+            display: block;
+            margin-bottom: 0.25rem;
+            color: var(--sprout);
             font-size: 0.95rem;
-            line-height: 1.6;
+        }
+        .plant-bubble {
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-weight: 600;
+            color: var(--earth-dark);
+            box-shadow: 0 4px 20px rgba(45, 51, 25, 0.12), inset 0 1px 0 rgba(255,255,255,0.4);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            cursor: default;
+            overflow: hidden;
+            padding: 0.5rem;
+            line-height: 1.2;
+            flex-shrink: 0;
+            min-width: 44px;
+            min-height: 44px;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .plant-bubble:hover {
+            transform: scale(1.08);
+            box-shadow: 0 10px 28px rgba(45, 51, 25, 0.18), inset 0 1px 0 rgba(255,255,255,0.5);
+        }
+        .plant-bubble:active {
+            transform: scale(1.02);
+        }
+        .plant-bubble .plant-name {
+            font-family: 'Work Sans', sans-serif;
+            word-break: break-word;
+        }
+        .plant-bubble[data-category="Fruit"] {
+            background: linear-gradient(145deg, rgba(168, 198, 134, 0.7) 0%, rgba(168, 198, 134, 0.45) 100%);
+            border: 2px solid rgba(168, 198, 134, 0.9);
+        }
+        .plant-bubble[data-category="Non-Fruit"] {
+            background: linear-gradient(145deg, rgba(139, 152, 98, 0.55) 0%, rgba(139, 152, 98, 0.35) 100%);
+            border: 2px solid var(--earth-light);
+        }
+        .plant-bubble[data-category="Timber"] {
+            background: linear-gradient(145deg, rgba(196, 165, 114, 0.65) 0%, rgba(196, 165, 114, 0.4) 100%);
+            border: 2px solid var(--clay);
+        }
+        .plant-bubble[data-category="Medicinal"] {
+            background: linear-gradient(145deg, rgba(107, 144, 128, 0.5) 0%, rgba(107, 144, 128, 0.35) 100%);
+            border: 2px solid var(--water);
+        }
+        .plants-legend {
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--earth-medium);
+            margin-top: var(--spacing-md);
         }
         @media (max-width: 768px) {
-            .plants-grid {
-                grid-template-columns: 1fr;
-            }
+            .plants-bubbles { gap: 0.875rem; min-height: 100px; }
+            .plant-tooltip { bottom: 1.25rem; left: 1rem; right: 1rem; max-width: none; }
+            .plant-tooltip.visible.place-top { bottom: 1.25rem; }
         }
 
         /* Gallery */
@@ -1029,7 +1095,7 @@
             .news-card,
             .back-to-top,
             .skip-link,
-            .plant-card {
+            .plant-bubble {
                 animation: none !important;
                 transition: none !important;
             }
@@ -1144,9 +1210,11 @@
         <div class="section">
             <h2 class="section-title fade-in">What's growing</h2>
             <p class="plants-subtitle fade-in">Species we work with and why they matter in permaculture—diversity in practice.</p>
-            <div class="plants-grid" id="plants-list">
-                <!-- Loaded from plants-config.js -->
+            <div id="plants-container">
+                <!-- Groups built from plants-config.js by location (only categories from your data) -->
             </div>
+            <p class="plants-legend fade-in">Larger bubble = more plants. Tap or hover for details.</p>
+            <div class="plant-tooltip" id="plant-tooltip" role="tooltip" aria-hidden="true"></div>
         </div>
     </section>
 
@@ -1359,23 +1427,104 @@
             });
         }
 
-        // Plants / What's growing — loaded from plants-config.js (no nav link)
+        // Plants bubble cloud — grouped by location (only categories from your data); custom tooltip
         function loadPlants() {
-            const container = document.getElementById('plants-list');
+            var container = document.getElementById('plants-container');
             if (!container) return;
             if (typeof plantsList === 'undefined' || !plantsList.length) {
                 container.innerHTML = '<p style="color: var(--earth-medium); text-align: center;">Plant list could not be loaded.</p>';
                 return;
             }
+            var maxStanding = 1;
+            plantsList.forEach(function(p) { if (p.standing > maxStanding) maxStanding = p.standing; });
+            var minPx = 48;
+            var maxPx = 160;
+            var tooltipEl = document.getElementById('plant-tooltip');
+            var isTouch = false;
+            function showTooltip(plant, bubbleOrEvent, e) {
+                if (!tooltipEl) return;
+                tooltipEl.innerHTML = '<strong>' + escapeHtml(plant.name) + '</strong> ' + escapeHtml(plant.importance);
+                tooltipEl.setAttribute('aria-hidden', 'false');
+                tooltipEl.classList.add('visible');
+                var mobile = window.innerWidth <= 768;
+                var bubbleEl = bubbleOrEvent && bubbleOrEvent.getBoundingClientRect ? bubbleOrEvent : null;
+                if (mobile || isTouch || !bubbleEl) {
+                    tooltipEl.classList.add('place-top');
+                    tooltipEl.style.left = '1rem';
+                    tooltipEl.style.right = '1rem';
+                    tooltipEl.style.bottom = '1.25rem';
+                    tooltipEl.style.top = 'auto';
+                } else {
+                    tooltipEl.classList.remove('place-top');
+                    var r = bubbleEl.getBoundingClientRect();
+                    var gap = 6;
+                    var tipW = 280;
+                    var left = r.left + (r.width / 2) - (tipW / 2);
+                    left = Math.max(10, Math.min(left, window.innerWidth - tipW - 10));
+                    tooltipEl.style.left = left + 'px';
+                    tooltipEl.style.top = (r.bottom + gap) + 'px';
+                    tooltipEl.style.bottom = 'auto';
+                    tooltipEl.style.right = 'auto';
+                }
+            }
+            function hideTooltip() {
+                if (!tooltipEl) return;
+                tooltipEl.classList.remove('visible', 'place-top');
+                tooltipEl.setAttribute('aria-hidden', 'true');
+                tooltipEl.style.left = '';
+                tooltipEl.style.right = '';
+                tooltipEl.style.top = '';
+                tooltipEl.style.bottom = '';
+            }
+            function addBubble(plant, bubbleContainer) {
+                var q = plant.standing != null && plant.standing > 0 ? plant.standing : 1;
+                var size = Math.max(44, minPx + (Math.sqrt(q) / Math.sqrt(maxStanding)) * (maxPx - minPx));
+                size = Math.round(size);
+                var bubble = document.createElement('div');
+                bubble.className = 'plant-bubble fade-in';
+                bubble.setAttribute('data-category', plant.category);
+                bubble.style.width = size + 'px';
+                bubble.style.height = size + 'px';
+                bubble.style.fontSize = (size < 64 ? 0.5 : size < 96 ? 0.65 : 0.85) + 'rem';
+                bubble.setAttribute('tabindex', '0');
+                bubble.setAttribute('role', 'button');
+                bubble.setAttribute('aria-label', plant.name + '. ' + plant.importance);
+                bubble.innerHTML = '<span class="plant-name">' + escapeHtml(plant.name) + '</span>';
+                bubble.addEventListener('mouseenter', function() { isTouch = false; showTooltip(plant, bubble); });
+                bubble.addEventListener('mouseleave', hideTooltip);
+                bubble.addEventListener('focus', function() { isTouch = false; showTooltip(plant, bubble); });
+                bubble.addEventListener('blur', hideTooltip);
+                bubble.addEventListener('touchstart', function(ev) {
+                    isTouch = true;
+                    ev.preventDefault();
+                    showTooltip(plant, null);
+                    setTimeout(function() {
+                        document.addEventListener('touchstart', function closeOnce() {
+                            hideTooltip();
+                            document.removeEventListener('touchstart', closeOnce);
+                        }, { once: true });
+                    }, 150);
+                }, { passive: false });
+                bubbleContainer.appendChild(bubble);
+            }
+            var order = ['Native Forest Section', 'Companion Trees', 'Boundary', 'Food Forest'];
+            var byLocation = {};
             plantsList.forEach(function(plant) {
-                const card = document.createElement('div');
-                card.className = 'plant-card fade-in';
-                card.innerHTML = '<span class="plant-category">' + escapeHtml(plant.category) + '</span>' +
-                    '<h3>' + escapeHtml(plant.name) + '</h3>' +
-                    '<p>' + escapeHtml(plant.importance) + '</p>';
-                container.appendChild(card);
+                var loc = plant.location || '';
+                if (!loc) return;
+                if (!byLocation[loc]) byLocation[loc] = [];
+                byLocation[loc].push(plant);
             });
-            document.querySelectorAll('#plants-list .fade-in:not(.observed)').forEach(function(el) {
+            order.forEach(function(loc) {
+                if (!byLocation[loc] || !byLocation[loc].length) return;
+                var group = document.createElement('div');
+                group.className = 'plants-forest-group';
+                group.innerHTML = '<h3 class="plants-forest-title">' + escapeHtml(loc) + '</h3><div class="plants-bubbles"></div>';
+                var bubblesDiv = group.querySelector('.plants-bubbles');
+                byLocation[loc].forEach(function(plant) { addBubble(plant, bubblesDiv); });
+                container.appendChild(group);
+            });
+            document.querySelectorAll('.plants-bubbles .fade-in:not(.observed)').forEach(function(el) {
                 observer.observe(el);
                 el.classList.add('observed');
             });
