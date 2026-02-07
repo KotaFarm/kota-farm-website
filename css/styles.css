@@ -47,6 +47,19 @@ body {
     outline-offset: 3px;
 }
 
+/* Scroll progress bar */
+.scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background: var(--sprout);
+    z-index: 10001;
+    transform-origin: left;
+    transition: width 0.08s ease-out;
+}
+
 /* Back to top button */
 .back-to-top {
     position: fixed;
@@ -72,6 +85,12 @@ body {
 .back-to-top.visible {
     opacity: 1;
     visibility: visible;
+    animation: backToTopIn 0.4s ease-out;
+}
+@keyframes backToTopIn {
+    0% { transform: scale(0.7); opacity: 0; }
+    60% { transform: scale(1.08); }
+    100% { transform: scale(1); opacity: 1; }
 }
 .back-to-top:hover {
     background: transparent;
@@ -317,10 +336,14 @@ nav.scrolled {
     position: absolute;
     bottom: -10px;
     left: 0;
-    width: 60px;
+    width: 0;
     height: 4px;
     background: var(--sprout);
     border-radius: 2px;
+    transition: width 0.4s ease-out;
+}
+.section-title.visible::after {
+    width: 60px;
 }
 
 /* What is Permaculture */
@@ -478,6 +501,18 @@ nav.scrolled {
     margin-bottom: 0.25rem;
     color: var(--sprout);
     font-size: 0.95rem;
+}
+/* Staggered pop-in for plant bubbles */
+.plant-bubble-pop {
+    opacity: 0;
+    transform: scale(0);
+    animation: plantBubblePop 0.5s ease-out forwards;
+}
+@keyframes plantBubblePop {
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 .plant-bubble {
     border-radius: 50%;
@@ -744,22 +779,29 @@ nav.scrolled {
 
 /* Lightbox overlay for enlarging images */
 .lightbox-overlay {
-    display: none;
+    display: flex;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.85);
+    background: rgba(0, 0, 0, 0);
     z-index: 9999;
     justify-content: center;
     align-items: center;
     cursor: pointer;
     padding: var(--spacing-md);
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.22s ease, background 0.22s ease;
+    pointer-events: none;
 }
 
 .lightbox-overlay.active {
-    display: flex;
+    visibility: visible;
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.85);
+    pointer-events: auto;
 }
 
 .lightbox-overlay img {
@@ -768,6 +810,14 @@ nav.scrolled {
     border-radius: 12px;
     box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
     object-fit: contain;
+    transform: scale(0.92);
+    opacity: 0;
+    transition: transform 0.25s ease-out, opacity 0.2s ease-out;
+}
+
+.lightbox-overlay.active img {
+    transform: scale(1);
+    opacity: 1;
 }
 
 .lightbox-close {
@@ -913,6 +963,11 @@ nav.scrolled {
 .map-directions .cta-button {
     font-size: 0.95rem;
     padding: 0.75rem 1.5rem;
+}
+.cta-button-external::after {
+    content: ' ↗';
+    font-size: 0.9em;
+    opacity: 0.9;
 }
 .gallery-loading {
     grid-column: 1 / -1;
@@ -1084,9 +1139,25 @@ footer p {
     .news-card,
     .back-to-top,
     .skip-link,
-    .plant-bubble {
+    .plant-bubble,
+    .plant-bubble-pop,
+    .scroll-progress,
+    .section-title::after,
+    .lightbox-overlay,
+    .lightbox-overlay img {
         animation: none !important;
         transition: none !important;
+    }
+    .plant-bubble-pop {
+        opacity: 1;
+        transform: scale(1);
+    }
+    .section-title.visible::after {
+        width: 60px;
+    }
+    .lightbox-overlay.active img {
+        transform: scale(1);
+        opacity: 1;
     }
     .fade-in {
         opacity: 1;

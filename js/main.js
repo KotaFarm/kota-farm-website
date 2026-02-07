@@ -85,6 +85,8 @@ function loadPlants() {
     var maxPx = 160;
     var tooltipEl = document.getElementById('plant-tooltip');
     var isTouch = false;
+    var tooltipShowTimeout = null;
+    var TOOLTIP_DELAY_MS = 180;
     function showTooltip(plant, bubbleOrEvent, e) {
         if (!tooltipEl) return;
         tooltipEl.innerHTML = '<strong>' + escapeHtml(plant.name) + '</strong> ' + escapeHtml(plant.importance);
@@ -112,6 +114,10 @@ function loadPlants() {
         }
     }
     function hideTooltip() {
+        if (tooltipShowTimeout) {
+            clearTimeout(tooltipShowTimeout);
+            tooltipShowTimeout = null;
+        }
         if (!tooltipEl) return;
         tooltipEl.classList.remove('visible', 'place-top');
         tooltipEl.setAttribute('aria-hidden', 'true');
@@ -120,12 +126,15 @@ function loadPlants() {
         tooltipEl.style.top = '';
         tooltipEl.style.bottom = '';
     }
-    function addBubble(plant, bubbleContainer) {
+    function addBubble(plant, bubbleContainer, staggerIndex) {
         var q = plant.standing != null && plant.standing > 0 ? plant.standing : 1;
         var size = Math.max(44, minPx + (Math.sqrt(q) / Math.sqrt(maxStanding)) * (maxPx - minPx));
         size = Math.round(size);
         var bubble = document.createElement('div');
-        bubble.className = 'plant-bubble fade-in';
+        bubble.className = 'plant-bubble plant-bubble-pop';
+        if (typeof staggerIndex === 'number') {
+            bubble.style.animationDelay = (staggerIndex * 45) + 'ms';
+        }
         bubble.setAttribute('data-category', plant.category);
         bubble.style.width = size + 'px';
         bubble.style.height = size + 'px';
@@ -134,7 +143,11 @@ function loadPlants() {
         bubble.setAttribute('role', 'button');
         bubble.setAttribute('aria-label', plant.name + '. ' + plant.importance);
         bubble.innerHTML = '<span class="plant-name">' + escapeHtml(plant.name) + '</span>';
-        bubble.addEventListener('mouseenter', function() { isTouch = false; showTooltip(plant, bubble); });
+        bubble.addEventListener('mouseenter', function() {
+            isTouch = false;
+            if (tooltipShowTimeout) clearTimeout(tooltipShowTimeout);
+            tooltipShowTimeout = setTimeout(function() { showTooltip(plant, bubble); tooltipShowTimeout = null; }, TOOLTIP_DELAY_MS);
+        });
         bubble.addEventListener('mouseleave', hideTooltip);
         bubble.addEventListener('focus', function() { isTouch = false; showTooltip(plant, bubble); });
         bubble.addEventListener('blur', hideTooltip);
@@ -165,12 +178,8 @@ function loadPlants() {
         group.className = 'plants-forest-group';
         group.innerHTML = '<h3 class="plants-forest-title">' + escapeHtml(loc) + '</h3><div class="plants-bubbles"></div>';
         var bubblesDiv = group.querySelector('.plants-bubbles');
-        byLocation[loc].forEach(function(plant) { addBubble(plant, bubblesDiv); });
+        byLocation[loc].forEach(function(plant, i) { addBubble(plant, bubblesDiv, i); });
         container.appendChild(group);
-    });
-    document.querySelectorAll('.plants-bubbles .fade-in:not(.observed)').forEach(function(el) {
-        observer.observe(el);
-        el.classList.add('observed');
     });
 }
 function escapeHtml(text) {
@@ -178,6 +187,17 @@ function escapeHtml(text) {
     div.textContent = text;
     return div.innerHTML;
 }
+
+// Scroll progress bar
+const scrollProgressEl = document.getElementById('scroll-progress');
+function updateScrollProgress() {
+    if (!scrollProgressEl) return;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = docHeight <= 0 ? 0 : (window.scrollY / docHeight) * 100;
+    scrollProgressEl.style.width = pct + '%';
+}
+window.addEventListener('scroll', updateScrollProgress);
+window.addEventListener('load', updateScrollProgress);
 
 // Navbar scroll effect
 const navbar = document.getElementById('navbar');
