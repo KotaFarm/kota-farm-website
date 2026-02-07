@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kota Natural Farm | Permaculture & Regenerative Agriculture</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%232d3319'/%3E%3Cpath d='M16 6c-2 4-1 8 0 11 1-3 5-7 9-8-3 3-6 7-7 11 0 0-1 4-2 6-1-2-2-6-2-6-1-4-4-8-7-11 4 1 8 5 9 8C17 14 18 10 16 6z' fill='%23a8c686'/%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -444,12 +445,24 @@
             box-shadow: 0 12px 32px rgba(45, 51, 25, 0.2);
         }
 
+        .gallery-item {
+            background: linear-gradient(135deg, #c4b99a 0%, #a8b88a 100%);
+        }
+
         .gallery-item img,
         .gallery-item video {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.5s ease-out;
+            transition: transform 0.5s ease-out, opacity 0.6s ease;
+        }
+
+        .gallery-item img.loading {
+            opacity: 0;
+        }
+
+        .gallery-item img.loaded {
+            opacity: 1;
         }
 
         .gallery-item:hover img,
@@ -658,6 +671,66 @@
 
         .lightbox-close:hover {
             color: var(--sprout);
+        }
+
+        /* Lightbox navigation arrows */
+        .lightbox-nav {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 300;
+            cursor: pointer;
+            z-index: 10000;
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(4px);
+            transition: background 0.2s ease, color 0.2s ease;
+            user-select: none;
+            font-family: 'Work Sans', sans-serif;
+            line-height: 1;
+            border: none;
+            padding: 0;
+        }
+
+        .lightbox-nav:hover {
+            background: rgba(255,255,255,0.25);
+            color: var(--sprout);
+        }
+
+        .lightbox-nav:focus-visible {
+            outline: 2px solid var(--sprout);
+            outline-offset: 3px;
+        }
+
+        .lightbox-prev { left: 16px; }
+        .lightbox-next { right: 16px; }
+
+        .lightbox-counter {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+            z-index: 10000;
+            font-family: 'Work Sans', sans-serif;
+        }
+
+        @media (max-width: 768px) {
+            .lightbox-nav {
+                width: 44px;
+                height: 44px;
+                font-size: 1.8rem;
+            }
+            .lightbox-prev { left: 8px; }
+            .lightbox-next { right: 8px; }
         }
 
         .news-card-body {
@@ -1180,7 +1253,7 @@
                     const src = 'gallery/' + item.file;
                     const caption = item.caption;
                     const img = document.createElement('img');
-                    img.src = src;
+                    img.className = 'loading';
                     img.alt = caption;
                     img.loading = 'lazy';
                     img.decoding = 'async';
@@ -1188,6 +1261,8 @@
                     img.setAttribute('tabindex', '0');
                     img.setAttribute('role', 'button');
                     img.setAttribute('aria-label', 'View full size: ' + caption);
+                    img.addEventListener('load', function() { img.classList.remove('loading'); img.classList.add('loaded'); });
+                    img.src = src;
                     img.addEventListener('click', function() { openLightbox(src); });
                     img.addEventListener('keydown', function(e) {
                         if (e.key === 'Enter' || e.key === ' ') {
@@ -1309,43 +1384,83 @@
         // Load the gallery when the page opens
         loadGallery();
 
-        // Lightbox: save focus for restore, focus trap
+        // ============================================================
+        //  LIGHTBOX WITH NAVIGATION
+        //  Supports: prev/next arrows, keyboard (left/right/esc),
+        //  touch swipe, and image counter
+        // ============================================================
         let lightboxPreviousFocus = null;
+        let lightboxImages = [];
+        let lightboxIndex = 0;
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        // Collect all lightbox-able images after gallery loads
+        function buildLightboxList() {
+            lightboxImages = [];
+            // Gallery images
+            document.querySelectorAll('#gallery-grid .gallery-item img').forEach(img => {
+                lightboxImages.push(img.src);
+            });
+            // News images
+            document.querySelectorAll('.news-card img').forEach(img => {
+                lightboxImages.push(img.src);
+            });
+        }
 
         function openLightbox(src) {
+            buildLightboxList();
             const overlay = document.getElementById('lightbox');
             const closeBtn = document.getElementById('lightbox-close');
             lightboxPreviousFocus = document.activeElement;
-            overlay.querySelector('img').src = src;
+
+            // Find index of clicked image
+            lightboxIndex = lightboxImages.indexOf(src);
+            if (lightboxIndex === -1) lightboxIndex = 0;
+
+            showLightboxImage();
             overlay.classList.add('active');
             document.body.style.overflow = 'hidden';
             closeBtn.focus();
-
-            overlay.setAttribute('tabindex', '-1');
             overlay.addEventListener('keydown', lightboxKeydown);
         }
 
-        function lightboxKeydown(e) {
-            if (e.key === 'Escape') {
-                closeLightbox();
-                return;
-            }
-            if (e.key !== 'Tab') return;
-            const closeBtn = document.getElementById('lightbox-close');
+        function showLightboxImage() {
             const overlay = document.getElementById('lightbox');
-            const focusable = [closeBtn, overlay];
+            const img = overlay.querySelector('img');
+            const counter = document.getElementById('lightbox-counter');
+            img.src = lightboxImages[lightboxIndex];
+            counter.textContent = (lightboxIndex + 1) + ' / ' + lightboxImages.length;
+
+            // Hide arrows if only one image
+            document.getElementById('lightbox-prev').style.display = lightboxImages.length <= 1 ? 'none' : 'flex';
+            document.getElementById('lightbox-next').style.display = lightboxImages.length <= 1 ? 'none' : 'flex';
+        }
+
+        function lightboxNav(direction) {
+            lightboxIndex += direction;
+            if (lightboxIndex < 0) lightboxIndex = lightboxImages.length - 1;
+            if (lightboxIndex >= lightboxImages.length) lightboxIndex = 0;
+            showLightboxImage();
+        }
+
+        function lightboxKeydown(e) {
+            if (e.key === 'Escape') { closeLightbox(); return; }
+            if (e.key === 'ArrowLeft') { e.preventDefault(); lightboxNav(-1); return; }
+            if (e.key === 'ArrowRight') { e.preventDefault(); lightboxNav(1); return; }
+            if (e.key !== 'Tab') return;
+            // Focus trap
+            const focusable = [
+                document.getElementById('lightbox-close'),
+                document.getElementById('lightbox-prev'),
+                document.getElementById('lightbox-next')
+            ].filter(el => el && el.style.display !== 'none');
             const first = focusable[0];
-            const last = focusable[1];
+            const last = focusable[focusable.length - 1];
             if (e.shiftKey) {
-                if (document.activeElement === first) {
-                    e.preventDefault();
-                    last.focus();
-                }
+                if (document.activeElement === first) { e.preventDefault(); last.focus(); }
             } else {
-                if (document.activeElement === last) {
-                    e.preventDefault();
-                    first.focus();
-                }
+                if (document.activeElement === last) { e.preventDefault(); first.focus(); }
             }
         }
 
@@ -1354,13 +1469,28 @@
             overlay.classList.remove('active');
             document.body.style.overflow = '';
             overlay.removeEventListener('keydown', lightboxKeydown);
-            overlay.removeAttribute('tabindex');
             if (lightboxPreviousFocus && lightboxPreviousFocus.focus) {
                 lightboxPreviousFocus.focus();
             }
             lightboxPreviousFocus = null;
         }
 
+        // Touch swipe support
+        (function() {
+            const lb = document.getElementById('lightbox');
+            lb.addEventListener('touchstart', function(e) {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+            lb.addEventListener('touchend', function(e) {
+                touchEndX = e.changedTouches[0].screenX;
+                const diff = touchStartX - touchEndX;
+                if (Math.abs(diff) > 50) {
+                    lightboxNav(diff > 0 ? 1 : -1);
+                }
+            }, { passive: true });
+        })();
+
+        // Global escape key
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 const overlay = document.getElementById('lightbox');
@@ -1371,10 +1501,13 @@
 
     <button type="button" class="back-to-top" id="back-to-top" aria-label="Back to top" title="Back to top">↑</button>
 
-    <!-- Lightbox overlay (click overlay or close to close; click image does not close) -->
+    <!-- Lightbox overlay with navigation -->
     <div class="lightbox-overlay" id="lightbox" onclick="closeLightbox()">
         <span class="lightbox-close" id="lightbox-close" onclick="event.stopPropagation(); closeLightbox();" role="button" aria-label="Close" tabindex="0">&times;</span>
+        <button class="lightbox-nav lightbox-prev" id="lightbox-prev" onclick="event.stopPropagation(); lightboxNav(-1);" aria-label="Previous image" tabindex="0">&#8249;</button>
         <img src="" alt="Enlarged view" onclick="event.stopPropagation()">
+        <button class="lightbox-nav lightbox-next" id="lightbox-next" onclick="event.stopPropagation(); lightboxNav(1);" aria-label="Next image" tabindex="0">&#8250;</button>
+        <div class="lightbox-counter" id="lightbox-counter"></div>
     </div>
 </body>
 </html>
