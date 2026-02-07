@@ -37,6 +37,70 @@
             overflow-x: hidden;
         }
 
+        /* Skip to main content - visible on focus */
+        .skip-link {
+            position: absolute;
+            top: -100px;
+            left: var(--spacing-sm);
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--earth-dark);
+            color: var(--sand);
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 10px;
+            z-index: 10001;
+            transition: top 0.2s ease;
+        }
+        .skip-link:focus {
+            top: var(--spacing-sm);
+            outline: 2px solid var(--sprout);
+            outline-offset: 3px;
+        }
+
+        /* Back to top button */
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--earth-dark);
+            color: var(--sand);
+            border: 2px solid var(--earth-dark);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 16px rgba(45, 51, 25, 0.25);
+        }
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        .back-to-top:hover {
+            background: transparent;
+            color: var(--earth-dark);
+            transform: translateY(-2px);
+        }
+        .back-to-top:focus-visible {
+            outline: 2px solid var(--sprout);
+            outline-offset: 3px;
+        }
+        @media (max-width: 768px) {
+            .back-to-top {
+                bottom: 1.5rem;
+                right: 1.5rem;
+                width: 44px;
+                height: 44px;
+            }
+        }
+
         h1, h2, h3, h4 {
             font-family: 'Crimson Pro', serif;
             font-weight: 700;
@@ -91,6 +155,10 @@
             font-weight: 500;
             transition: color 0.3s ease;
             position: relative;
+            padding: 0.5rem 0;
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
         }
 
         .nav-links a::after {
@@ -541,6 +609,10 @@
             font-size: 0.8rem;
             color: var(--earth-light);
             background: rgba(45, 51, 25, 0.04);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.35rem;
         }
 
         /* Lightbox overlay for enlarging images */
@@ -630,7 +702,36 @@
             text-align: center;
             font-size: 1.1rem;
             color: var(--earth-medium);
+            margin-bottom: var(--spacing-xs);
+        }
+        .map-address a {
+            color: var(--earth-dark);
+            font-weight: 500;
+            text-decoration: none;
+            border-bottom: 1px solid var(--sprout);
+            transition: color 0.2s ease, border-color 0.2s ease;
+        }
+        .map-address a:hover {
+            color: var(--water);
+            border-bottom-color: var(--water);
+        }
+        .map-address a:focus-visible {
+            outline: 2px solid var(--sprout);
+            outline-offset: 3px;
+        }
+        .map-directions {
+            text-align: center;
             margin-bottom: var(--spacing-md);
+        }
+        .map-directions .cta-button {
+            font-size: 0.95rem;
+            padding: 0.75rem 1.5rem;
+        }
+        .gallery-loading {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: var(--spacing-lg);
+            color: var(--earth-medium);
         }
 
         .map-wrapper {
@@ -793,7 +894,9 @@
             .principle-card,
             .practice-item,
             .gallery-item,
-            .news-card {
+            .news-card,
+            .back-to-top,
+            .skip-link {
                 animation: none !important;
                 transition: none !important;
             }
@@ -812,6 +915,7 @@
     </style>
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
     <!-- Navigation -->
     <nav id="navbar">
         <div class="nav-container">
@@ -833,9 +937,10 @@
         </div>
     </nav>
 
+    <main id="main-content" tabindex="-1">
     <!-- Hero Section -->
     <section id="top" class="hero">
-        <img src="site-images/hero-background.jpeg" alt="Natural farm landscape" class="hero-bg">
+        <img src="site-images/hero-background.jpeg" alt="Natural farm landscape" class="hero-bg" fetchpriority="high">
         <div class="hero-content">
             <h1>Kota Natural Farm</h1>
             <p class="hero-subtitle">Growing regeneratively. Teaching sustainably. Living harmoniously.</p>
@@ -905,8 +1010,8 @@
     <section id="gallery" class="section">
         <h2 class="section-title fade-in">From Our Fields</h2>
         <div class="gallery-grid" id="gallery-grid">
+            <p class="gallery-loading" id="gallery-loading">Loading…</p>
             <!-- Gallery items are loaded automatically from gallery-config.js -->
-            <!-- To add photos: put them in the "gallery" folder and add a line to gallery-config.js -->
         </div>
     </section>
 
@@ -982,7 +1087,7 @@
             <div class="news-grid">
                 <div class="news-card fade-in">
                     <img src="press/news-1.jpeg" alt="Newspaper article about permaculture workshop at Khedli Pandya" onclick="openLightbox(this.src)">
-                    <div class="click-hint">Click image to enlarge</div>
+                    <div class="click-hint"><span aria-hidden="true">↗</span> Tap or click to enlarge</div>
                     <div class="news-card-body">
                         <h3>Permaculture Workshop at Khedli Pandya</h3>
                         <p class="news-source">Kalam Ka Adhikar</p>
@@ -991,7 +1096,7 @@
                 </div>
                 <div class="news-card fade-in">
                     <img src="press/news-2.jpeg" alt="Newspaper article about farmer workshop on permaculture" onclick="openLightbox(this.src)">
-                    <div class="click-hint">Click image to enlarge</div>
+                    <div class="click-hint"><span aria-hidden="true">↗</span> Tap or click to enlarge</div>
                     <div class="news-card-body">
                         <h3>Farmer Workshop on Permaculture for Agriculture</h3>
                         <p class="news-source">Local Press</p>
@@ -1006,7 +1111,8 @@
     <section id="location" class="map-section">
         <div class="section">
             <h2 class="section-title fade-in">Find us</h2>
-            <p class="map-address fade-in">Khedli Pandya, near Jhalipura, Kota, Rajasthan</p>
+            <p class="map-address fade-in"><a href="https://www.google.com/maps?q=25.20101783154429,75.94780607626492" target="_blank" rel="noopener noreferrer">Khedli Pandya, near Jhalipura, Kota, Rajasthan</a></p>
+            <p class="map-directions fade-in"><a href="https://www.google.com/maps?q=25.20101783154429,75.94780607626492" target="_blank" rel="noopener noreferrer" class="cta-button">Get directions</a></p>
             <div class="map-wrapper fade-in">
                 <iframe
                     src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d4742.911267469523!2d75.94780607626492!3d25.20101783154429!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMjXCsDEyJzAzLjciTiA3NcKwNTcnMDEuNCJF!5e1!3m2!1sen!2sus!4v1770354441393!5m2!1sen!2sus"
@@ -1019,10 +1125,11 @@
         </div>
     </section>
 
+    </main>
     <!-- Footer -->
     <footer>
         <div class="section">
-            <img src="site-images/team-photo.jpeg" alt="Team at Kota Farm" class="footer-team-photo">
+            <img src="site-images/farm-overview.jpeg" alt="Aerial view of Kota Natural Farm" class="footer-team-photo">
             <p style="font-size: 1.1rem; margin-bottom: 1rem;">Kota Natural Farm</p>
             <p>Growing regeneratively. Teaching sustainably. Living harmoniously.</p>
             <p style="margin-top: 2rem; opacity: 0.6; font-size: 0.9rem;">&copy; 2026 Kota Natural Farm. Website created with care for the earth.</p>
@@ -1043,11 +1150,15 @@
         // ============================================================
         function loadGallery() {
             const grid = document.getElementById('gallery-grid');
+            const loadingEl = document.getElementById('gallery-loading');
 
             if (typeof galleryItems === 'undefined' || !galleryItems.length) {
+                if (loadingEl) loadingEl.remove();
                 grid.innerHTML = '<p style="color: var(--earth-medium); grid-column: 1/-1; text-align: center;">Gallery could not be loaded. Make sure gallery-config.js exists.</p>';
                 return;
             }
+
+            if (loadingEl) loadingEl.remove();
 
             galleryItems.forEach(item => {
                 const div = document.createElement('div');
@@ -1057,7 +1168,7 @@
 
                 if (isVideo) {
                     div.innerHTML = `
-                        <video controls loop muted>
+                        <video controls loop muted loading="lazy">
                             <source src="gallery/${item.file}" type="video/${item.file.split('.').pop()}">
                             Your browser does not support video playback.
                         </video>
@@ -1066,12 +1177,29 @@
                         </div>
                     `;
                 } else {
-                    div.innerHTML = `
-                        <img src="gallery/${item.file}" alt="${item.caption}" onclick="openLightbox('gallery/${item.file}')" style="cursor: pointer;">
-                        <div class="gallery-caption">
-                            <p>${item.caption}</p>
-                        </div>
-                    `;
+                    const src = 'gallery/' + item.file;
+                    const caption = item.caption;
+                    const img = document.createElement('img');
+                    img.src = src;
+                    img.alt = caption;
+                    img.loading = 'lazy';
+                    img.decoding = 'async';
+                    img.style.cursor = 'pointer';
+                    img.setAttribute('tabindex', '0');
+                    img.setAttribute('role', 'button');
+                    img.setAttribute('aria-label', 'View full size: ' + caption);
+                    img.addEventListener('click', function() { openLightbox(src); });
+                    img.addEventListener('keydown', function(e) {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            openLightbox(src);
+                        }
+                    });
+                    div.appendChild(img);
+                    const capDiv = document.createElement('div');
+                    capDiv.className = 'gallery-caption';
+                    capDiv.innerHTML = '<p>' + caption + '</p>';
+                    div.appendChild(capDiv);
                 }
 
                 grid.appendChild(div);
@@ -1093,6 +1221,18 @@
                 navbar.classList.remove('scrolled');
             }
         });
+
+        // Back to top: show after scroll, scroll to top on click
+        const backToTop = document.getElementById('back-to-top');
+        if (backToTop) {
+            window.addEventListener('scroll', function() {
+                backToTop.classList.toggle('visible', window.scrollY > 400);
+            });
+            backToTop.addEventListener('click', function() {
+                document.getElementById('main-content').focus({ preventScroll: true });
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
 
         // Highlight current section in nav (scroll spy)
         const sectionIds = ['top', 'about', 'practices', 'gallery', 'getting-started', 'community', 'news', 'location'];
@@ -1169,29 +1309,71 @@
         // Load the gallery when the page opens
         loadGallery();
 
-        // Lightbox for enlarging news images
+        // Lightbox: save focus for restore, focus trap
+        let lightboxPreviousFocus = null;
+
         function openLightbox(src) {
             const overlay = document.getElementById('lightbox');
+            const closeBtn = document.getElementById('lightbox-close');
+            lightboxPreviousFocus = document.activeElement;
             overlay.querySelector('img').src = src;
             overlay.classList.add('active');
             document.body.style.overflow = 'hidden';
+            closeBtn.focus();
+
+            overlay.setAttribute('tabindex', '-1');
+            overlay.addEventListener('keydown', lightboxKeydown);
+        }
+
+        function lightboxKeydown(e) {
+            if (e.key === 'Escape') {
+                closeLightbox();
+                return;
+            }
+            if (e.key !== 'Tab') return;
+            const closeBtn = document.getElementById('lightbox-close');
+            const overlay = document.getElementById('lightbox');
+            const focusable = [closeBtn, overlay];
+            const first = focusable[0];
+            const last = focusable[1];
+            if (e.shiftKey) {
+                if (document.activeElement === first) {
+                    e.preventDefault();
+                    last.focus();
+                }
+            } else {
+                if (document.activeElement === last) {
+                    e.preventDefault();
+                    first.focus();
+                }
+            }
         }
 
         function closeLightbox() {
             const overlay = document.getElementById('lightbox');
             overlay.classList.remove('active');
             document.body.style.overflow = '';
+            overlay.removeEventListener('keydown', lightboxKeydown);
+            overlay.removeAttribute('tabindex');
+            if (lightboxPreviousFocus && lightboxPreviousFocus.focus) {
+                lightboxPreviousFocus.focus();
+            }
+            lightboxPreviousFocus = null;
         }
 
-        // Close on Escape key
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'Escape') {
+                const overlay = document.getElementById('lightbox');
+                if (overlay && overlay.classList.contains('active')) closeLightbox();
+            }
         });
     </script>
 
+    <button type="button" class="back-to-top" id="back-to-top" aria-label="Back to top" title="Back to top">↑</button>
+
     <!-- Lightbox overlay (click overlay or close to close; click image does not close) -->
     <div class="lightbox-overlay" id="lightbox" onclick="closeLightbox()">
-        <span class="lightbox-close" onclick="event.stopPropagation(); closeLightbox();" role="button" aria-label="Close">&times;</span>
+        <span class="lightbox-close" id="lightbox-close" onclick="event.stopPropagation(); closeLightbox();" role="button" aria-label="Close" tabindex="0">&times;</span>
         <img src="" alt="Enlarged view" onclick="event.stopPropagation()">
     </div>
 </body>

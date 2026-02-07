@@ -5,8 +5,16 @@
 
 const galleryItems = [
   {
+    "file": "farm-aerial-view.jpeg",
+    "caption": "Bird's eye view of the farm with winding stone pathways"
+  },
+  {
     "file": "cover-crops.jpeg",
     "caption": "Thriving cover crops enrich the soil naturally"
+  },
+  {
+    "file": "farm-pond.jpeg",
+    "caption": "Water harvesting pond with stone-lined edges"
   },
   {
     "file": "green-manure.jpeg",
@@ -21,6 +29,10 @@ const galleryItems = [
     "caption": "Abundant natural harvest: carrots, greens, cauliflower, radishes"
   },
   {
+    "file": "tree-saplings.jpg",
+    "caption": "Young saplings growing along the farm boundary"
+  },
+  {
     "file": "fruit-tree.jpeg",
     "caption": "Fruit trees establishing in our food forest"
   },
@@ -33,8 +45,8 @@ const galleryItems = [
     "caption": "Pomegranate developing on young tree"
   },
   {
-    "file": "bamboo.jpeg",
-    "caption": "Bamboo provides versatile sustainable materials"
+    "file": "bamboo-closeup.jpg",
+    "caption": "Golden bamboo growing on the farm"
   },
   {
     "file": "farm-tour.mp4",
