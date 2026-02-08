@@ -19,6 +19,11 @@
     box-sizing: border-box;
 }
 
+html {
+    overflow-x: hidden;
+    touch-action: pan-y;
+}
+
 body {
     font-family: 'Work Sans', sans-serif;
     color: var(--earth-dark);
@@ -813,11 +818,20 @@ nav.scrolled {
     box-shadow: 0 8px 30px rgba(45, 51, 25, 0.18);
 }
 
-.news-card img {
+.news-card-img-wrap {
+    position: relative;
     width: 100%;
-    aspect-ratio: 4/5;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: rgba(45, 51, 25, 0.06);
+}
+.news-card-img-wrap img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
-    object-position: top;
+    object-position: top center;
     display: block;
     border-bottom: 3px solid var(--sprout);
     cursor: pointer;
@@ -1182,8 +1196,12 @@ footer p {
 /* Footer team photo */
 .footer-team-photo {
     max-width: 400px;
+    width: 100%;
+    height: auto;
+    display: block;
     border-radius: 12px;
     margin-bottom: 2rem;
+    object-fit: cover;
 }
 
 /* Principle card spacing (replaces inline style) */
