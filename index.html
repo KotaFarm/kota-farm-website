@@ -166,9 +166,12 @@
     <!-- Gallery — loaded automatically from gallery-config.js -->
     <section id="gallery" class="section">
         <h2 class="section-title fade-in">From Our Fields</h2>
-        <div class="gallery-grid" id="gallery-grid">
+        <div class="gallery-filters fade-in" id="gallery-filters" role="tablist" aria-label="Gallery categories">
+            <!-- Filter buttons built by JS from galleryCategories -->
+        </div>
+        <div id="gallery-grid-container">
             <p class="gallery-loading" id="gallery-loading">Loading…</p>
-            <!-- Gallery items are loaded automatically from gallery-config.js -->
+            <!-- Category groups and grids built by JS -->
         </div>
     </section>
 

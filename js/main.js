@@ -1,73 +1,158 @@
 // ============================================================
-//  GALLERY LOADER
-//  Reads galleryItems from gallery-config.js and builds the
-//  gallery automatically. Works with file:// and http://.
+//  GALLERY LOADER (grouped by category with filter tabs)
+//  Reads galleryItems + galleryCategories from gallery-config.js
+//  and builds the gallery automatically, organised by theme.
 //  To add new photos/videos: put them in the "gallery" folder
 //  and add one line to gallery-config.js. That's it!
 // ============================================================
+function createGalleryItem(item) {
+    const div = document.createElement('div');
+    div.className = 'gallery-item fade-in';
+
+    const isVideo = item.file.match(/\.(mp4|webm|mov)$/i);
+
+    if (isVideo) {
+        div.innerHTML =
+            '<video controls loop muted loading="lazy">' +
+            '<source src="gallery/' + item.file + '" type="video/' + item.file.split('.').pop() + '">' +
+            'Your browser does not support video playback.' +
+            '</video>' +
+            '<div class="gallery-caption"><p>' + escapeHtml(item.caption) + '</p></div>';
+    } else {
+        var src = 'gallery/' + item.file;
+        var caption = item.caption;
+        var img = document.createElement('img');
+        img.className = 'loading';
+        img.alt = caption;
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        img.style.cursor = 'pointer';
+        img.setAttribute('tabindex', '0');
+        img.setAttribute('role', 'button');
+        img.setAttribute('aria-label', 'View full size: ' + caption);
+        img.addEventListener('load', function() { img.classList.remove('loading'); img.classList.add('loaded'); });
+        img.src = src;
+        img.addEventListener('click', function() { openLightbox(img.src); });
+        img.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                openLightbox(img.src);
+            }
+        });
+        div.appendChild(img);
+        var capDiv = document.createElement('div');
+        capDiv.className = 'gallery-caption';
+        capDiv.innerHTML = '<p>' + escapeHtml(caption) + '</p>';
+        div.appendChild(capDiv);
+    }
+
+    return div;
+}
+
 function loadGallery() {
-    const grid = document.getElementById('gallery-grid');
-    const loadingEl = document.getElementById('gallery-loading');
+    var container = document.getElementById('gallery-grid-container');
+    var filtersBar = document.getElementById('gallery-filters');
+    var loadingEl = document.getElementById('gallery-loading');
 
     if (typeof galleryItems === 'undefined' || !galleryItems.length) {
         if (loadingEl) loadingEl.remove();
-        grid.innerHTML = '<p style="color: var(--earth-medium); grid-column: 1/-1; text-align: center;">Gallery could not be loaded. Make sure gallery-config.js exists.</p>';
+        container.innerHTML = '<p style="color: var(--earth-medium); text-align: center;">Gallery could not be loaded. Make sure gallery-config.js exists.</p>';
         return;
     }
-
     if (loadingEl) loadingEl.remove();
 
-    galleryItems.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'gallery-item fade-in';
+    // Build category lookup
+    var categories = (typeof galleryCategories !== 'undefined') ? galleryCategories : [];
+    var hasCategories = categories.length > 0 && galleryItems.some(function(i) { return i.category; });
 
-        const isVideo = item.file.match(/\.(mp4|webm|mov)$/i);
+    if (!hasCategories) {
+        // Fallback: flat grid (backwards compatible)
+        var grid = document.createElement('div');
+        grid.className = 'gallery-grid';
+        grid.id = 'gallery-grid';
+        galleryItems.forEach(function(item) { grid.appendChild(createGalleryItem(item)); });
+        container.appendChild(grid);
+    } else {
+        // Group items by category
+        var grouped = {};
+        categories.forEach(function(cat) { grouped[cat.id] = []; });
+        galleryItems.forEach(function(item) {
+            var cid = item.category || '';
+            if (grouped[cid]) grouped[cid].push(item);
+        });
 
-        if (isVideo) {
-            div.innerHTML = `
-                <video controls loop muted loading="lazy">
-                    <source src="gallery/${item.file}" type="video/${item.file.split('.').pop()}">
-                    Your browser does not support video playback.
-                </video>
-                <div class="gallery-caption">
-                    <p>${item.caption}</p>
-                </div>
-            `;
-        } else {
-            const src = 'gallery/' + item.file;
-            const caption = item.caption;
-            const img = document.createElement('img');
-            img.className = 'loading';
-            img.alt = caption;
-            img.loading = 'lazy';
-            img.decoding = 'async';
-            img.style.cursor = 'pointer';
-            img.setAttribute('tabindex', '0');
-            img.setAttribute('role', 'button');
-            img.setAttribute('aria-label', 'View full size: ' + caption);
-            img.addEventListener('load', function() { img.classList.remove('loading'); img.classList.add('loaded'); });
-            img.src = src;
-            img.addEventListener('click', function() { openLightbox(img.src); });
-            img.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    openLightbox(img.src);
-                }
-            });
-            div.appendChild(img);
-            const capDiv = document.createElement('div');
-            capDiv.className = 'gallery-caption';
-            capDiv.innerHTML = '<p>' + caption + '</p>';
-            div.appendChild(capDiv);
-        }
+        // Build filter tabs
+        var allBtn = document.createElement('button');
+        allBtn.className = 'gallery-filter-btn';
+        allBtn.type = 'button';
+        allBtn.setAttribute('role', 'tab');
+        allBtn.setAttribute('aria-selected', 'true');
+        allBtn.setAttribute('data-filter', 'all');
+        allBtn.textContent = 'All';
+        allBtn.addEventListener('click', function() { filterGallery('all'); });
+        filtersBar.appendChild(allBtn);
 
-        grid.appendChild(div);
-    });
+        categories.forEach(function(cat) {
+            if (!grouped[cat.id] || !grouped[cat.id].length) return;
+            var btn = document.createElement('button');
+            btn.className = 'gallery-filter-btn';
+            btn.type = 'button';
+            btn.setAttribute('role', 'tab');
+            btn.setAttribute('aria-selected', 'false');
+            btn.setAttribute('data-filter', cat.id);
+            btn.textContent = cat.label;
+            btn.addEventListener('click', function() { filterGallery(cat.id); });
+            filtersBar.appendChild(btn);
+        });
+
+        // Build category groups
+        categories.forEach(function(cat) {
+            var items = grouped[cat.id];
+            if (!items || !items.length) return;
+
+            var group = document.createElement('div');
+            group.className = 'gallery-category-group';
+            group.setAttribute('data-category', cat.id);
+
+            var title = document.createElement('h3');
+            title.className = 'gallery-category-title fade-in';
+            title.textContent = cat.label;
+            group.appendChild(title);
+
+            var grid = document.createElement('div');
+            grid.className = 'gallery-grid';
+            items.forEach(function(item) { grid.appendChild(createGalleryItem(item)); });
+            group.appendChild(grid);
+
+            container.appendChild(group);
+        });
+    }
 
     // Re-observe new elements for fade-in animation
-    document.querySelectorAll('.fade-in:not(.observed)').forEach(el => {
+    document.querySelectorAll('.fade-in:not(.observed)').forEach(function(el) {
         observer.observe(el);
         el.classList.add('observed');
+    });
+}
+
+function filterGallery(categoryId) {
+    // Update tabs
+    document.querySelectorAll('.gallery-filter-btn').forEach(function(btn) {
+        btn.setAttribute('aria-selected', btn.getAttribute('data-filter') === categoryId ? 'true' : 'false');
+    });
+
+    // Show / hide groups
+    document.querySelectorAll('.gallery-category-group').forEach(function(group) {
+        if (categoryId === 'all') {
+            group.classList.remove('hidden');
+        } else {
+            group.classList.toggle('hidden', group.getAttribute('data-category') !== categoryId);
+        }
+    });
+
+    // Re-trigger fade-in for newly visible items
+    document.querySelectorAll('.gallery-category-group:not(.hidden) .fade-in').forEach(function(el) {
+        observer.observe(el);
     });
 }
 
@@ -323,8 +408,8 @@ let touchEndX = 0;
 // Collect all lightbox-able images after gallery loads
 function buildLightboxList() {
     lightboxImages = [];
-    // Gallery images
-    document.querySelectorAll('#gallery-grid .gallery-item img').forEach(img => {
+    // Gallery images — only from visible category groups (or all if no filter)
+    document.querySelectorAll('#gallery-grid-container .gallery-category-group:not(.hidden) .gallery-item img, #gallery-grid-container > .gallery-grid .gallery-item img').forEach(img => {
         lightboxImages.push(img.src);
     });
     // News images
