@@ -47,11 +47,11 @@ function loadGallery() {
             img.setAttribute('aria-label', 'View full size: ' + caption);
             img.addEventListener('load', function() { img.classList.remove('loading'); img.classList.add('loaded'); });
             img.src = src;
-            img.addEventListener('click', function() { openLightbox(src); });
+            img.addEventListener('click', function() { openLightbox(img.src); });
             img.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
-                    openLightbox(src);
+                    openLightbox(img.src);
                 }
             });
             div.appendChild(img);
@@ -183,9 +183,7 @@ function loadPlants() {
     });
 }
 function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
+    return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
 // Scroll progress bar
@@ -196,25 +194,12 @@ function updateScrollProgress() {
     const pct = docHeight <= 0 ? 0 : (window.scrollY / docHeight) * 100;
     scrollProgressEl.style.width = pct + '%';
 }
-window.addEventListener('scroll', updateScrollProgress);
-window.addEventListener('load', updateScrollProgress);
-
 // Navbar scroll effect
 const navbar = document.getElementById('navbar');
-window.addEventListener('scroll', () => {
-    if (window.scrollY > 100) {
-        navbar.classList.add('scrolled');
-    } else {
-        navbar.classList.remove('scrolled');
-    }
-});
 
 // Back to top: show after scroll, scroll to top on click
 const backToTop = document.getElementById('back-to-top');
 if (backToTop) {
-    window.addEventListener('scroll', function() {
-        backToTop.classList.toggle('visible', window.scrollY > 400);
-    });
     backToTop.addEventListener('click', function() {
         document.getElementById('main-content').focus({ preventScroll: true });
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -222,7 +207,7 @@ if (backToTop) {
 }
 
 // Highlight current section in nav (scroll spy)
-const sectionIds = ['top', 'about', 'practices', 'plants', 'gallery', 'getting-started', 'community', 'news', 'location'];
+const sectionIds = ['top', 'about', 'practices', 'plants', 'gallery', 'getting-started', 'community', 'news', 'contact', 'location'];
 function updateActiveNav() {
     const scrollY = window.scrollY;
     let current = 'top';
@@ -239,8 +224,35 @@ function updateActiveNav() {
         link.classList.toggle('active', href === '#' + current || (current === 'top' && href === '#top'));
     });
 }
-window.addEventListener('scroll', updateActiveNav);
-window.addEventListener('load', updateActiveNav);
+
+// Unified scroll handler with rAF throttle
+let scrollTicking = false;
+function onScroll() {
+    if (!scrollTicking) {
+        requestAnimationFrame(function() {
+            updateScrollProgress();
+            // Navbar shrink
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+            // Back to top visibility
+            if (backToTop) {
+                backToTop.classList.toggle('visible', window.scrollY > 400);
+            }
+            // Scroll spy
+            updateActiveNav();
+            scrollTicking = false;
+        });
+        scrollTicking = true;
+    }
+}
+window.addEventListener('scroll', onScroll, { passive: true });
+window.addEventListener('load', function() {
+    updateScrollProgress();
+    updateActiveNav();
+});
 
 // Mobile menu toggle
 const navToggle = document.getElementById('nav-toggle');
