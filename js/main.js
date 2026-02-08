@@ -293,6 +293,7 @@ if (backToTop) {
 
 // Highlight current section in nav (scroll spy)
 const sectionIds = ['top', 'about', 'practices', 'plants', 'gallery', 'getting-started', 'community', 'news', 'contact', 'location'];
+
 function updateActiveNav() {
     const scrollY = window.scrollY;
     let current = 'top';
