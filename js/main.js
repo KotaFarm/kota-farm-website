@@ -282,12 +282,15 @@ function updateScrollProgress() {
 // Navbar scroll effect
 const navbar = document.getElementById('navbar');
 
+// Respect prefers-reduced-motion for scroll behavior
+const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 // Back to top: show after scroll, scroll to top on click
 const backToTop = document.getElementById('back-to-top');
 if (backToTop) {
     backToTop.addEventListener('click', function() {
         document.getElementById('main-content').focus({ preventScroll: true });
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
     });
 }
 
@@ -384,7 +387,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         const target = document.querySelector(this.getAttribute('href'));
         if (target) {
             target.scrollIntoView({
-                behavior: 'smooth',
+                behavior: prefersReducedMotion() ? 'auto' : 'smooth',
                 block: 'start'
             });
         }
