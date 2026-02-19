@@ -111,5 +111,10 @@ const galleryItems = [
     "file": "fresh-harvest.jpeg",
     "caption": "Abundant natural harvest: carrots, greens, cauliflower, radishes",
     "category": "growing-harvest"
+  },
+  {
+    "file": "winter-harvest.jpeg",
+    "caption": "Winter harvest spread: peas, tomatoes, brinjal, and fresh greens",
+    "category": "growing-harvest"
   }
 ];
