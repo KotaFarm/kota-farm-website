@@ -620,7 +620,159 @@ main section[id] {
     .plant-tooltip.visible.place-top { bottom: 1.25rem; }
 }
 
-/* Gallery filter tabs */
+/* Cycle subtitle */
+.cycle-subtitle {
+    text-align: center;
+    font-size: 1.15rem;
+    color: var(--earth-medium);
+    margin-top: var(--spacing-sm);
+    margin-bottom: 0;
+}
+
+/* ── Permaculture Cycle Timeline ─────────────────────────── */
+.cycle-timeline {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin-top: var(--spacing-lg);
+    margin-bottom: var(--spacing-sm);
+    position: relative;
+    overflow-x: auto;
+    padding: 1rem 0;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+}
+.cycle-timeline::-webkit-scrollbar { display: none; }
+
+.cycle-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    padding: 0.5rem 0.75rem;
+    border-radius: 16px;
+    transition: background 0.3s ease, transform 0.3s ease;
+    min-width: 90px;
+    flex-shrink: 0;
+    position: relative;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+.cycle-node:hover {
+    background: rgba(168, 198, 134, 0.12);
+    transform: scale(1.05);
+}
+.cycle-node.active {
+    background: rgba(168, 198, 134, 0.18);
+    transform: scale(1.08);
+}
+
+.cycle-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    background: white;
+    border: 3px solid var(--earth-light);
+    box-shadow: 0 2px 8px rgba(45, 51, 25, 0.1);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+    position: relative;
+    z-index: 2;
+}
+.cycle-node.active .cycle-icon {
+    border-color: var(--sprout);
+    box-shadow: 0 0 0 4px rgba(168, 198, 134, 0.25), 0 4px 12px rgba(45, 51, 25, 0.15);
+    background: #f5fbe8;
+}
+.cycle-node:hover .cycle-icon {
+    border-color: var(--sprout);
+}
+
+.cycle-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--earth-medium);
+    margin-top: 0.4rem;
+    white-space: nowrap;
+    transition: color 0.3s ease;
+}
+.cycle-node.active .cycle-label {
+    color: var(--earth-dark);
+}
+
+/* Connector arrows between cycle nodes */
+.cycle-connector {
+    width: 32px;
+    height: 2px;
+    background: var(--earth-light);
+    position: relative;
+    flex-shrink: 0;
+    opacity: 0.6;
+}
+.cycle-connector::after {
+    content: '';
+    position: absolute;
+    right: -1px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid var(--earth-light);
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+}
+
+/* Cycle return arrow — the closing loop indicator */
+.cycle-return {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    color: var(--sprout);
+    font-size: 1.4rem;
+    opacity: 0.7;
+    margin-left: 4px;
+}
+
+/* All filter button */
+.cycle-node-all {
+    opacity: 0.7;
+}
+.cycle-node-all .cycle-icon {
+    background: var(--earth-dark);
+    border-color: var(--earth-dark);
+    color: var(--sand);
+    font-size: 0.85rem;
+    font-weight: 700;
+    font-family: 'Work Sans', sans-serif;
+}
+.cycle-node-all.active {
+    opacity: 1;
+}
+.cycle-node-all.active .cycle-icon {
+    background: var(--sprout);
+    border-color: var(--sprout);
+    box-shadow: 0 0 0 4px rgba(168, 198, 134, 0.25), 0 4px 12px rgba(45, 51, 25, 0.15);
+}
+
+@media (max-width: 768px) {
+    .cycle-timeline {
+        justify-content: flex-start;
+        padding: 1rem 0.5rem;
+    }
+    .cycle-node { min-width: 72px; padding: 0.4rem 0.5rem; }
+    .cycle-icon { width: 44px; height: 44px; font-size: 1.3rem; }
+    .cycle-label { font-size: 0.7rem; }
+    .cycle-connector { width: 20px; }
+}
+
+/* Gallery filter tabs (hidden — replaced by cycle) */
 .gallery-filters {
     display: flex;
     flex-wrap: wrap;

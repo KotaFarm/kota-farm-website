@@ -81,17 +81,62 @@ function loadGallery() {
             if (grouped[cid]) grouped[cid].push(item);
         });
 
-        // Build filter tabs
-        var allBtn = document.createElement('button');
-        allBtn.className = 'gallery-filter-btn';
-        allBtn.type = 'button';
-        allBtn.setAttribute('role', 'tab');
-        allBtn.setAttribute('aria-selected', 'true');
-        allBtn.setAttribute('data-filter', 'all');
-        allBtn.textContent = 'All';
-        allBtn.addEventListener('click', function() { filterGallery('all'); });
-        filtersBar.appendChild(allBtn);
+        // Build cycle timeline
+        var timeline = document.getElementById('cycle-timeline');
+        if (timeline) {
+            // "All" node
+            var allNode = document.createElement('div');
+            allNode.className = 'cycle-node cycle-node-all active';
+            allNode.setAttribute('data-filter', 'all');
+            allNode.setAttribute('role', 'tab');
+            allNode.setAttribute('aria-selected', 'true');
+            allNode.setAttribute('tabindex', '0');
+            allNode.innerHTML = '<div class="cycle-icon">All</div><div class="cycle-label">All</div>';
+            allNode.addEventListener('click', function() { filterGallery('all'); });
+            allNode.addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); filterGallery('all'); } });
+            timeline.appendChild(allNode);
 
+            // Connector after All
+            var conn0 = document.createElement('div');
+            conn0.className = 'cycle-connector';
+            timeline.appendChild(conn0);
+
+            var cycleCategories = categories.filter(function(c) { return grouped[c.id] && grouped[c.id].length; });
+            cycleCategories.forEach(function(cat, idx) {
+                // Extract emoji from label
+                var parts = cat.label.split(' ');
+                var emoji = parts[0];
+                var name = parts.slice(1).join(' ');
+
+                var node = document.createElement('div');
+                node.className = 'cycle-node';
+                node.setAttribute('data-filter', cat.id);
+                node.setAttribute('role', 'tab');
+                node.setAttribute('aria-selected', 'false');
+                node.setAttribute('tabindex', '0');
+                node.innerHTML = '<div class="cycle-icon">' + emoji + '</div><div class="cycle-label">' + escapeHtml(name) + '</div>';
+                node.addEventListener('click', function() { filterGallery(cat.id); });
+                node.addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); filterGallery(cat.id); } });
+                timeline.appendChild(node);
+
+                // Connector arrow (not after last)
+                if (idx < cycleCategories.length - 1) {
+                    var conn = document.createElement('div');
+                    conn.className = 'cycle-connector';
+                    timeline.appendChild(conn);
+                }
+            });
+
+            // Return arrow — the loop closes
+            var returnArrow = document.createElement('div');
+            returnArrow.className = 'cycle-return';
+            returnArrow.innerHTML = '⟳';
+            returnArrow.setAttribute('aria-hidden', 'true');
+            returnArrow.setAttribute('title', 'The cycle continues — tend returns to prepare');
+            timeline.appendChild(returnArrow);
+        }
+
+        // Also build hidden filter tabs for backwards compat
         categories.forEach(function(cat) {
             if (!grouped[cat.id] || !grouped[cat.id].length) return;
             var btn = document.createElement('button');
@@ -136,7 +181,14 @@ function loadGallery() {
 }
 
 function filterGallery(categoryId) {
-    // Update tabs
+    // Update cycle timeline nodes
+    document.querySelectorAll('.cycle-node').forEach(function(node) {
+        var isActive = node.getAttribute('data-filter') === categoryId;
+        node.classList.toggle('active', isActive);
+        node.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    });
+
+    // Update hidden filter tabs
     document.querySelectorAll('.gallery-filter-btn').forEach(function(btn) {
         btn.setAttribute('aria-selected', btn.getAttribute('data-filter') === categoryId ? 'true' : 'false');
     });

@@ -224,11 +224,18 @@
         <p class="section-next"><a href="#gallery">Next: From Our Fields</a></p>
     </section>
 
-    <!-- Gallery — loaded automatically from gallery-config.js -->
+    <!-- Gallery — the permaculture cycle, told through images -->
     <section id="gallery" class="section">
-        <h2 class="section-title fade-in">From Our Fields</h2>
-        <div class="gallery-filters fade-in" id="gallery-filters" role="tablist" aria-label="Gallery categories">
-            <!-- Filter buttons built by JS from galleryCategories -->
+        <h2 class="section-title fade-in">The Permaculture Cycle</h2>
+        <p class="cycle-subtitle fade-in">Every stage feeds the next. Tap a phase to explore.</p>
+
+        <!-- Cycle timeline — visual flow of permaculture stages -->
+        <div class="cycle-timeline fade-in" id="cycle-timeline">
+            <!-- Built by JS from galleryCategories -->
+        </div>
+
+        <div class="gallery-filters" id="gallery-filters" role="tablist" aria-label="Gallery categories" style="display:none;">
+            <!-- Hidden — replaced by cycle timeline above -->
         </div>
         <div id="gallery-grid-container">
             <p class="gallery-loading" id="gallery-loading">Loading…</p>
