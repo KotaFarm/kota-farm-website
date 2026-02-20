@@ -437,19 +437,51 @@ document.querySelectorAll('.fade-in').forEach(el => {
     el.classList.add('observed');
 });
 
-// Smooth scrolling for navigation links
+// Smooth scrolling for navigation links — updates URL hash for sharing
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
+        const href = this.getAttribute('href');
+        const target = document.querySelector(href);
         if (target) {
             target.scrollIntoView({
                 behavior: prefersReducedMotion() ? 'auto' : 'smooth',
                 block: 'start'
             });
+            // Update URL hash so the link is shareable
+            history.pushState(null, '', href);
         }
     });
 });
+
+// Also update hash as user scrolls (debounced)
+let hashUpdateTimeout = null;
+function updateHashOnScroll() {
+    if (hashUpdateTimeout) clearTimeout(hashUpdateTimeout);
+    hashUpdateTimeout = setTimeout(function() {
+        const scrollY = window.scrollY;
+        let current = 'top';
+        sectionIds.forEach(id => {
+            const el = document.getElementById(id);
+            if (el && scrollY >= el.offsetTop - 120) current = id;
+        });
+        const newHash = '#' + current;
+        if (window.location.hash !== newHash) {
+            history.replaceState(null, '', newHash);
+        }
+    }, 300);
+}
+window.addEventListener('scroll', updateHashOnScroll, { passive: true });
+
+// On page load, scroll to hash if present
+if (window.location.hash) {
+    var hashTarget = document.querySelector(window.location.hash);
+    if (hashTarget) {
+        setTimeout(function() {
+            hashTarget.scrollIntoView({ block: 'start' });
+        }, 100);
+    }
+}
 
 // Load the gallery and plants when the page opens
 loadGallery();
