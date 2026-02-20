@@ -424,10 +424,16 @@ const observerOptions = {
     rootMargin: '0px 0px -100px 0px'
 };
 
+let countersAnimated = false;
 const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
             entry.target.classList.add('visible');
+            // Trigger counters when the farm-stats section fades in
+            if (!countersAnimated && entry.target.classList.contains('farm-stats')) {
+                countersAnimated = true;
+                animateCounters();
+            }
         }
     });
 }, observerOptions);
@@ -670,18 +676,8 @@ function animateCounters() {
     });
 }
 
-var statsSection = document.querySelector('.farm-stats');
-if (statsSection) {
-    var statsObserver = new IntersectionObserver(function(entries) {
-        entries.forEach(function(entry) {
-            if (entry.isIntersecting) {
-                animateCounters();
-                statsObserver.disconnect();
-            }
-        });
-    }, { threshold: 0.3 });
-    statsObserver.observe(statsSection);
-}
+// Counter animation is now triggered by the main fade-in observer
+// when .farm-stats enters the viewport (see observer above)
 
 // Accessibility controls
 document.addEventListener('DOMContentLoaded', function() {
