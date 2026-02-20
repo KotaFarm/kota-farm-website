@@ -8,12 +8,14 @@
 //    "The Farm"          — overview, infrastructure, pathways, community
 //    "Food Forest & Trees" — orchards, fruit trees, saplings, bamboo
 //    "Growing & Harvest"  — vegetables, crops, nursery, harvests
+//    "Seasonal Care"      — pruning, maintenance, seasonal tasks
 // ============================================================
 
 const galleryCategories = [
   { id: "the-farm",       label: "The Farm" },
   { id: "food-forest",    label: "Food Forest & Trees" },
-  { id: "growing-harvest", label: "Growing & Harvest" }
+  { id: "growing-harvest", label: "Growing & Harvest" },
+  { id: "seasonal-care",  label: "Seasonal Care" }
 ];
 
 const galleryItems = [
@@ -116,5 +118,17 @@ const galleryItems = [
     "file": "winter-harvest.jpeg",
     "caption": "Winter harvest spread: peas, tomatoes, brinjal, and fresh greens",
     "category": "growing-harvest"
+  },
+
+  // ── Seasonal Care ───────────────────────────────────────────
+  {
+    "file": "moringa-pruned.jpeg",
+    "caption": "Moringa trees after winter pruning — ready for spring regrowth",
+    "category": "seasonal-care"
+  },
+  {
+    "file": "moringa-before-pruning.jpeg",
+    "caption": "Moringa grove before seasonal pruning with full canopy",
+    "category": "seasonal-care"
   }
 ];

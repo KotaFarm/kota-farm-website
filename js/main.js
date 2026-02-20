@@ -295,7 +295,7 @@ if (backToTop) {
 }
 
 // Highlight current section in nav (scroll spy)
-const sectionIds = ['top', 'about', 'practices', 'plants', 'gallery', 'getting-started', 'community', 'news', 'contact', 'location'];
+const sectionIds = ['top', 'about', 'practices', 'seasons', 'plants', 'gallery', 'getting-started', 'community', 'news', 'contact', 'location'];
 
 function updateActiveNav() {
     const scrollY = window.scrollY;
@@ -332,6 +332,11 @@ function onScroll() {
             }
             // Scroll spy
             updateActiveNav();
+            // Parallax hero
+            var heroBg = document.querySelector('.hero-bg');
+            if (heroBg && window.scrollY < window.innerHeight) {
+                heroBg.style.transform = 'translateY(' + (window.scrollY * 0.3) + 'px)';
+            }
             scrollTicking = false;
         });
         scrollTicking = true;
@@ -412,25 +417,57 @@ let touchEndX = 0;
 // Collect all lightbox-able images after gallery loads
 function buildLightboxList() {
     lightboxImages = [];
-    // Gallery images — only from visible category groups (or all if no filter)
-    document.querySelectorAll('#gallery-grid-container .gallery-category-group:not(.hidden) .gallery-item img, #gallery-grid-container > .gallery-grid .gallery-item img').forEach(img => {
-        lightboxImages.push(img.src);
+    document.querySelectorAll('#gallery-grid-container .gallery-category-group:not(.hidden) .gallery-item, #gallery-grid-container > .gallery-grid .gallery-item').forEach(function(item) {
+        var img = item.querySelector('img');
+        if (!img) return;
+        var captionEl = item.querySelector('.gallery-caption p');
+        lightboxImages.push({ src: img.src, caption: captionEl ? captionEl.textContent : '' });
     });
-    // News images
-    document.querySelectorAll('.news-card img').forEach(img => {
-        lightboxImages.push(img.src);
+    document.querySelectorAll('.news-card img').forEach(function(img) {
+        lightboxImages.push({ src: img.src, caption: img.alt || '' });
     });
 }
 
 function openLightbox(src) {
     buildLightboxList();
-    const overlay = document.getElementById('lightbox');
-    const closeBtn = document.getElementById('lightbox-close');
+    var overlay = document.getElementById('lightbox');
+    var closeBtn = document.getElementById('lightbox-close');
     lightboxPreviousFocus = document.activeElement;
 
-    // Find index of clicked image
-    lightboxIndex = lightboxImages.indexOf(src);
+    lightboxIndex = lightboxImages.findIndex(function(item) { return item.src === src; });
     if (lightboxIndex === -1) lightboxIndex = 0;
+
+    // Create caption element if not exists
+    if (!document.getElementById('lightbox-caption')) {
+        var cap = document.createElement('div');
+        cap.className = 'lightbox-caption';
+        cap.id = 'lightbox-caption';
+        overlay.appendChild(cap);
+    }
+
+    // Create thumbnail strip if not exists
+    var existingThumbs = document.getElementById('lightbox-thumbs');
+    if (existingThumbs) existingThumbs.remove();
+    if (lightboxImages.length > 1) {
+        var strip = document.createElement('div');
+        strip.className = 'lightbox-thumbs';
+        strip.id = 'lightbox-thumbs';
+        strip.onclick = function(e) { e.stopPropagation(); };
+        lightboxImages.forEach(function(item, i) {
+            var thumb = document.createElement('img');
+            thumb.className = 'lightbox-thumb' + (i === lightboxIndex ? ' active' : '');
+            thumb.src = item.src;
+            thumb.alt = 'Thumbnail ' + (i + 1);
+            thumb.setAttribute('data-index', i);
+            thumb.addEventListener('click', function(e) {
+                e.stopPropagation();
+                lightboxIndex = i;
+                showLightboxImage();
+            });
+            strip.appendChild(thumb);
+        });
+        overlay.appendChild(strip);
+    }
 
     showLightboxImage();
     overlay.classList.add('active');
@@ -440,15 +477,27 @@ function openLightbox(src) {
 }
 
 function showLightboxImage() {
-    const overlay = document.getElementById('lightbox');
-    const img = overlay.querySelector('img');
-    const counter = document.getElementById('lightbox-counter');
-    img.src = lightboxImages[lightboxIndex];
+    var overlay = document.getElementById('lightbox');
+    var img = overlay.querySelector(':scope > img');
+    var counter = document.getElementById('lightbox-counter');
+    var caption = document.getElementById('lightbox-caption');
+    var current = lightboxImages[lightboxIndex];
+    
+    img.src = current.src;
     counter.textContent = (lightboxIndex + 1) + ' / ' + lightboxImages.length;
+    if (caption) caption.textContent = current.caption || '';
 
-    // Hide arrows if only one image
     document.getElementById('lightbox-prev').style.display = lightboxImages.length <= 1 ? 'none' : 'flex';
     document.getElementById('lightbox-next').style.display = lightboxImages.length <= 1 ? 'none' : 'flex';
+
+    // Update active thumbnail
+    var thumbs = document.querySelectorAll('.lightbox-thumb');
+    thumbs.forEach(function(t, i) {
+        t.classList.toggle('active', i === lightboxIndex);
+    });
+    // Scroll active thumb into view
+    var activeThumb = document.querySelector('.lightbox-thumb.active');
+    if (activeThumb) activeThumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
 }
 
 function lightboxNav(direction) {
@@ -479,8 +528,12 @@ function lightboxKeydown(e) {
 }
 
 function closeLightbox() {
-    const overlay = document.getElementById('lightbox');
+    var overlay = document.getElementById('lightbox');
     overlay.classList.remove('active');
+    var thumbsEl = document.getElementById('lightbox-thumbs');
+    if (thumbsEl) thumbsEl.remove();
+    var capEl = document.getElementById('lightbox-caption');
+    if (capEl) capEl.remove();
     document.body.style.overflow = '';
     overlay.removeEventListener('keydown', lightboxKeydown);
     if (lightboxPreviousFocus && lightboxPreviousFocus.focus) {
@@ -509,5 +562,61 @@ document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         const overlay = document.getElementById('lightbox');
         if (overlay && overlay.classList.contains('active')) closeLightbox();
+    }
+});
+
+
+// Animated counters
+function animateCounters() {
+    document.querySelectorAll('.stat-number').forEach(function(el) {
+        var target = parseInt(el.getAttribute('data-target'), 10);
+        var suffix = el.getAttribute('data-suffix') || '';
+        var duration = 1500;
+        var start = performance.now();
+        
+        function update(now) {
+            var elapsed = now - start;
+            var progress = Math.min(elapsed / duration, 1);
+            var eased = 1 - Math.pow(1 - progress, 3);
+            var current = Math.round(eased * target);
+            el.textContent = current + suffix;
+            if (progress < 1) requestAnimationFrame(update);
+        }
+        requestAnimationFrame(update);
+    });
+}
+
+var statsSection = document.querySelector('.farm-stats');
+if (statsSection) {
+    var statsObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                animateCounters();
+                statsObserver.disconnect();
+            }
+        });
+    }, { threshold: 0.3 });
+    statsObserver.observe(statsSection);
+}
+
+// Accessibility controls
+document.addEventListener('DOMContentLoaded', function() {
+    var contrastBtn = document.getElementById('a11y-contrast');
+    var fontBtn = document.getElementById('a11y-font');
+    
+    if (contrastBtn) {
+        contrastBtn.addEventListener('click', function() {
+            document.body.classList.toggle('high-contrast');
+            this.classList.toggle('active');
+            this.setAttribute('aria-pressed', document.body.classList.contains('high-contrast'));
+        });
+    }
+    
+    if (fontBtn) {
+        fontBtn.addEventListener('click', function() {
+            document.body.classList.toggle('font-large');
+            this.classList.toggle('active');
+            this.setAttribute('aria-pressed', document.body.classList.contains('font-large'));
+        });
     }
 });
