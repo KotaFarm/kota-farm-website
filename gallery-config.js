@@ -61,8 +61,8 @@ const galleryItems = [
     "category": "prepare"
   },
   {
-    "file": "green-manure.jpeg",
-    "caption": "Green manure returns nitrogen to the soil naturally",
+    "file": "mulch-rows-overview.jpeg",
+    "caption": "Mulch rings protect young trees — building soil one layer at a time",
     "category": "prepare"
   },
 
@@ -112,8 +112,13 @@ const galleryItems = [
     "category": "nurture"
   },
   {
-    "file": "bamboo-closeup.jpg",
-    "caption": "Bamboo — the fastest-growing renewable on the farm",
+    "file": "mulch-coir-rings.jpeg",
+    "caption": "Coir mulch rings and straw around young saplings — moisture locked in",
+    "category": "nurture"
+  },
+  {
+    "file": "living-mulch-sapling.jpeg",
+    "caption": "Living mulch: ground cover plants blanket the soil around a young tree",
     "category": "nurture"
   },
 
