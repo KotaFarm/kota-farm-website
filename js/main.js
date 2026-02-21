@@ -208,7 +208,7 @@ function filterGallery(categoryId) {
     });
 }
 
-// Plants bubble cloud — grouped by location (only categories from your data); custom tooltip
+// Plants card grid — grouped by location with category icons and count badges
 function loadPlants() {
     var container = document.getElementById('plants-container');
     if (!container) return;
@@ -216,92 +216,22 @@ function loadPlants() {
         container.innerHTML = '<p style="color: var(--earth-medium); text-align: center;">Plant list could not be loaded.</p>';
         return;
     }
-    var maxStanding = 1;
-    plantsList.forEach(function(p) { if (p.standing > maxStanding) maxStanding = p.standing; });
-    var minPx = 48;
-    var maxPx = 160;
-    var tooltipEl = document.getElementById('plant-tooltip');
-    var isTouch = false;
-    var tooltipShowTimeout = null;
-    var TOOLTIP_DELAY_MS = 180;
-    function showTooltip(plant, bubbleOrEvent, e) {
-        if (!tooltipEl) return;
-        tooltipEl.innerHTML = '<strong>' + escapeHtml(plant.name) + '</strong> ' + escapeHtml(plant.importance);
-        tooltipEl.setAttribute('aria-hidden', 'false');
-        tooltipEl.classList.add('visible');
-        var mobile = window.innerWidth <= 768;
-        var bubbleEl = bubbleOrEvent && bubbleOrEvent.getBoundingClientRect ? bubbleOrEvent : null;
-        if (mobile || isTouch || !bubbleEl) {
-            tooltipEl.classList.add('place-top');
-            tooltipEl.style.left = '1rem';
-            tooltipEl.style.right = '1rem';
-            tooltipEl.style.bottom = '1.25rem';
-            tooltipEl.style.top = 'auto';
-        } else {
-            tooltipEl.classList.remove('place-top');
-            var r = bubbleEl.getBoundingClientRect();
-            var gap = 6;
-            var tipW = 280;
-            var left = r.left + (r.width / 2) - (tipW / 2);
-            left = Math.max(10, Math.min(left, window.innerWidth - tipW - 10));
-            tooltipEl.style.left = left + 'px';
-            tooltipEl.style.top = (r.bottom + gap) + 'px';
-            tooltipEl.style.bottom = 'auto';
-            tooltipEl.style.right = 'auto';
-        }
-    }
-    function hideTooltip() {
-        if (tooltipShowTimeout) {
-            clearTimeout(tooltipShowTimeout);
-            tooltipShowTimeout = null;
-        }
-        if (!tooltipEl) return;
-        tooltipEl.classList.remove('visible', 'place-top');
-        tooltipEl.setAttribute('aria-hidden', 'true');
-        tooltipEl.style.left = '';
-        tooltipEl.style.right = '';
-        tooltipEl.style.top = '';
-        tooltipEl.style.bottom = '';
-    }
-    function addBubble(plant, bubbleContainer, staggerIndex) {
-        var q = plant.standing != null && plant.standing > 0 ? plant.standing : 1;
-        var size = Math.max(44, minPx + (Math.sqrt(q) / Math.sqrt(maxStanding)) * (maxPx - minPx));
-        size = Math.round(size);
-        var bubble = document.createElement('div');
-        bubble.className = 'plant-bubble plant-bubble-pop';
-        if (typeof staggerIndex === 'number') {
-            bubble.style.animationDelay = (staggerIndex * 45) + 'ms';
-        }
-        bubble.setAttribute('data-category', plant.category);
-        bubble.style.width = size + 'px';
-        bubble.style.height = size + 'px';
-        bubble.style.fontSize = (size < 64 ? 0.5 : size < 96 ? 0.65 : 0.85) + 'rem';
-        bubble.setAttribute('tabindex', '0');
-        bubble.setAttribute('role', 'button');
-        bubble.setAttribute('aria-label', plant.name + '. ' + plant.importance);
-        bubble.innerHTML = '<span class="plant-name">' + escapeHtml(plant.name) + '</span>';
-        bubble.addEventListener('mouseenter', function() {
-            isTouch = false;
-            if (tooltipShowTimeout) clearTimeout(tooltipShowTimeout);
-            tooltipShowTimeout = setTimeout(function() { showTooltip(plant, bubble); tooltipShowTimeout = null; }, TOOLTIP_DELAY_MS);
-        });
-        bubble.addEventListener('mouseleave', hideTooltip);
-        bubble.addEventListener('focus', function() { isTouch = false; showTooltip(plant, bubble); });
-        bubble.addEventListener('blur', hideTooltip);
-        bubble.addEventListener('touchstart', function(ev) {
-            isTouch = true;
-            ev.preventDefault();
-            showTooltip(plant, null);
-            setTimeout(function() {
-                document.addEventListener('touchstart', function closeOnce() {
-                    hideTooltip();
-                    document.removeEventListener('touchstart', closeOnce);
-                }, { once: true });
-            }, 150);
-        }, { passive: false });
-        bubbleContainer.appendChild(bubble);
-    }
-    var order = ['Native Forest Section', 'Companion Trees', 'Boundary', 'Food Forest'];
+
+    var categoryIcons = {
+        'Fruit': '🍎',
+        'Non-Fruit': '🌳',
+        'Timber': '🪵',
+        'Medicinal': '🌿'
+    };
+
+    var locationIcons = {
+        'Native Forest Section': '🏞️',
+        'Companion Trees': '🤝',
+        'Boundary': '🧱',
+        'Food Forest': '🌳'
+    };
+
+    var order = ['Food Forest', 'Native Forest Section', 'Companion Trees', 'Boundary'];
     var byLocation = {};
     plantsList.forEach(function(plant) {
         var loc = plant.location || '';
@@ -309,14 +239,81 @@ function loadPlants() {
         if (!byLocation[loc]) byLocation[loc] = [];
         byLocation[loc].push(plant);
     });
+
     order.forEach(function(loc) {
         if (!byLocation[loc] || !byLocation[loc].length) return;
+        var plants = byLocation[loc];
+        var totalCount = 0;
+        plants.forEach(function(p) { totalCount += (p.standing || 1); });
+
         var group = document.createElement('div');
-        group.className = 'plants-forest-group';
-        group.innerHTML = '<h3 class="plants-forest-title">' + escapeHtml(loc) + '</h3><div class="plants-bubbles"></div>';
-        var bubblesDiv = group.querySelector('.plants-bubbles');
-        byLocation[loc].forEach(function(plant, i) { addBubble(plant, bubblesDiv, i); });
+        group.className = 'plants-forest-group fade-in';
+
+        // Collapsible header — starts collapsed
+        var header = document.createElement('button');
+        header.className = 'plants-forest-title plants-toggle';
+        header.setAttribute('type', 'button');
+        header.setAttribute('aria-expanded', 'false');
+        header.innerHTML =
+            '<span class="plants-toggle-left">' +
+                '<span class="plants-location-icon">' + (locationIcons[loc] || '') + '</span> ' +
+                escapeHtml(loc) +
+            '</span>' +
+            '<span class="plants-toggle-right">' +
+                '<span class="plants-toggle-meta">' + plants.length + ' species · ' + totalCount + ' trees</span>' +
+                '<span class="plants-toggle-arrow" aria-hidden="true">▸</span>' +
+            '</span>';
+
+        var grid = document.createElement('div');
+        grid.className = 'plants-grid plants-grid-collapsed';
+        grid.id = 'plants-group-' + loc.replace(/\s+/g, '-').toLowerCase();
+        header.setAttribute('aria-controls', grid.id);
+
+        header.addEventListener('click', function() {
+            var isOpen = grid.classList.toggle('plants-grid-collapsed');
+            header.setAttribute('aria-expanded', !isOpen);
+            header.classList.toggle('open', !isOpen);
+            // Trigger card animations when opening
+            if (!isOpen) {
+                grid.querySelectorAll('.plant-card').forEach(function(card, i) {
+                    card.style.animationDelay = (i * 40) + 'ms';
+                    card.classList.remove('plant-card-animated');
+                    // Force reflow to restart animation
+                    void card.offsetWidth;
+                    card.classList.add('plant-card-animated');
+                });
+            }
+        });
+
+        group.appendChild(header);
+
+        plants.forEach(function(plant, i) {
+            var icon = categoryIcons[plant.category] || '🌱';
+            var count = plant.standing || 1;
+
+            var card = document.createElement('div');
+            card.className = 'plant-card';
+            card.setAttribute('data-category', plant.category);
+
+            card.innerHTML =
+                '<div class="plant-card-header">' +
+                    '<span class="plant-card-icon">' + icon + '</span>' +
+                    '<span class="plant-card-name">' + escapeHtml(plant.name) + '</span>' +
+                    (count > 1 ? '<span class="plant-card-count">' + count + '</span>' : '') +
+                '</div>' +
+                '<p class="plant-card-desc">' + escapeHtml(plant.importance) + '</p>';
+
+            grid.appendChild(card);
+        });
+
+        group.appendChild(grid);
         container.appendChild(group);
+    });
+
+    // Re-observe dynamically created fade-in elements
+    document.querySelectorAll('.fade-in:not(.observed)').forEach(function(el) {
+        observer.observe(el);
+        el.classList.add('observed');
     });
 }
 function escapeHtml(text) {
