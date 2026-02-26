@@ -32,5 +32,21 @@ const vegetablesList = [
     "season": "Winter",
     "desc": "Fresh, fragrant bunches grown with sprinkler irrigation. Harvested same-day for maximum flavour.",
     "available": true
+  },
+  {
+    "name": "Bitter Gourd",
+    "nameHi": "करेला",
+    "image": "gallery/karela.jpeg",
+    "season": "Summer / Monsoon",
+    "desc": "Organically grown on shade-net trellises. Bumpy, dark-green fruits rich in nutrients and prized in traditional cooking.",
+    "available": true
+  },
+  {
+    "name": "Ridge Gourd",
+    "nameHi": "तोरई",
+    "image": "gallery/vegiie.jpeg",
+    "season": "Summer / Monsoon",
+    "desc": "Long, tender ridge gourds climbing naturally on trellises. Harvested young for the best texture and flavour.",
+    "available": true
   }
 ];
