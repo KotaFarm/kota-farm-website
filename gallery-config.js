@@ -69,8 +69,8 @@ const galleryItems = [
   // ── 🪴 Plant ────────────────────────────────────────────────
   // Seedlings, nursery, establishing trees — new life begins
   {
-    "file": "greenhouse-seedlings.jpg",
-    "caption": "Seedlings growing strong in the shade net nursery",
+    "file": "shade-net-nursery-rows.jpeg",
+    "caption": "Tomato and brinjal rows growing under the shade net nursery",
     "category": "plant"
   },
   {
@@ -117,8 +117,8 @@ const galleryItems = [
     "category": "nurture"
   },
   {
-    "file": "living-mulch-sapling.jpeg",
-    "caption": "Living mulch: ground cover plants blanket the soil around a young tree",
+    "file": "shade-net-cauliflower-rows.jpeg",
+    "caption": "Cauliflower seedlings thriving in rows under the shade net nursery",
     "category": "nurture"
   },
 

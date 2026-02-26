@@ -495,6 +495,118 @@ main section[id] {
     max-width: 700px;
     margin: 0 auto var(--spacing-lg);
 }
+/* ── Fresh Produce Section ─────────────────────────────── */
+.produce-section {
+    background: linear-gradient(135deg, #f0f5ec 0%, #faf8f5 100%);
+}
+.produce-intro {
+    text-align: center;
+    font-size: 1.05rem;
+    color: var(--earth-medium);
+    margin-bottom: var(--spacing-lg);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.produce-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto var(--spacing-lg);
+}
+.produce-card {
+    background: white;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 3px 12px rgba(45, 51, 25, 0.08);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.produce-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 28px rgba(45, 51, 25, 0.14);
+}
+.produce-img-wrap {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+}
+.produce-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+.produce-card:hover .produce-img-wrap img {
+    transform: scale(1.05);
+}
+.produce-badge {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    font-family: 'Work Sans', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+.produce-available {
+    background: var(--sprout);
+    color: var(--earth-dark);
+}
+.produce-upcoming {
+    background: var(--clay);
+    color: white;
+}
+.produce-info {
+    padding: 1rem 1.25rem 1.25rem;
+}
+.produce-name {
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: var(--earth-dark);
+    margin: 0 0 0.4rem;
+    line-height: 1.3;
+}
+.produce-name-hi {
+    font-weight: 400;
+    font-size: 1rem;
+    color: var(--earth-medium);
+}
+.produce-season {
+    display: inline-block;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.78rem;
+    color: var(--water);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+.produce-desc {
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--earth-medium);
+    margin: 0;
+}
+.produce-cta {
+    text-align: center;
+    padding: var(--spacing-md) 0;
+}
+.produce-cta p {
+    color: var(--earth-medium);
+    margin-bottom: var(--spacing-sm);
+    font-size: 1rem;
+}
+@media (max-width: 600px) {
+    .produce-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}
+
+/* ── Plants Section ───────────────────────────────────── */
 .plants-forest-group {
     margin-bottom: var(--spacing-sm);
 }

@@ -320,6 +320,47 @@ function escapeHtml(text) {
     return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
+// Fresh Produce — vegetable cards for customers
+function loadProduce() {
+    var grid = document.getElementById('produce-grid');
+    if (!grid) return;
+    if (typeof vegetablesList === 'undefined' || !vegetablesList.length) {
+        grid.innerHTML = '<p style="color: var(--earth-medium); text-align: center;">Produce list could not be loaded.</p>';
+        return;
+    }
+
+    vegetablesList.forEach(function(veg, i) {
+        var card = document.createElement('div');
+        card.className = 'produce-card fade-in';
+        card.style.animationDelay = (i * 80) + 'ms';
+
+        var badge = veg.available
+            ? '<span class="produce-badge produce-available">Available Now</span>'
+            : '<span class="produce-badge produce-upcoming">Coming Soon</span>';
+
+        card.innerHTML =
+            '<div class="produce-img-wrap">' +
+                '<img src="' + escapeHtml(veg.image) + '" alt="' + escapeHtml(veg.name) + '" loading="lazy">' +
+                badge +
+            '</div>' +
+            '<div class="produce-info">' +
+                '<h3 class="produce-name">' + escapeHtml(veg.name) +
+                    ' <span class="produce-name-hi">' + escapeHtml(veg.nameHi) + '</span>' +
+                '</h3>' +
+                '<span class="produce-season">Season: ' + escapeHtml(veg.season) + '</span>' +
+                '<p class="produce-desc">' + escapeHtml(veg.desc) + '</p>' +
+            '</div>';
+
+        grid.appendChild(card);
+    });
+
+    // Re-observe dynamically created fade-in elements
+    document.querySelectorAll('.fade-in:not(.observed)').forEach(function(el) {
+        observer.observe(el);
+        el.classList.add('observed');
+    });
+}
+
 // Scroll progress bar
 const scrollProgressEl = document.getElementById('scroll-progress');
 function updateScrollProgress() {
@@ -344,7 +385,7 @@ if (backToTop) {
 }
 
 // Highlight current section in nav (scroll spy)
-const sectionIds = ['top', 'about', 'practices', 'seasons', 'plants', 'gallery', 'getting-started', 'community', 'news', 'contact', 'location'];
+const sectionIds = ['top', 'about', 'practices', 'seasons', 'gallery', 'fresh-produce', 'plants', 'getting-started', 'community', 'news', 'contact', 'location'];
 
 function updateActiveNav() {
     const scrollY = window.scrollY;
@@ -489,6 +530,7 @@ if (window.location.hash) {
 // Load the gallery and plants when the page opens
 loadGallery();
 loadPlants();
+loadProduce();
 
 // ============================================================
 //  LIGHTBOX WITH NAVIGATION
