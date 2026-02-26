@@ -323,16 +323,23 @@ function escapeHtml(text) {
 // Fresh Produce — vegetable cards for customers
 function loadProduce() {
     var grid = document.getElementById('produce-grid');
+    var filtersBar = document.getElementById('produce-filters');
     if (!grid) return;
     if (typeof vegetablesList === 'undefined' || !vegetablesList.length) {
         grid.innerHTML = '<p style="color: var(--earth-medium); text-align: center;">Produce list could not be loaded.</p>';
         return;
     }
 
-    vegetablesList.forEach(function(veg, i) {
+    // Sort: available items first
+    var sorted = vegetablesList.slice().sort(function(a, b) {
+        return (b.available ? 1 : 0) - (a.available ? 1 : 0);
+    });
+
+    sorted.forEach(function(veg, i) {
         var card = document.createElement('div');
         card.className = 'produce-card fade-in';
-        card.style.animationDelay = (i * 80) + 'ms';
+        card.setAttribute('data-available', veg.available ? 'yes' : 'no');
+        card.style.transitionDelay = (i * 80) + 'ms';
 
         var badge = veg.available
             ? '<span class="produce-badge produce-available">Available Now</span>'
@@ -351,13 +358,51 @@ function loadProduce() {
                 '<p class="produce-desc">' + escapeHtml(veg.desc) + '</p>' +
             '</div>';
 
+        // Tap image to open in lightbox (use img.src for absolute URL match)
+        var imgWrap = card.querySelector('.produce-img-wrap');
+        var imgEl = card.querySelector('.produce-img-wrap img');
+        (function(el) {
+            imgWrap.addEventListener('click', function() {
+                if (typeof openLightbox === 'function') openLightbox(el.src);
+            });
+        })(imgEl);
+
         grid.appendChild(card);
     });
+
+    // Build filter buttons
+    if (filtersBar) {
+        var hasUnavailable = sorted.some(function(v) { return !v.available; });
+        if (hasUnavailable) {
+            ['All', 'Available Now'].forEach(function(label) {
+                var btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'produce-filter-btn' + (label === 'All' ? ' active' : '');
+                btn.textContent = label;
+                btn.addEventListener('click', function() {
+                    filtersBar.querySelectorAll('.produce-filter-btn').forEach(function(b) { b.classList.remove('active'); });
+                    btn.classList.add('active');
+                    filterProduce(label === 'All' ? 'all' : 'available');
+                });
+                filtersBar.appendChild(btn);
+            });
+        }
+    }
 
     // Re-observe dynamically created fade-in elements
     document.querySelectorAll('.fade-in:not(.observed)').forEach(function(el) {
         observer.observe(el);
         el.classList.add('observed');
+    });
+}
+
+function filterProduce(filter) {
+    document.querySelectorAll('.produce-card').forEach(function(card) {
+        if (filter === 'all') {
+            card.classList.remove('produce-hidden');
+        } else {
+            card.classList.toggle('produce-hidden', card.getAttribute('data-available') !== 'yes');
+        }
     });
 }
 
@@ -498,12 +543,15 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Also update hash as user scrolls (debounced)
+// Also update hash as user scrolls (debounced, ignores sub-pixel shifts from CSS transforms)
 let hashUpdateTimeout = null;
+let lastHashScrollY = window.scrollY;
 function updateHashOnScroll() {
     if (hashUpdateTimeout) clearTimeout(hashUpdateTimeout);
     hashUpdateTimeout = setTimeout(function() {
         const scrollY = window.scrollY;
+        if (Math.abs(scrollY - lastHashScrollY) < 5) return;
+        lastHashScrollY = scrollY;
         let current = 'top';
         sectionIds.forEach(id => {
             const el = document.getElementById(id);
@@ -553,6 +601,10 @@ function buildLightboxList() {
         lightboxImages.push({ src: img.src, caption: captionEl ? captionEl.textContent : '' });
     });
     document.querySelectorAll('.news-card img').forEach(function(img) {
+        lightboxImages.push({ src: img.src, caption: img.alt || '' });
+    });
+    // Produce section images
+    document.querySelectorAll('.produce-card:not(.produce-hidden) .produce-img-wrap img').forEach(function(img) {
         lightboxImages.push({ src: img.src, caption: img.alt || '' });
     });
 }
