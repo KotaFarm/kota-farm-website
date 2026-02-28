@@ -533,14 +533,48 @@ main section[id] {
     background: var(--sand);
     cursor: pointer;
 }
-.produce-img-wrap img {
+.produce-slide {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.4s ease;
+    opacity: 0;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    pointer-events: none;
 }
-.produce-card:hover .produce-img-wrap img {
+.produce-slide.active {
+    opacity: 1;
+    position: relative;
+    pointer-events: auto;
+}
+.produce-card:hover .produce-slide.active {
     transform: scale(1.05);
+}
+.produce-dots {
+    position: absolute;
+    bottom: 0.6rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.4rem;
+    z-index: 2;
+}
+.produce-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 2px solid white;
+    background: rgba(255,255,255,0.35);
+    cursor: pointer;
+    padding: 0;
+    transition: background 0.2s ease;
+}
+.produce-dot.active {
+    background: white;
+}
+.produce-dot:hover {
+    background: rgba(255,255,255,0.7);
 }
 .produce-badge {
     position: absolute;

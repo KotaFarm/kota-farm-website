@@ -341,14 +341,35 @@ function loadProduce() {
         card.setAttribute('data-available', veg.available ? 'yes' : 'no');
         card.style.transitionDelay = (i * 80) + 'ms';
 
+        // Support both "images" array and legacy "image" string
+        var imgs = veg.images || [veg.image];
+        var hasMultiple = imgs.length > 1;
+
         var badge = veg.available
             ? '<span class="produce-badge produce-available">Available Now</span>'
             : '<span class="produce-badge produce-upcoming">Coming Soon</span>';
 
+        // Build image slides
+        var slidesHtml = '';
+        imgs.forEach(function(src, idx) {
+            slidesHtml += '<img src="' + escapeHtml(src) + '" alt="' + escapeHtml(veg.name) + '" loading="lazy" class="produce-slide' + (idx === 0 ? ' active' : '') + '" data-index="' + idx + '">';
+        });
+
+        // Dot indicators (only if multiple images)
+        var dotsHtml = '';
+        if (hasMultiple) {
+            dotsHtml = '<div class="produce-dots">';
+            imgs.forEach(function(_, idx) {
+                dotsHtml += '<button class="produce-dot' + (idx === 0 ? ' active' : '') + '" data-index="' + idx + '" aria-label="Image ' + (idx + 1) + '"></button>';
+            });
+            dotsHtml += '</div>';
+        }
+
         card.innerHTML =
             '<div class="produce-img-wrap">' +
-                '<img src="' + escapeHtml(veg.image) + '" alt="' + escapeHtml(veg.name) + '" loading="lazy">' +
+                slidesHtml +
                 badge +
+                dotsHtml +
             '</div>' +
             '<div class="produce-info">' +
                 '<h3 class="produce-name">' + escapeHtml(veg.name) +
@@ -358,14 +379,52 @@ function loadProduce() {
                 '<p class="produce-desc">' + escapeHtml(veg.desc) + '</p>' +
             '</div>';
 
-        // Tap image to open in lightbox (use img.src for absolute URL match)
+        // Image carousel logic
         var imgWrap = card.querySelector('.produce-img-wrap');
-        var imgEl = card.querySelector('.produce-img-wrap img');
-        (function(el) {
-            imgWrap.addEventListener('click', function() {
-                if (typeof openLightbox === 'function') openLightbox(el.src);
+        (function(wrap, imageList) {
+            var currentIndex = 0;
+
+            function showSlide(idx) {
+                currentIndex = idx;
+                wrap.querySelectorAll('.produce-slide').forEach(function(s) { s.classList.remove('active'); });
+                wrap.querySelectorAll('.produce-dot').forEach(function(d) { d.classList.remove('active'); });
+                var slide = wrap.querySelector('.produce-slide[data-index="' + idx + '"]');
+                var dot = wrap.querySelector('.produce-dot[data-index="' + idx + '"]');
+                if (slide) slide.classList.add('active');
+                if (dot) dot.classList.add('active');
+            }
+
+            // Dot clicks
+            wrap.querySelectorAll('.produce-dot').forEach(function(dot) {
+                dot.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    showSlide(parseInt(dot.getAttribute('data-index'), 10));
+                });
             });
-        })(imgEl);
+
+            // Tap image area to advance (if multiple), or open lightbox (if single)
+            wrap.addEventListener('click', function(e) {
+                if (e.target.classList.contains('produce-dot')) return;
+                if (imageList.length > 1) {
+                    showSlide((currentIndex + 1) % imageList.length);
+                } else {
+                    var img = wrap.querySelector('.produce-slide.active');
+                    if (img && typeof openLightbox === 'function') openLightbox(img.src);
+                }
+            });
+
+            // Swipe support for mobile
+            var startX = 0;
+            wrap.addEventListener('touchstart', function(e) { startX = e.touches[0].clientX; }, { passive: true });
+            wrap.addEventListener('touchend', function(e) {
+                var diff = startX - e.changedTouches[0].clientX;
+                if (imageList.length < 2) return;
+                if (Math.abs(diff) > 40) {
+                    if (diff > 0) showSlide((currentIndex + 1) % imageList.length);
+                    else showSlide((currentIndex - 1 + imageList.length) % imageList.length);
+                }
+            }, { passive: true });
+        })(imgWrap, imgs);
 
         grid.appendChild(card);
     });
