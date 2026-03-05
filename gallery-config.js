@@ -28,27 +28,32 @@ const galleryItems = [
   // ── 🌍 The Land ─────────────────────────────────────────────
   // The farm as a whole — infrastructure, water systems, pathways
   {
-    "file": "farm-aerial-view.jpeg",
-    "caption": "Bird's eye view of the farm with winding stone pathways",
+    "file": "the-land/farm-aerial-shade-net.jpeg",
+    "caption": "Aerial view of the farm — shade net, crop patches, and open fields stretching to the horizon",
     "category": "the-land"
   },
   {
-    "file": "farm-pond.jpeg",
+    "file": "the-land/farm-sunset.jpeg",
+    "caption": "Golden hour over the farm — crops glowing in the evening light",
+    "category": "the-land"
+  },
+  {
+    "file": "the-land/farm-pond.jpeg",
     "caption": "Water harvesting pond — catching every drop of rain",
     "category": "the-land"
   },
   {
-    "file": "stone-pathway.jpeg",
+    "file": "the-land/stone-pathway.jpeg",
     "caption": "Pathways that integrate function and beauty",
     "category": "the-land"
   },
   {
-    "file": "farm-gathering.jpg",
+    "file": "the-land/farm-gathering.jpg",
     "caption": "Community gathers at the farm — knowledge grows when shared",
     "category": "the-land"
   },
   {
-    "file": "farm-tour.mp4",
+    "file": "the-land/farm-tour.mp4",
     "caption": "Walk through the farm: see the systems in action",
     "category": "the-land"
   },
@@ -56,12 +61,12 @@ const galleryItems = [
   // ── 🌱 Prepare ──────────────────────────────────────────────
   // Building soil, cover crops, green manure — feeding the earth first
   {
-    "file": "cover-crops.jpeg",
+    "file": "prepare/cover-crops.jpeg",
     "caption": "Cover crops protect and nourish the soil between seasons",
     "category": "prepare"
   },
   {
-    "file": "mulch-rows-overview.jpeg",
+    "file": "prepare/mulch-rows-overview.jpeg",
     "caption": "Mulch rings protect young trees — building soil one layer at a time",
     "category": "prepare"
   },
@@ -69,17 +74,17 @@ const galleryItems = [
   // ── 🪴 Plant ────────────────────────────────────────────────
   // Seedlings, nursery, establishing trees — new life begins
   {
-    "file": "shade-net-nursery-rows.jpeg",
+    "file": "plant/shade-net-nursery-rows.jpeg",
     "caption": "Tomato and brinjal rows growing under the shade net nursery",
     "category": "plant"
   },
   {
-    "file": "tree-saplings.jpg",
+    "file": "plant/tree-saplings.jpg",
     "caption": "Young saplings establishing along the farm boundary",
     "category": "plant"
   },
   {
-    "file": "onion-sprouts.jpg",
+    "file": "plant/onion-sprouts.jpg",
     "caption": "Onion shoots emerging from freshly prepared beds",
     "category": "plant"
   },
@@ -87,37 +92,37 @@ const galleryItems = [
   // ── 🌿 Nurture ──────────────────────────────────────────────
   // Growing crops, food forest thriving, polyculture in action
   {
-    "file": "vegetable-beds.jpeg",
+    "file": "nurture/vegetable-beds.jpeg",
     "caption": "Polyculture beds with drip irrigation — diversity is resilience",
     "category": "nurture"
   },
   {
-    "file": "carrot-field.jpg",
+    "file": "nurture/carrot-field.jpg",
     "caption": "Dense carrot beds thriving in open-field polyculture",
     "category": "nurture"
   },
   {
-    "file": "guava-orchard.jpg",
+    "file": "nurture/guava-orchard.jpg",
     "caption": "Guava orchard fruiting in the food forest",
     "category": "nurture"
   },
   {
-    "file": "fruit-tree.jpeg",
+    "file": "nurture/fruit-tree.jpeg",
     "caption": "Fruit trees establishing their canopy in the food forest",
     "category": "nurture"
   },
   {
-    "file": "pomegranate.jpeg",
+    "file": "nurture/pomegranate.jpeg",
     "caption": "Pomegranate forming on a young tree — patience rewarded",
     "category": "nurture"
   },
   {
-    "file": "mulch-coir-rings.jpeg",
+    "file": "nurture/mulch-coir-rings.jpeg",
     "caption": "Coir mulch rings and straw around young saplings — moisture locked in",
     "category": "nurture"
   },
   {
-    "file": "shade-net-cauliflower-rows.jpeg",
+    "file": "nurture/shade-net-cauliflower-rows.jpeg",
     "caption": "Cauliflower seedlings thriving in rows under the shade net nursery",
     "category": "nurture"
   },
@@ -125,22 +130,22 @@ const galleryItems = [
   // ── 🌾 Harvest ──────────────────────────────────────────────
   // The abundance that comes from working with nature
   {
-    "file": "harvest-bowls.jpg",
-    "caption": "Morning harvest: fresh carrots, greens, herbs, and spinach",
+    "file": "harvest/carrot-chickpea-harvest.jpeg",
+    "caption": "Fresh-pulled carrot and chickpea — straight from the soil to hand",
     "category": "harvest"
   },
   {
-    "file": "fresh-harvest.jpeg",
+    "file": "harvest/fresh-harvest.jpeg",
     "caption": "Abundant harvest: carrots, greens, cauliflower, radishes",
     "category": "harvest"
   },
   {
-    "file": "winter-harvest.jpeg",
+    "file": "harvest/winter-harvest.jpeg",
     "caption": "Winter harvest: peas, tomatoes, brinjal, and fresh greens",
     "category": "harvest"
   },
   {
-    "file": "morning-harvest-greens.jpeg",
+    "file": "harvest/morning-harvest-greens.jpeg",
     "caption": "Fresh from the field: beans, methi, tomatoes, and leafy greens",
     "category": "harvest"
   },
@@ -148,12 +153,12 @@ const galleryItems = [
   // ── ✂️ Tend ──────────────────────────────────────────────────
   // Pruning, maintenance, seasonal care — closing the loop
   {
-    "file": "moringa-before-pruning.jpeg",
+    "file": "tend/moringa-before-pruning.jpeg",
     "caption": "Moringa grove before seasonal pruning — full canopy",
     "category": "tend"
   },
   {
-    "file": "moringa-pruned.jpeg",
+    "file": "tend/moringa-pruned.jpeg",
     "caption": "Moringa after winter pruning — ready for spring regrowth",
     "category": "tend"
   }

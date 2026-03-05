@@ -349,10 +349,18 @@ function loadProduce() {
             ? '<span class="produce-badge produce-available">Available Now</span>'
             : '<span class="produce-badge produce-upcoming">Coming Soon</span>';
 
-        // Build image slides
+        // Build image/video slides
         var slidesHtml = '';
-        imgs.forEach(function(src, idx) {
-            slidesHtml += '<img src="' + escapeHtml(src) + '" alt="' + escapeHtml(veg.name) + '" loading="lazy" class="produce-slide' + (idx === 0 ? ' active' : '') + '" data-index="' + idx + '">';
+        imgs.forEach(function(item, idx) {
+            var isVideo = typeof item === 'object' && item.type === 'video';
+            var src = isVideo ? item.src : item;
+            var activeClass = idx === 0 ? ' active' : '';
+            if (isVideo) {
+                slidesHtml += '<video src="' + escapeHtml(src) + '" class="produce-slide produce-video' + activeClass + '" data-index="' + idx + '" muted playsinline preload="metadata" loop></video>' +
+                    '<button class="produce-play-btn' + activeClass + '" data-index="' + idx + '" aria-label="Play video">&#9654;</button>';
+            } else {
+                slidesHtml += '<img src="' + escapeHtml(src) + '" alt="' + escapeHtml(veg.name) + '" loading="lazy" class="produce-slide' + activeClass + '" data-index="' + idx + '">';
+            }
         });
 
         // Dot indicators (only if multiple images)
@@ -386,12 +394,17 @@ function loadProduce() {
 
             function showSlide(idx) {
                 currentIndex = idx;
+                // Pause all videos when switching
+                wrap.querySelectorAll('video.produce-slide').forEach(function(v) { v.pause(); });
                 wrap.querySelectorAll('.produce-slide').forEach(function(s) { s.classList.remove('active'); });
                 wrap.querySelectorAll('.produce-dot').forEach(function(d) { d.classList.remove('active'); });
+                wrap.querySelectorAll('.produce-play-btn').forEach(function(b) { b.classList.remove('active'); });
                 var slide = wrap.querySelector('.produce-slide[data-index="' + idx + '"]');
                 var dot = wrap.querySelector('.produce-dot[data-index="' + idx + '"]');
+                var playBtn = wrap.querySelector('.produce-play-btn[data-index="' + idx + '"]');
                 if (slide) slide.classList.add('active');
                 if (dot) dot.classList.add('active');
+                if (playBtn) playBtn.classList.add('active');
             }
 
             // Dot clicks
@@ -402,14 +415,48 @@ function loadProduce() {
                 });
             });
 
+            // Play button clicks — toggle video play/pause
+            wrap.querySelectorAll('.produce-play-btn').forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    var vidIdx = parseInt(btn.getAttribute('data-index'), 10);
+                    var video = wrap.querySelector('video.produce-slide[data-index="' + vidIdx + '"]');
+                    if (video) {
+                        if (video.paused) {
+                            video.play();
+                            btn.classList.add('playing');
+                        } else {
+                            video.pause();
+                            btn.classList.remove('playing');
+                        }
+                    }
+                });
+            });
+
+            // When video ends, show play button again
+            wrap.querySelectorAll('video.produce-slide').forEach(function(video) {
+                video.addEventListener('pause', function() {
+                    var idx = video.getAttribute('data-index');
+                    var btn = wrap.querySelector('.produce-play-btn[data-index="' + idx + '"]');
+                    if (btn) btn.classList.remove('playing');
+                });
+                video.addEventListener('play', function() {
+                    var idx = video.getAttribute('data-index');
+                    var btn = wrap.querySelector('.produce-play-btn[data-index="' + idx + '"]');
+                    if (btn) btn.classList.add('playing');
+                });
+            });
+
             // Tap image area to advance (if multiple), or open lightbox (if single)
             wrap.addEventListener('click', function(e) {
-                if (e.target.classList.contains('produce-dot')) return;
+                if (e.target.classList.contains('produce-dot') || e.target.classList.contains('produce-play-btn')) return;
+                // Don't advance if tapping a playing video
+                var activeSlide = wrap.querySelector('.produce-slide.active');
+                if (activeSlide && activeSlide.tagName === 'VIDEO' && !activeSlide.paused) return;
                 if (imageList.length > 1) {
                     showSlide((currentIndex + 1) % imageList.length);
                 } else {
-                    var img = wrap.querySelector('.produce-slide.active');
-                    if (img && typeof openLightbox === 'function') openLightbox(img.src);
+                    if (activeSlide && activeSlide.tagName === 'IMG' && typeof openLightbox === 'function') openLightbox(activeSlide.src);
                 }
             });
 

@@ -576,6 +576,44 @@ main section[id] {
 .produce-dot:hover {
     background: rgba(255,255,255,0.7);
 }
+/* Video slides */
+video.produce-slide {
+    object-fit: cover;
+}
+.produce-play-btn {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0,0,0,0.5);
+    color: white;
+    font-size: 1.3rem;
+    cursor: pointer;
+    z-index: 3;
+    transition: background 0.2s ease, opacity 0.3s ease;
+    padding: 0;
+    line-height: 52px;
+    text-align: center;
+}
+.produce-play-btn.active {
+    display: block;
+}
+.produce-play-btn.playing {
+    opacity: 0;
+    pointer-events: none;
+}
+.produce-img-wrap:hover .produce-play-btn.playing {
+    opacity: 0.6;
+    pointer-events: auto;
+}
+.produce-play-btn:hover {
+    background: rgba(0,0,0,0.7);
+}
 .produce-badge {
     position: absolute;
     top: 0.75rem;
