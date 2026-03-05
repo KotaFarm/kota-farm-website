@@ -669,11 +669,13 @@ function updateHashOnScroll() {
         }
     }, 300);
 }
-window.addEventListener('scroll', updateHashOnScroll, { passive: true });
+// Don't attach scroll-hash listener until after dynamic content is built,
+// otherwise offsetTop values are wrong and the hash gets set incorrectly on load.
 
 // On page load, scroll to hash if present
-if (window.location.hash) {
-    var hashTarget = document.querySelector(window.location.hash);
+var initialHash = window.location.hash;
+if (initialHash) {
+    var hashTarget = document.querySelector(initialHash);
     if (hashTarget) {
         setTimeout(function() {
             hashTarget.scrollIntoView({ block: 'start' });
@@ -685,6 +687,11 @@ if (window.location.hash) {
 loadGallery();
 loadPlants();
 loadProduce();
+
+// Now that dynamic content is built, enable scroll-hash updates
+setTimeout(function() {
+    window.addEventListener('scroll', updateHashOnScroll, { passive: true });
+}, 500);
 
 // ============================================================
 //  LIGHTBOX WITH NAVIGATION
