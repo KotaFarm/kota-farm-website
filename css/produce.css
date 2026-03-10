@@ -14,14 +14,26 @@
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+
+html {
+    scroll-behavior: smooth;
+    overflow-x: clip;
+}
 
 body {
     font-family: 'Work Sans', sans-serif;
     color: var(--earth-dark);
     background: #f5f3ef;
     line-height: 1.6;
-    overflow-x: hidden;
+    overflow-x: clip;
+    width: 100%;
+}
+
+body.scroll-locked {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    top: var(--scroll-y, 0);
 }
 
 .sr-only {
@@ -221,7 +233,7 @@ body {
 /* ── Product grid ──────────────────────────────────────── */
 .produce-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr));
     gap: 1.25rem;
 }
 
@@ -372,14 +384,16 @@ body {
     transform: translateX(100%);
     transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     overflow-y: auto;
+    overflow-x: hidden;
     box-shadow: -4px 0 30px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
 }
 .produce-detail-panel.open { transform: translateX(0); }
 .produce-detail-close {
-    position: sticky;
-    top: 0;
-    float: right;
-    margin: 0.75rem 0.75rem 0 0;
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
     width: 44px;
     height: 44px;
     border: none;

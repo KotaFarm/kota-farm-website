@@ -4,6 +4,28 @@
     var CART_KEY = 'kotaFarmCart';
     var WHATSAPP_NUMBER = '919460813090';
 
+    // ── Scroll lock (preserves position, prevents layout shift) ──
+    var scrollLockCount = 0;
+    var savedScrollY = 0;
+
+    function lockScroll() {
+        if (scrollLockCount === 0) {
+            savedScrollY = window.scrollY;
+            document.body.style.setProperty('--scroll-y', '-' + savedScrollY + 'px');
+            document.body.classList.add('scroll-locked');
+        }
+        scrollLockCount++;
+    }
+
+    function unlockScroll() {
+        scrollLockCount = Math.max(0, scrollLockCount - 1);
+        if (scrollLockCount === 0) {
+            document.body.classList.remove('scroll-locked');
+            document.body.style.removeProperty('--scroll-y');
+            window.scrollTo(0, savedScrollY);
+        }
+    }
+
     // ── Helpers ────────────────────────────────────────────
     function esc(text) {
         return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -47,10 +69,12 @@
         renderCartDrawer();
         document.getElementById('cart-overlay').classList.add('open');
         document.getElementById('cart-drawer').classList.add('open');
+        lockScroll();
     };
     window.closeCartDrawer = function () {
         document.getElementById('cart-overlay').classList.remove('open');
         document.getElementById('cart-drawer').classList.remove('open');
+        unlockScroll();
     };
 
     function renderCartDrawer() {
@@ -366,7 +390,7 @@
         overlay.classList.add('open');
         panel.classList.add('open');
         panel.scrollTop = 0;
-        document.body.style.overflow = 'hidden';
+        lockScroll();
     }
 
     function showDetailSlide(idx) {
@@ -391,8 +415,7 @@
     function closeDetail() {
         overlay.classList.remove('open');
         panel.classList.remove('open');
-        document.body.style.overflow = '';
-        // Pause any playing videos
+        unlockScroll();
         panel.querySelectorAll('video').forEach(function (v) { v.pause(); });
     }
 

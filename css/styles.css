@@ -21,8 +21,9 @@
 }
 
 html {
-    overflow-x: hidden;
+    overflow-x: clip;
     touch-action: pan-y;
+    background: var(--sand);
 }
 
 body {
@@ -30,7 +31,19 @@ body {
     color: var(--earth-dark);
     background: var(--sand);
     line-height: 1.7;
-    overflow-x: hidden;
+    overflow-x: clip;
+    width: 100%;
+}
+
+body.scroll-locked {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    top: var(--scroll-y, 0);
+}
+
+.page-wrap {
+    overflow: hidden;
 }
 
 /* Skip to main content - visible on focus */
@@ -127,6 +140,7 @@ nav {
     position: fixed;
     top: 0;
     width: 100%;
+    max-width: 100%;
     background: rgba(232, 220, 196, 0.95);
     backdrop-filter: blur(10px);
     z-index: 1000;
@@ -203,6 +217,20 @@ nav.scrolled {
 .nav-links a.active::after {
     width: 100%;
 }
+
+.nav-links a.nav-highlight {
+    background: var(--sprout);
+    color: var(--earth-dark);
+    padding: 0.35rem 0.85rem;
+    border-radius: 20px;
+    font-weight: 600;
+    transition: background 0.2s, color 0.2s;
+}
+.nav-links a.nav-highlight:hover {
+    background: var(--leaf);
+    color: white;
+}
+.nav-links a.nav-highlight::after { display: none; }
 
 .nav-links a:focus-visible,
 .logo:focus-visible,
@@ -321,11 +349,29 @@ nav.scrolled {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(45, 51, 25, 0.2);
 }
+.hero-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+}
+.cta-button-produce {
+    background: var(--sprout);
+    color: var(--earth-dark);
+}
+.cta-button-produce:hover {
+    background: transparent;
+    color: var(--sprout);
+    box-shadow: 0 4px 12px rgba(168, 198, 134, 0.3);
+}
 
 /* Section Styling */
 /* Scroll margin so "Next section" jump doesn’t hide content under fixed nav */
 main section[id] {
     scroll-margin-top: 5rem;
+    overflow-x: clip;
+    max-width: 100%;
 }
 
 .section-next {
@@ -398,7 +444,7 @@ main section[id] {
 /* What is Permaculture */
 .intro-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
     gap: var(--spacing-lg);
     margin-top: var(--spacing-lg);
 }
@@ -454,7 +500,7 @@ main section[id] {
 
 .practice-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
     gap: var(--spacing-md);
     margin-top: var(--spacing-lg);
 }
@@ -511,7 +557,7 @@ main section[id] {
 }
 .produce-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
     gap: 1.5rem;
     max-width: 1200px;
     margin: 0 auto var(--spacing-lg);
@@ -744,6 +790,46 @@ video.produce-slide {
     }
 }
 
+/* ── Mobile sticky order bar ──────────────────────────── */
+.mobile-order-bar {
+    display: none;
+}
+@media (max-width: 768px) {
+    .mobile-order-bar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 90;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.25rem;
+        background: var(--earth-dark);
+        color: white;
+        text-decoration: none;
+        font-family: 'Work Sans', sans-serif;
+        font-weight: 600;
+        font-size: 0.95rem;
+        box-shadow: 0 -2px 16px rgba(0,0,0,0.2);
+        transition: background 0.2s;
+    }
+    .mobile-order-bar:active { background: var(--earth-medium); }
+    .mobile-order-bar-icon { font-size: 1.2rem; }
+    .mobile-order-bar-arrow {
+        font-size: 1.1rem;
+        opacity: 0.7;
+    }
+    .mobile-order-bar {
+        transition: transform 0.3s ease;
+    }
+    .mobile-order-bar.hidden { transform: translateY(100%); }
+
+    .cart-fab { bottom: 4.5rem; }
+    .back-to-top { bottom: 4.5rem; }
+}
+
 /* ── Cart FAB + Drawer ────────────────────────────────── */
 .cart-fab {
     position: fixed;
@@ -795,7 +881,7 @@ video.produce-slide {
 .cart-drawer {
     position: fixed;
     top: 0;
-    right: -400px;
+    right: 0;
     width: 380px;
     max-width: 90vw;
     height: 100vh;
@@ -804,9 +890,10 @@ video.produce-slide {
     box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
     display: flex;
     flex-direction: column;
-    transition: right 0.3s ease;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
 }
-.cart-drawer.open { right: 0; }
+.cart-drawer.open { transform: translateX(0); }
 
 .cart-drawer-header {
     display: flex;
@@ -967,7 +1054,7 @@ video.produce-slide {
 }
 
 @media (max-width: 600px) {
-    .cart-fab { bottom: 1rem; right: 1rem; width: 50px; height: 50px; font-size: 1.2rem; line-height: 50px; }
+    .cart-fab { bottom: 4.5rem; right: 1rem; width: 50px; height: 50px; font-size: 1.2rem; line-height: 50px; }
     .cart-drawer { width: 100vw; max-width: 100vw; }
 }
 
@@ -987,7 +1074,7 @@ video.produce-slide {
 /* Plant card grid */
 .plants-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(270px, 100%), 1fr));
     gap: 1rem;
     max-width: 1200px;
     margin: 0 auto;
@@ -1170,10 +1257,12 @@ video.produce-slide {
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     overflow-x: auto;
+    overflow-y: hidden;
     padding: 0.75rem 0;
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
     border-bottom: 1px solid rgba(45, 51, 25, 0.08);
+    max-width: 100%;
 }
 .cycle-timeline::-webkit-scrollbar { display: none; }
 
@@ -1297,6 +1386,7 @@ video.produce-slide {
     .cycle-timeline {
         justify-content: flex-start;
         padding: 0.6rem 0.5rem;
+        max-width: 100%;
     }
     .cycle-node { min-width: 72px; padding: 0.4rem 0.5rem; }
     .cycle-icon { width: 44px; height: 44px; font-size: 1.3rem; }
@@ -1365,7 +1455,7 @@ video.produce-slide {
 /* Gallery */
 .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
     gap: var(--spacing-md);
     margin-top: var(--spacing-sm);
 }
@@ -1537,7 +1627,7 @@ video.produce-slide {
 
 .news-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr));
     gap: var(--spacing-lg);
     margin-top: var(--spacing-lg);
 }
@@ -1813,6 +1903,7 @@ footer {
     color: var(--sand);
     padding: var(--spacing-lg) var(--spacing-md);
     text-align: center;
+    overflow-x: clip;
 }
 
 footer p {
@@ -1876,6 +1967,13 @@ footer p {
         display: block;
         padding: var(--spacing-sm) var(--spacing-md);
         border-radius: 4px;
+    }
+
+    .nav-links a.nav-highlight {
+        display: inline-block;
+        margin: 0.25rem var(--spacing-md);
+        padding: 0.5rem 1.2rem;
+        text-align: center;
     }
 
     .nav-links a:hover {
@@ -2033,7 +2131,7 @@ footer p {
 
 .contact-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
     gap: var(--spacing-md);
     max-width: 900px;
     margin: 0 auto;

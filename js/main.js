@@ -417,6 +417,18 @@ function onScroll() {
             if (backToTop) {
                 backToTop.classList.toggle('visible', window.scrollY > 400);
             }
+            // Mobile order bar: hide when inside the fresh-produce section
+            var orderBar = document.getElementById('mobile-order-bar');
+            if (orderBar) {
+                var fpSection = document.getElementById('fresh-produce');
+                var hide = false;
+                if (fpSection) {
+                    var fpTop = fpSection.offsetTop - 100;
+                    var fpBot = fpTop + fpSection.offsetHeight + 100;
+                    hide = window.scrollY >= fpTop && window.scrollY <= fpBot;
+                }
+                orderBar.classList.toggle('hidden', hide);
+            }
             // Scroll spy
             updateActiveNav();
             // Parallax hero

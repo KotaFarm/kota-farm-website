@@ -45,6 +45,7 @@
     </script>
 </head>
 <body>
+    <div class="page-wrap">
     <a href="#main-content" class="skip-link">Skip to main content</a>
     <div class="scroll-progress" id="scroll-progress" role="presentation" aria-hidden="true"></div>
     <!-- Navigation -->
@@ -61,7 +62,7 @@
                 <li><a href="#practices">Practices</a></li>
                 <li><a href="#seasons">Seasons</a></li>
                 <li><a href="#gallery">Gallery</a></li>
-                <li><a href="produce.html">Fresh Produce</a></li>
+                <li><a href="produce.html" class="nav-highlight">Fresh Produce</a></li>
                 <li><a href="#plants">What's growing</a></li>
                 <li><a href="#getting-started">Get Started</a></li>
                 <li><a href="#community">Community</a></li>
@@ -79,7 +80,10 @@
         <div class="hero-content">
             <h1>Kota Natural Farm</h1>
             <p class="hero-subtitle">Growing regeneratively. Teaching sustainably. Living harmoniously.</p>
-            <a href="#about" class="cta-button">Discover Our Story</a>
+            <div class="hero-buttons">
+                <a href="#about" class="cta-button">Discover Our Story</a>
+                <a href="produce.html" class="cta-button cta-button-produce">Order Vegetables</a>
+            </div>
         </div>
     </section>
 
@@ -412,6 +416,14 @@
             <p class="footer-copyright">&copy; 2026 Kota Natural Farm. Website created with care for the earth.</p>
         </div>
     </footer>
+    </div><!-- /.page-wrap -->
+
+    <!-- Mobile sticky CTA bar for ordering vegetables -->
+    <a href="produce.html" class="mobile-order-bar" id="mobile-order-bar">
+        <span class="mobile-order-bar-icon">🥬</span>
+        <span class="mobile-order-bar-text">Order Fresh Vegetables</span>
+        <span class="mobile-order-bar-arrow">&rarr;</span>
+    </a>
 
     <!-- Cart FAB + Drawer -->
     <button type="button" class="cart-fab" id="cart-fab" aria-label="Open cart" style="display:none;" onclick="openCartDrawer()">
