@@ -15,16 +15,16 @@ const vegetablesList = [
   {
     "name": "Brinjal",
     "nameHi": "बैंगन",
-    "images": ["gallery/fresh-produce/veg-brinjal.jpeg"],
+    "images": ["gallery/fresh-produce/brinjal.jpeg", "gallery/fresh-produce/veg-brinjal.jpeg"],
     "season": "Year-round",
     "unit": "kg",
     "desc": "Sturdy plants raised organically. Glossy purple fruits perfect for bhartha, bharta, and curries.",
-    "available": false
+    "available": true
   },
   {
     "name": "Tomato",
     "nameHi": "टमाटर",
-    "images": ["gallery/fresh-produce/veg-tomato.jpeg", "gallery/fresh-produce/tomato1.jpeg", "gallery/fresh-produce/veg-tomato-plants.jpeg", { "type": "video", "src": "gallery/fresh-produce/veg-tomato-video.mp4" }],
+    "images": ["gallery/fresh-produce/tomato2.jpeg", "gallery/fresh-produce/veg-tomato.jpeg", "gallery/fresh-produce/tomato1.jpeg", "gallery/fresh-produce/veg-tomato-plants.jpeg", { "type": "video", "src": "gallery/fresh-produce/veg-tomato-video.mp4" }],
     "season": "Winter",
     "unit": "kg",
     "desc": "Vine-ripened on bamboo stakes inside shade nets. No pesticides — just sun, soil, and care.",
@@ -56,5 +56,32 @@ const vegetablesList = [
     "unit": "kg",
     "desc": "Long, tender ridge gourds climbing naturally on trellises. Harvested young for the best texture and flavour.",
     "available": false
+  },
+  {
+    "name": "Potato",
+    "nameHi": "आलू",
+    "images": ["gallery/fresh-produce/potato.jpeg"],
+    "season": "Winter",
+    "unit": "kg",
+    "desc": "Naturally grown potatoes from healthy, chemical-free soil. Firm and flavourful — perfect for curries, parathas, and roasts.",
+    "available": true
+  },
+  {
+    "name": "Green Chickpea",
+    "nameHi": "हरा चना",
+    "images": ["gallery/fresh-produce/Green chickpea.jpeg"],
+    "season": "Winter",
+    "unit": "kg",
+    "desc": "Fresh green chickpeas are the young, tender form of chickpeas harvested before they dry. Mildly sweet, nutty flavour with a soft crunchy texture. Rich in plant protein, fiber, and essential minerals.",
+    "available": true
+  },
+  {
+    "name": "Beetroot",
+    "nameHi": "चुकंदर",
+    "images": ["gallery/fresh-produce/Beetroot.jpeg"],
+    "season": "Winter",
+    "unit": "kg",
+    "desc": "Nutrient-rich root vegetable with a deep red colour and naturally sweet, earthy taste. Packed with antioxidants, fiber, and natural nitrates that support heart health and stamina.",
+    "available": true
   }
 ];
