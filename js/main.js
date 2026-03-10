@@ -323,192 +323,38 @@ function escapeHtml(text) {
 // Fresh Produce — vegetable cards for customers
 function loadProduce() {
     var grid = document.getElementById('produce-grid');
-    var filtersBar = document.getElementById('produce-filters');
     if (!grid) return;
-    if (typeof vegetablesList === 'undefined' || !vegetablesList.length) {
-        grid.innerHTML = '<p style="color: var(--earth-medium); text-align: center;">Produce list could not be loaded.</p>';
-        return;
-    }
+    if (typeof vegetablesList === 'undefined' || !vegetablesList.length) return;
 
-    // Sort: available items first
-    var sorted = vegetablesList.slice().sort(function(a, b) {
-        return (b.available ? 1 : 0) - (a.available ? 1 : 0);
-    });
+    // Show first 4 available items as a preview
+    var preview = vegetablesList.filter(function(v) { return v.available; }).slice(0, 4);
+    if (!preview.length) preview = vegetablesList.slice(0, 4);
 
-    sorted.forEach(function(veg, i) {
-        var card = document.createElement('div');
+    preview.forEach(function(veg, i) {
+        var firstImg = veg.images ? veg.images[0] : veg.image;
+        if (typeof firstImg === 'object') firstImg = firstImg.src || '';
+        var card = document.createElement('a');
+        card.href = 'produce.html';
         card.className = 'produce-card fade-in';
-        card.setAttribute('data-available', veg.available ? 'yes' : 'no');
+        card.style.textDecoration = 'none';
+        card.style.color = 'inherit';
         card.style.transitionDelay = (i * 80) + 'ms';
-
-        // Support both "images" array and legacy "image" string
-        var imgs = veg.images || [veg.image];
-        var hasMultiple = imgs.length > 1;
-
-        var badge = veg.available
-            ? '<span class="produce-badge produce-available">Available Now</span>'
-            : '<span class="produce-badge produce-upcoming">Coming Soon</span>';
-
-        // Build image/video slides
-        var slidesHtml = '';
-        imgs.forEach(function(item, idx) {
-            var isVideo = typeof item === 'object' && item.type === 'video';
-            var src = isVideo ? item.src : item;
-            var activeClass = idx === 0 ? ' active' : '';
-            if (isVideo) {
-                slidesHtml += '<video src="' + escapeHtml(src) + '" class="produce-slide produce-video' + activeClass + '" data-index="' + idx + '" muted playsinline preload="metadata" loop></video>' +
-                    '<button class="produce-play-btn' + activeClass + '" data-index="' + idx + '" aria-label="Play video">&#9654;</button>';
-            } else {
-                slidesHtml += '<img src="' + escapeHtml(src) + '" alt="' + escapeHtml(veg.name) + '" loading="lazy" class="produce-slide' + activeClass + '" data-index="' + idx + '">';
-            }
-        });
-
-        // Dot indicators (only if multiple images)
-        var dotsHtml = '';
-        if (hasMultiple) {
-            dotsHtml = '<div class="produce-dots">';
-            imgs.forEach(function(_, idx) {
-                dotsHtml += '<button class="produce-dot' + (idx === 0 ? ' active' : '') + '" data-index="' + idx + '" aria-label="Image ' + (idx + 1) + '"></button>';
-            });
-            dotsHtml += '</div>';
-        }
-
         card.innerHTML =
             '<div class="produce-img-wrap">' +
-                slidesHtml +
-                badge +
-                dotsHtml +
+                '<img src="' + escapeHtml(firstImg) + '" alt="' + escapeHtml(veg.name) + '" loading="lazy" class="produce-slide active">' +
+                (veg.available ? '<span class="produce-badge produce-available">Available</span>' : '<span class="produce-badge produce-upcoming">Unavailable</span>') +
             '</div>' +
             '<div class="produce-info">' +
                 '<h3 class="produce-name">' + escapeHtml(veg.name) +
-                    ' <span class="produce-name-hi">' + escapeHtml(veg.nameHi) + '</span>' +
-                '</h3>' +
-                '<span class="produce-season">Season: ' + escapeHtml(veg.season) + '</span>' +
-                '<p class="produce-desc">' + escapeHtml(veg.desc) + '</p>' +
+                    ' <span class="produce-name-hi">' + escapeHtml(veg.nameHi) + '</span></h3>' +
+                '<span class="produce-season">' + escapeHtml(veg.season) + '</span>' +
             '</div>';
-
-        // Image carousel logic
-        var imgWrap = card.querySelector('.produce-img-wrap');
-        (function(wrap, imageList) {
-            var currentIndex = 0;
-
-            function showSlide(idx) {
-                currentIndex = idx;
-                // Pause all videos when switching
-                wrap.querySelectorAll('video.produce-slide').forEach(function(v) { v.pause(); });
-                wrap.querySelectorAll('.produce-slide').forEach(function(s) { s.classList.remove('active'); });
-                wrap.querySelectorAll('.produce-dot').forEach(function(d) { d.classList.remove('active'); });
-                wrap.querySelectorAll('.produce-play-btn').forEach(function(b) { b.classList.remove('active'); });
-                var slide = wrap.querySelector('.produce-slide[data-index="' + idx + '"]');
-                var dot = wrap.querySelector('.produce-dot[data-index="' + idx + '"]');
-                var playBtn = wrap.querySelector('.produce-play-btn[data-index="' + idx + '"]');
-                if (slide) slide.classList.add('active');
-                if (dot) dot.classList.add('active');
-                if (playBtn) playBtn.classList.add('active');
-            }
-
-            // Dot clicks
-            wrap.querySelectorAll('.produce-dot').forEach(function(dot) {
-                dot.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    showSlide(parseInt(dot.getAttribute('data-index'), 10));
-                });
-            });
-
-            // Play button clicks — toggle video play/pause
-            wrap.querySelectorAll('.produce-play-btn').forEach(function(btn) {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    var vidIdx = parseInt(btn.getAttribute('data-index'), 10);
-                    var video = wrap.querySelector('video.produce-slide[data-index="' + vidIdx + '"]');
-                    if (video) {
-                        if (video.paused) {
-                            video.play();
-                            btn.classList.add('playing');
-                        } else {
-                            video.pause();
-                            btn.classList.remove('playing');
-                        }
-                    }
-                });
-            });
-
-            // When video ends, show play button again
-            wrap.querySelectorAll('video.produce-slide').forEach(function(video) {
-                video.addEventListener('pause', function() {
-                    var idx = video.getAttribute('data-index');
-                    var btn = wrap.querySelector('.produce-play-btn[data-index="' + idx + '"]');
-                    if (btn) btn.classList.remove('playing');
-                });
-                video.addEventListener('play', function() {
-                    var idx = video.getAttribute('data-index');
-                    var btn = wrap.querySelector('.produce-play-btn[data-index="' + idx + '"]');
-                    if (btn) btn.classList.add('playing');
-                });
-            });
-
-            // Tap image area to advance (if multiple), or open lightbox (if single)
-            wrap.addEventListener('click', function(e) {
-                if (e.target.classList.contains('produce-dot') || e.target.classList.contains('produce-play-btn')) return;
-                // Don't advance if tapping a playing video
-                var activeSlide = wrap.querySelector('.produce-slide.active');
-                if (activeSlide && activeSlide.tagName === 'VIDEO' && !activeSlide.paused) return;
-                if (imageList.length > 1) {
-                    showSlide((currentIndex + 1) % imageList.length);
-                } else {
-                    if (activeSlide && activeSlide.tagName === 'IMG' && typeof openLightbox === 'function') openLightbox(activeSlide.src);
-                }
-            });
-
-            // Swipe support for mobile
-            var startX = 0;
-            wrap.addEventListener('touchstart', function(e) { startX = e.touches[0].clientX; }, { passive: true });
-            wrap.addEventListener('touchend', function(e) {
-                var diff = startX - e.changedTouches[0].clientX;
-                if (imageList.length < 2) return;
-                if (Math.abs(diff) > 40) {
-                    if (diff > 0) showSlide((currentIndex + 1) % imageList.length);
-                    else showSlide((currentIndex - 1 + imageList.length) % imageList.length);
-                }
-            }, { passive: true });
-        })(imgWrap, imgs);
-
         grid.appendChild(card);
     });
 
-    // Build filter buttons
-    if (filtersBar) {
-        var hasUnavailable = sorted.some(function(v) { return !v.available; });
-        if (hasUnavailable) {
-            ['All', 'Available Now'].forEach(function(label) {
-                var btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = 'produce-filter-btn' + (label === 'All' ? ' active' : '');
-                btn.textContent = label;
-                btn.addEventListener('click', function() {
-                    filtersBar.querySelectorAll('.produce-filter-btn').forEach(function(b) { b.classList.remove('active'); });
-                    btn.classList.add('active');
-                    filterProduce(label === 'All' ? 'all' : 'available');
-                });
-                filtersBar.appendChild(btn);
-            });
-        }
-    }
-
-    // Re-observe dynamically created fade-in elements
     document.querySelectorAll('.fade-in:not(.observed)').forEach(function(el) {
         observer.observe(el);
         el.classList.add('observed');
-    });
-}
-
-function filterProduce(filter) {
-    document.querySelectorAll('.produce-card').forEach(function(card) {
-        if (filter === 'all') {
-            card.classList.remove('produce-hidden');
-        } else {
-            card.classList.toggle('produce-hidden', card.getAttribute('data-available') !== 'yes');
-        }
     });
 }
 
@@ -904,3 +750,156 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+// ============================================================
+//  MINI CART — Add-to-cart with WhatsApp order
+// ============================================================
+var CART_KEY = 'kotaFarmCart';
+var WHATSAPP_NUMBER = '919460813090';
+
+function getCart() {
+    try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; }
+    catch (e) { return []; }
+}
+
+function saveCart(cart) {
+    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    updateCartUI();
+}
+
+function addToCart(veg) {
+    var cart = getCart();
+    var existing = cart.find(function(c) { return c.name === veg.name; });
+    if (existing) {
+        existing.qty += 1;
+    } else {
+        cart.push({ name: veg.name, nameHi: veg.nameHi, qty: 1, unit: veg.unit || 'kg' });
+    }
+    saveCart(cart);
+}
+
+function removeFromCart(name) {
+    var cart = getCart().filter(function(c) { return c.name !== name; });
+    saveCart(cart);
+    renderCartDrawer();
+}
+
+function updateCartQty(name, delta) {
+    var cart = getCart();
+    var item = cart.find(function(c) { return c.name === name; });
+    if (item) {
+        item.qty = Math.max(1, item.qty + delta);
+    }
+    saveCart(cart);
+    renderCartDrawer();
+}
+
+function getCartCount() {
+    return getCart().reduce(function(sum, c) { return sum + c.qty; }, 0);
+}
+
+function isInCart(name) {
+    return getCart().some(function(c) { return c.name === name; });
+}
+
+function clearCart() {
+    localStorage.removeItem(CART_KEY);
+    updateCartUI();
+    renderCartDrawer();
+}
+
+function buildWhatsAppMessage() {
+    var cart = getCart();
+    if (!cart.length) return '';
+    var lines = ['🛒 *Order from Kota Natural Farm website:*', ''];
+    cart.forEach(function(item) {
+        lines.push('• ' + item.name + ' (' + item.nameHi + ') — ' + item.qty + ' ' + item.unit);
+    });
+    lines.push('');
+    lines.push('Please confirm availability. Thank you!');
+    return lines.join('\n');
+}
+
+function updateCartUI() {
+    var count = getCartCount();
+    var fab = document.getElementById('cart-fab');
+    var badge = document.getElementById('cart-fab-badge');
+    if (fab) fab.style.display = count > 0 ? '' : 'none';
+    if (badge) badge.textContent = count;
+
+    // Update all "Add to Cart" buttons on produce cards
+    document.querySelectorAll('.add-to-cart-btn').forEach(function(btn) {
+        var name = btn.getAttribute('data-name');
+        if (isInCart(name)) {
+            btn.textContent = 'In Cart ✓';
+            btn.classList.add('in-cart');
+        } else {
+            btn.textContent = 'Add to Cart';
+            btn.classList.remove('in-cart');
+        }
+    });
+
+    // Update WhatsApp link
+    var waBtn = document.getElementById('cart-whatsapp-btn');
+    if (waBtn) {
+        if (count > 0) {
+            var msg = encodeURIComponent(buildWhatsAppMessage());
+            waBtn.href = 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + msg;
+            waBtn.classList.remove('disabled');
+        } else {
+            waBtn.href = '#';
+            waBtn.classList.add('disabled');
+        }
+    }
+}
+
+function renderCartDrawer() {
+    var body = document.getElementById('cart-drawer-body');
+    var footer = document.getElementById('cart-drawer-footer');
+    var cart = getCart();
+
+    if (!body) return;
+
+    if (!cart.length) {
+        body.innerHTML = '<p class="cart-empty">Your cart is empty.<br>Tap "Add to Cart" on the vegetables you\'d like to order.</p>';
+        if (footer) footer.style.display = 'none';
+        return;
+    }
+    if (footer) footer.style.display = '';
+
+    var html = '';
+    cart.forEach(function(item) {
+        html +=
+            '<div class="cart-item">' +
+                '<div class="cart-item-info">' +
+                    '<span class="cart-item-name">' + escapeHtml(item.name) +
+                        ' <span class="cart-item-name-hi">' + escapeHtml(item.nameHi) + '</span>' +
+                    '</span>' +
+                '</div>' +
+                '<div class="cart-item-qty">' +
+                    '<button type="button" class="cart-qty-btn" onclick="updateCartQty(\'' + escapeHtml(item.name) + '\', -1)" aria-label="Decrease">−</button>' +
+                    '<span class="cart-qty-value">' + item.qty + ' <span class="cart-item-unit">' + escapeHtml(item.unit) + '</span></span>' +
+                    '<button type="button" class="cart-qty-btn" onclick="updateCartQty(\'' + escapeHtml(item.name) + '\', 1)" aria-label="Increase">+</button>' +
+                '</div>' +
+                '<button type="button" class="cart-item-remove" onclick="removeFromCart(\'' + escapeHtml(item.name) + '\')" aria-label="Remove">&times;</button>' +
+            '</div>';
+    });
+    body.innerHTML = html;
+}
+
+function openCartDrawer() {
+    renderCartDrawer();
+    updateCartUI();
+    document.getElementById('cart-drawer').classList.add('open');
+    document.getElementById('cart-overlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeCartDrawer() {
+    document.getElementById('cart-drawer').classList.remove('open');
+    document.getElementById('cart-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+// Initialize cart UI on page load
+updateCartUI();

@@ -6,6 +6,7 @@
     --clay: #c4a572;
     --sprout: #a8c686;
     --water: #6b9080;
+    --leaf: #5a7a3a;
     --spacing-xs: 0.5rem;
     --spacing-sm: 1rem;
     --spacing-md: 2rem;
@@ -743,6 +744,233 @@ video.produce-slide {
     }
 }
 
+/* ── Cart FAB + Drawer ────────────────────────────────── */
+.cart-fab {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 100;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: none;
+    background: var(--leaf);
+    color: white;
+    font-size: 1.4rem;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(45, 51, 25, 0.3);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    line-height: 56px;
+    text-align: center;
+    padding: 0;
+}
+.cart-fab:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 24px rgba(45, 51, 25, 0.4);
+}
+.cart-fab-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: var(--clay);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    font-family: 'Work Sans', sans-serif;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    line-height: 22px;
+    text-align: center;
+}
+.cart-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 199;
+}
+.cart-overlay.open { display: block; }
+
+.cart-drawer {
+    position: fixed;
+    top: 0;
+    right: -400px;
+    width: 380px;
+    max-width: 90vw;
+    height: 100vh;
+    background: white;
+    z-index: 200;
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    transition: right 0.3s ease;
+}
+.cart-drawer.open { right: 0; }
+
+.cart-drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 1.5rem;
+    border-bottom: 1px solid rgba(45, 51, 25, 0.1);
+}
+.cart-drawer-header h3 {
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--earth-dark);
+    margin: 0;
+}
+.cart-drawer-close {
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    color: var(--earth-medium);
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+}
+.cart-drawer-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem 1.5rem;
+}
+.cart-empty {
+    text-align: center;
+    color: var(--earth-medium);
+    padding: 2rem 0;
+    font-size: 0.95rem;
+}
+.cart-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(45, 51, 25, 0.06);
+}
+.cart-item-info {
+    flex: 1;
+    min-width: 0;
+}
+.cart-item-name {
+    font-family: 'Crimson Pro', serif;
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: var(--earth-dark);
+}
+.cart-item-name-hi {
+    font-weight: 400;
+    font-size: 0.85rem;
+    color: var(--earth-medium);
+    margin-left: 0.3rem;
+}
+.cart-item-qty {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+.cart-qty-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid rgba(45, 51, 25, 0.2);
+    background: var(--sand);
+    color: var(--earth-dark);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: background 0.15s ease;
+}
+.cart-qty-btn:hover { background: var(--sprout); }
+.cart-qty-value {
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    min-width: 2.2rem;
+    text-align: center;
+    color: var(--earth-dark);
+}
+.cart-item-unit {
+    font-size: 0.75rem;
+    color: var(--earth-medium);
+}
+.cart-item-remove {
+    background: none;
+    border: none;
+    color: var(--clay);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.2rem;
+    opacity: 0.6;
+    transition: opacity 0.15s ease;
+}
+.cart-item-remove:hover { opacity: 1; }
+
+.cart-drawer-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid rgba(45, 51, 25, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.cart-send-btn {
+    display: block;
+    text-align: center;
+    width: 100%;
+    font-size: 1rem;
+    padding: 0.85rem;
+}
+.cart-send-btn.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+.cart-clear-btn {
+    background: none;
+    border: none;
+    color: var(--earth-medium);
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.85rem;
+    cursor: pointer;
+    text-align: center;
+    padding: 0.3rem;
+}
+.cart-clear-btn:hover { color: var(--clay); }
+
+/* Add to cart button on produce cards */
+.add-to-cart-btn {
+    display: block;
+    width: 100%;
+    padding: 0.65rem;
+    border: 2px solid var(--leaf);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--leaf);
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+    margin-top: 0.75rem;
+}
+.add-to-cart-btn:hover {
+    background: var(--leaf);
+    color: white;
+}
+.add-to-cart-btn.in-cart {
+    background: var(--sprout);
+    border-color: var(--sprout);
+    color: var(--earth-dark);
+}
+
+@media (max-width: 600px) {
+    .cart-fab { bottom: 1rem; right: 1rem; width: 50px; height: 50px; font-size: 1.2rem; line-height: 50px; }
+    .cart-drawer { width: 100vw; max-width: 100vw; }
+}
+
 /* ── Plants Section ───────────────────────────────────── */
 .plants-forest-group {
     margin-bottom: var(--spacing-sm);
@@ -935,11 +1163,17 @@ video.produce-slide {
     gap: 0;
     margin-top: var(--spacing-lg);
     margin-bottom: var(--spacing-sm);
-    position: relative;
+    position: sticky;
+    top: 0;
+    z-index: 90;
+    background: rgba(250, 248, 245, 0.95);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     overflow-x: auto;
-    padding: 1rem 0;
+    padding: 0.75rem 0;
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
+    border-bottom: 1px solid rgba(45, 51, 25, 0.08);
 }
 .cycle-timeline::-webkit-scrollbar { display: none; }
 
@@ -1062,7 +1296,7 @@ video.produce-slide {
 @media (max-width: 768px) {
     .cycle-timeline {
         justify-content: flex-start;
-        padding: 1rem 0.5rem;
+        padding: 0.6rem 0.5rem;
     }
     .cycle-node { min-width: 72px; padding: 0.4rem 0.5rem; }
     .cycle-icon { width: 44px; height: 44px; font-size: 1.3rem; }

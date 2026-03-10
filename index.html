@@ -61,7 +61,7 @@
                 <li><a href="#practices">Practices</a></li>
                 <li><a href="#seasons">Seasons</a></li>
                 <li><a href="#gallery">Gallery</a></li>
-                <li><a href="#fresh-produce">Fresh Produce</a></li>
+                <li><a href="produce.html">Fresh Produce</a></li>
                 <li><a href="#plants">What's growing</a></li>
                 <li><a href="#getting-started">Get Started</a></li>
                 <li><a href="#community">Community</a></li>
@@ -238,18 +238,16 @@
         <p class="section-next"><a href="#fresh-produce">Next: Fresh from the Farm</a></p>
     </section>
 
-    <!-- Fresh Produce — vegetables available for customers -->
+    <!-- Fresh Produce — teaser linking to dedicated page -->
     <section id="fresh-produce" class="produce-section">
         <div class="section">
             <h2 class="section-title fade-in">Fresh from the Farm</h2>
             <p class="produce-intro fade-in">Naturally grown vegetables, harvested fresh and chemical-free. Available for pickup from the farm.</p>
-            <div class="produce-filters fade-in" id="produce-filters"></div>
             <div id="produce-grid" class="produce-grid">
-                <!-- Built by JS from vegetables-config.js -->
+                <!-- JS builds a preview of available items -->
             </div>
-            <div class="produce-cta fade-in">
-                <p>Want to order? Message us on WhatsApp to check availability and arrange pickup.</p>
-                <a href="https://wa.me/919460813090?text=Hi%2C%20I%27d%20like%20to%20know%20about%20available%20vegetables" target="_blank" rel="noopener noreferrer" class="cta-button">Order on WhatsApp</a>
+            <div class="produce-cta fade-in" style="padding-top: var(--spacing-md);">
+                <a href="produce.html" class="cta-button">Browse All Vegetables &rarr;</a>
             </div>
         </div>
         <p class="section-next"><a href="#getting-started">Next: Getting Started</a></p>
@@ -415,6 +413,25 @@
         </div>
     </footer>
 
+    <!-- Cart FAB + Drawer -->
+    <button type="button" class="cart-fab" id="cart-fab" aria-label="Open cart" style="display:none;" onclick="openCartDrawer()">
+        🛒 <span class="cart-fab-badge" id="cart-fab-badge">0</span>
+    </button>
+    <div class="cart-overlay" id="cart-overlay" onclick="closeCartDrawer()"></div>
+    <div class="cart-drawer" id="cart-drawer" aria-label="Your order">
+        <div class="cart-drawer-header">
+            <h3>Your Order</h3>
+            <button type="button" class="cart-drawer-close" onclick="closeCartDrawer()" aria-label="Close cart">&times;</button>
+        </div>
+        <div class="cart-drawer-body" id="cart-drawer-body">
+            <!-- Cart items rendered by JS -->
+        </div>
+        <div class="cart-drawer-footer" id="cart-drawer-footer">
+            <a href="#" id="cart-whatsapp-btn" class="cta-button cart-send-btn" target="_blank" rel="noopener noreferrer">Send Order on WhatsApp</a>
+            <button type="button" class="cart-clear-btn" id="cart-clear-btn" onclick="clearCart()">Clear Cart</button>
+        </div>
+    </div>
+
     <!-- Load configs then main script -->
     <script src="gallery-config.js"></script>
     <script src="plants-config.js"></script>
@@ -437,5 +454,6 @@
         <button class="lightbox-nav lightbox-next" id="lightbox-next" onclick="event.stopPropagation(); lightboxNav(1);" aria-label="Next image" tabindex="0">&#8250;</button>
         <div class="lightbox-counter" id="lightbox-counter"></div>
     </div>
+
 </body>
 </html>

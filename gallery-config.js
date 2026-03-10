@@ -145,8 +145,8 @@ const galleryItems = [
     "category": "harvest"
   },
   {
-    "file": "harvest/morning-harvest-greens.jpeg",
-    "caption": "Fresh from the field: beans, methi, tomatoes, and leafy greens",
+    "file": "harvest/bountiful-harvest-spread.jpeg",
+    "caption": "The day's bounty: tomatoes, brinjal, chillies, potatoes, carrots, and fresh greens",
     "category": "harvest"
   },
 
