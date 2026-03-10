@@ -13,7 +13,7 @@ function createGalleryItem(item) {
 
     if (isVideo) {
         div.innerHTML =
-            '<video controls loop muted loading="lazy">' +
+            '<video controls loop muted preload="none" loading="lazy">' +
             '<source src="gallery/' + item.file + '" type="video/' + item.file.split('.').pop() + '">' +
             'Your browser does not support video playback.' +
             '</video>' +
@@ -381,21 +381,30 @@ if (backToTop) {
     });
 }
 
+// Cache DOM elements queried in scroll handler (once, not per frame)
+const orderBarEl = document.getElementById('mobile-order-bar');
+const fpSectionEl = document.getElementById('fresh-produce');
+const heroBgEl = document.querySelector('.hero-bg');
+
 // Highlight current section in nav (scroll spy)
 const sectionIds = ['top', 'about', 'practices', 'seasons', 'gallery', 'fresh-produce', 'plants', 'getting-started', 'community', 'news', 'contact', 'location'];
+// Cache section elements and nav links (queried once, not per frame)
+var cachedSections = null;
+var cachedNavLinks = null;
 
 function updateActiveNav() {
+    if (!cachedSections) {
+        cachedSections = sectionIds.map(function(id) { return { id: id, el: document.getElementById(id) }; }).filter(function(s) { return s.el; });
+    }
+    if (!cachedNavLinks) {
+        cachedNavLinks = Array.from(document.querySelectorAll('.nav-links a'));
+    }
     const scrollY = window.scrollY;
     let current = 'top';
-    sectionIds.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) {
-            const top = el.offsetTop;
-            const height = el.offsetHeight;
-            if (scrollY >= top - 120) current = id;
-        }
+    cachedSections.forEach(function(s) {
+        if (scrollY >= s.el.offsetTop - 120) current = s.id;
     });
-    document.querySelectorAll('.nav-links a').forEach(link => {
+    cachedNavLinks.forEach(function(link) {
         const href = link.getAttribute('href');
         link.classList.toggle('active', href === '#' + current || (current === 'top' && href === '#top'));
     });
@@ -418,23 +427,20 @@ function onScroll() {
                 backToTop.classList.toggle('visible', window.scrollY > 400);
             }
             // Mobile order bar: hide when inside the fresh-produce section
-            var orderBar = document.getElementById('mobile-order-bar');
-            if (orderBar) {
-                var fpSection = document.getElementById('fresh-produce');
+            if (orderBarEl) {
                 var hide = false;
-                if (fpSection) {
-                    var fpTop = fpSection.offsetTop - 100;
-                    var fpBot = fpTop + fpSection.offsetHeight + 100;
+                if (fpSectionEl) {
+                    var fpTop = fpSectionEl.offsetTop - 100;
+                    var fpBot = fpTop + fpSectionEl.offsetHeight + 100;
                     hide = window.scrollY >= fpTop && window.scrollY <= fpBot;
                 }
-                orderBar.classList.toggle('hidden', hide);
+                orderBarEl.classList.toggle('hidden', hide);
             }
             // Scroll spy
             updateActiveNav();
             // Parallax hero
-            var heroBg = document.querySelector('.hero-bg');
-            if (heroBg && window.scrollY < window.innerHeight) {
-                heroBg.style.transform = 'translateY(' + (window.scrollY * 0.3) + 'px)';
+            if (heroBgEl && window.scrollY < window.innerHeight) {
+                heroBgEl.style.transform = 'translateY(' + (window.scrollY * 0.3) + 'px)';
             }
             scrollTicking = false;
         });
