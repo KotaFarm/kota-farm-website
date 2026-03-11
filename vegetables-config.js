@@ -24,7 +24,7 @@ const vegetablesList = [
   {
     "name": "Tomato",
     "nameHi": "टमाटर",
-    "images": ["gallery/fresh-produce/tomato2.jpeg", "gallery/fresh-produce/veg-tomato.jpeg", "gallery/fresh-produce/tomato1.jpeg", "gallery/fresh-produce/veg-tomato-plants.jpeg", { "type": "video", "src": "gallery/fresh-produce/veg-tomato-video.mp4" }],
+    "images": ["gallery/fresh-produce/tomato2.jpeg", "gallery/fresh-produce/tomato3.jpeg", "gallery/fresh-produce/veg-tomato.jpeg", "gallery/fresh-produce/tomato1.jpeg", "gallery/fresh-produce/veg-tomato-plants.jpeg", { "type": "video", "src": "gallery/fresh-produce/veg-tomato-video.mp4" }],
     "season": "Winter",
     "unit": "kg",
     "desc": "Vine-ripened on bamboo stakes inside shade nets. No pesticides — just sun, soil, and care.",
