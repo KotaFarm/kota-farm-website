@@ -530,6 +530,29 @@ main section[id] {
     opacity: 0.9;
 }
 
+/* Clickable practice cards — link to detailed pages */
+.practice-item-link {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    position: relative;
+}
+.practice-item-link:hover {
+    border-color: var(--sprout);
+    box-shadow: 0 0 0 1px var(--sprout);
+}
+.practice-read-more {
+    display: block;
+    margin-top: 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--sprout);
+    transition: color 0.2s ease;
+}
+.practice-item-link:hover .practice-read-more {
+    color: white;
+}
+
 /* What's growing — bubble cloud; locations from your data only */
 .plants-section {
     background: linear-gradient(180deg, #faf8f5 0%, white 100%);

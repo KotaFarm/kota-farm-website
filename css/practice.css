@@ -1,0 +1,227 @@
+:root {
+    --earth-dark: #2d3319;
+    --earth-medium: #4a5a2f;
+    --earth-light: #8b9862;
+    --sand: #e8dcc4;
+    --clay: #c4a572;
+    --sprout: #a8c686;
+    --water: #6b9080;
+    --leaf: #5a7a3a;
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 2rem;
+    --spacing-lg: 4rem;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+    scroll-behavior: smooth;
+    overflow-x: clip;
+}
+
+body {
+    font-family: 'Work Sans', sans-serif;
+    color: var(--earth-dark);
+    background: #f5f3ef;
+    line-height: 1.7;
+    overflow-x: clip;
+    width: 100%;
+}
+
+/* ── Nav ─────────────────────────────────────────────── */
+.practice-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(245, 243, 239, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(45, 51, 25, 0.1);
+    padding: 0.75rem var(--spacing-md);
+}
+.practice-nav-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+.practice-nav-back {
+    font-size: 1.4rem;
+    color: var(--earth-medium);
+    text-decoration: none;
+    line-height: 1;
+    padding: 0.25rem;
+}
+.practice-nav-back:hover { color: var(--earth-dark); }
+.practice-nav-logo {
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--earth-dark);
+    text-decoration: none;
+}
+
+/* ── Hero banner ─────────────────────────────────────── */
+.practice-hero {
+    position: relative;
+    height: 45vh;
+    min-height: 280px;
+    max-height: 420px;
+    overflow: hidden;
+}
+.practice-hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.practice-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(45, 51, 25, 0.85) 0%, rgba(45, 51, 25, 0.2) 60%, transparent 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: var(--spacing-md);
+}
+.practice-hero-overlay h1 {
+    font-family: 'Crimson Pro', serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    color: white;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+}
+.practice-hero-overlay .practice-tagline {
+    font-size: 1.05rem;
+    color: rgba(255, 255, 255, 0.85);
+    max-width: 900px;
+    margin: 0.5rem auto 0;
+    width: 100%;
+}
+
+/* ── Article body ────────────────────────────────────── */
+.practice-article {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: var(--spacing-lg) var(--spacing-md);
+}
+.practice-article p {
+    font-size: 1.05rem;
+    color: var(--earth-medium);
+    margin-bottom: var(--spacing-md);
+    line-height: 1.8;
+}
+.practice-article h2 {
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.8rem;
+    color: var(--earth-dark);
+    margin-bottom: var(--spacing-sm);
+    margin-top: var(--spacing-lg);
+    padding-bottom: 0.5rem;
+    border-bottom: 3px solid var(--sprout);
+    display: inline-block;
+}
+.practice-article h2:first-of-type {
+    margin-top: 0;
+}
+
+/* ── Photo sections ──────────────────────────────────── */
+.practice-photo {
+    margin: var(--spacing-md) 0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(45, 51, 25, 0.12);
+}
+.practice-photo img,
+.practice-photo video {
+    width: 100%;
+    display: block;
+}
+.practice-photo-caption {
+    padding: 0.75rem 1rem;
+    background: var(--sand);
+    font-size: 0.85rem;
+    color: var(--earth-medium);
+    font-style: italic;
+}
+
+/* Photo grid — two side by side */
+.practice-photo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: var(--spacing-md) 0;
+}
+.practice-photo-grid .practice-photo {
+    margin: 0;
+}
+
+/* ── Key points card ─────────────────────────────────── */
+.practice-highlights {
+    background: var(--sand);
+    border-radius: 12px;
+    padding: var(--spacing-md);
+    margin: var(--spacing-lg) 0 var(--spacing-md);
+    border-left: 4px solid var(--sprout);
+}
+.practice-highlights h3 {
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.3rem;
+    color: var(--earth-dark);
+    margin-bottom: var(--spacing-sm);
+}
+.practice-highlights ul {
+    list-style: none;
+    padding: 0;
+}
+.practice-highlights li {
+    padding: 0.4rem 0;
+    font-size: 0.95rem;
+    color: var(--earth-medium);
+}
+.practice-highlights li::before {
+    content: '💧 ';
+}
+
+/* ── Back link ───────────────────────────────────────── */
+.practice-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--earth-medium);
+    text-decoration: none;
+    font-weight: 500;
+    padding: var(--spacing-sm) 0;
+    border-bottom: 1px solid var(--earth-light);
+    transition: color 0.2s ease;
+    margin-top: var(--spacing-md);
+}
+.practice-back-link:hover {
+    color: var(--earth-dark);
+}
+
+/* ── Footer ──────────────────────────────────────────── */
+.practice-footer {
+    background: var(--earth-dark);
+    color: var(--sand);
+    text-align: center;
+    padding: var(--spacing-md);
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+/* ── Responsive ──────────────────────────────────────── */
+@media (max-width: 600px) {
+    .practice-hero {
+        height: 35vh;
+        min-height: 220px;
+    }
+    .practice-photo-grid {
+        grid-template-columns: 1fr;
+    }
+    .practice-article {
+        padding: var(--spacing-md) var(--spacing-sm);
+    }
+}
