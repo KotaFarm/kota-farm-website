@@ -387,7 +387,7 @@ const fpSectionEl = document.getElementById('fresh-produce');
 const heroBgEl = document.querySelector('.hero-bg');
 
 // Highlight current section in nav (scroll spy)
-const sectionIds = ['top', 'about', 'practices', 'seasons', 'gallery', 'fresh-produce', 'plants', 'getting-started', 'community', 'news', 'contact', 'location'];
+const sectionIds = ['top', 'about', 'practices', 'seasons', 'gallery', 'fresh-produce', 'plants', 'getting-started', 'community', 'blog', 'news', 'contact', 'location'];
 // Cache section elements and nav links (queried once, not per frame)
 var cachedSections = null;
 var cachedNavLinks = null;
