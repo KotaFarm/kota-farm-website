@@ -751,7 +751,7 @@ function animateCounters() {
 document.addEventListener('DOMContentLoaded', function() {
     var contrastBtn = document.getElementById('a11y-contrast');
     var fontBtn = document.getElementById('a11y-font');
-    
+
     if (contrastBtn) {
         contrastBtn.addEventListener('click', function() {
             document.body.classList.toggle('high-contrast');
@@ -759,7 +759,7 @@ document.addEventListener('DOMContentLoaded', function() {
             this.setAttribute('aria-pressed', document.body.classList.contains('high-contrast'));
         });
     }
-    
+
     if (fontBtn) {
         fontBtn.addEventListener('click', function() {
             document.body.classList.toggle('font-large');

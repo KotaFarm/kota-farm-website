@@ -467,5 +467,13 @@
         <div class="lightbox-counter" id="lightbox-counter"></div>
     </div>
 
+    <!-- Service Worker registration for offline support -->
+    <script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+            navigator.serviceWorker.register('/sw.js').catch(function() {});
+        });
+    }
+    </script>
 </body>
 </html>
