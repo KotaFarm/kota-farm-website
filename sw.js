@@ -4,7 +4,7 @@
 //  Serves cached content when offline; updates cache in background.
 // ============================================================
 
-var CACHE_NAME = 'kota-farm-v1';
+var CACHE_NAME = 'kota-farm-v4';
 
 // App shell — cached on install for instant repeat loads
 var SHELL_URLS = [
@@ -16,7 +16,7 @@ var SHELL_URLS = [
     '/gallery-config.js',
     '/plants-config.js',
     '/vegetables-config.js',
-    '/site-images/hero-background.jpeg',
+    '/gallery/the-land/farm-sunset.jpeg',
     '/site-images/community-workshop.jpeg',
     '/site-images/farm-overview.jpeg'
 ];
