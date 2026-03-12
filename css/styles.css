@@ -1284,7 +1284,7 @@ video.produce-slide {
     position: sticky;
     top: 0;
     z-index: 90;
-    background: rgba(250, 248, 245, 0.95);
+    background: rgba(232, 220, 196, 0.92);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     overflow-x: auto;
@@ -1292,7 +1292,7 @@ video.produce-slide {
     padding: 0.75rem 0;
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
-    border-bottom: 1px solid rgba(45, 51, 25, 0.08);
+    border-bottom: 1px solid rgba(45, 51, 25, 0.1);
     max-width: 100%;
 }
 .cycle-timeline::-webkit-scrollbar { display: none; }
@@ -1328,9 +1328,9 @@ video.produce-slide {
     align-items: center;
     justify-content: center;
     font-size: 1.6rem;
-    background: white;
+    background: var(--sand);
     border: 3px solid var(--earth-light);
-    box-shadow: 0 2px 8px rgba(45, 51, 25, 0.1);
+    box-shadow: 0 2px 8px rgba(45, 51, 25, 0.08);
     transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
     position: relative;
     z-index: 2;
@@ -1338,7 +1338,7 @@ video.produce-slide {
 .cycle-node.active .cycle-icon {
     border-color: var(--sprout);
     box-shadow: 0 0 0 4px rgba(168, 198, 134, 0.25), 0 4px 12px rgba(45, 51, 25, 0.15);
-    background: #f5fbe8;
+    background: rgba(168, 198, 134, 0.2);
 }
 .cycle-node:hover .cycle-icon {
     border-color: var(--sprout);
@@ -1661,7 +1661,7 @@ video.produce-slide {
     position: sticky;
     top: 0;
     z-index: 100;
-    background: rgba(245, 243, 239, 0.95);
+    background: rgba(232, 220, 196, 0.95);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(45, 51, 25, 0.1);
