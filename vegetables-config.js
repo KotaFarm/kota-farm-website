@@ -87,7 +87,7 @@ const vegetablesList = [
   {
     "name": "Beetroot",
     "nameHi": "चुकंदर",
-    "images": ["gallery/fresh-produce/Beetroot.jpeg"],
+    "images": ["gallery/fresh-produce/beet root 1.jpeg", "gallery/fresh-produce/Beetroot.jpeg"],
     "season": "Winter",
     "unit": "kg",
     "desc": "Nutrient-rich root vegetable with a deep red colour and naturally sweet, earthy taste. Packed with antioxidants, fiber, and natural nitrates that support heart health and stamina.",
