@@ -509,22 +509,15 @@
             var email = notifyEmail.value.trim();
             if (!email) return;
 
-            var btn = notifyForm.querySelector('.notify-strip-btn');
-            btn.disabled = true;
-            btn.textContent = 'Subscribing...';
+            localStorage.setItem(NOTIFY_KEY, 'true');
+            showSubscribedState();
 
             fetch(FARM_API, {
                 method: 'POST',
                 mode: 'no-cors',
                 headers: { 'Content-Type': 'text/plain' },
                 body: JSON.stringify({ email: email })
-            }).then(function () {
-                localStorage.setItem(NOTIFY_KEY, 'true');
-                showSubscribedState();
-            }).catch(function () {
-                localStorage.setItem(NOTIFY_KEY, 'true');
-                showSubscribedState();
-            });
+            }).catch(function () {});
         });
     }
 
