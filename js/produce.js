@@ -3,6 +3,7 @@
 
     var CART_KEY = 'kotaFarmCart';
     var WHATSAPP_NUMBER = '919460813090';
+    var AVAILABILITY_API = 'https://script.googleusercontent.com/macros/echo?user_content_key=AY5xjrTXB47qQmwOqobsf-mkeTV_dqBKbSCvE_TLAv9WDbcL4TjGD8723Wb0UVAMkf3w8Vd8dO8Q7VSWXx2f1ENePKFtNkjrUMzdkGIsRr6tb7ag5oMOxbYDcUzvF-ke9azu4x2gxB270tjXPGvlgsnnFt6daw7xwMYEFOYFvK5z_eKdVp96gfPcUDzf-bGT66b-3T256xjNmM8aBV_ktmmaz7kEPI8-KqnSexMEVwM0DcRPDHzqCLDi3xKVgz8cke3BE2ZikxtmgPY9Eur3JRsVY96S59jWPbcE1j5AIIq4&lib=MEv2fg81h-YzakXtALbE6xUf6_5CDyfSd';
 
     // ── Scroll lock (preserves position, prevents layout shift) ──
     var scrollLockCount = 0;
@@ -150,7 +151,7 @@
 
     // ── State ─────────────────────────────────────────────
     var currentFilter = 'all';
-    var currentSort = 'available';
+    var currentSort = 'name-asc';
     var currentSearch = '';
     var vegs = typeof vegetablesList !== 'undefined' ? vegetablesList.slice() : [];
 
@@ -438,7 +439,55 @@
         if (diff > 80) closeDetail();
     }, { passive: true });
 
+    // ── Live availability from Google Sheet (cached per session) ──
+    var AVAIL_CACHE_KEY = 'kotaFarmAvail';
+    var availLoaded = false;
+
+    function mergeAvailability(liveData) {
+        liveData.forEach(function (entry) {
+            var match = vegs.find(function (v) { return v.name === entry.name; });
+            if (match) match.available = entry.available;
+        });
+        availLoaded = true;
+    }
+
+    function loadCachedAvailability() {
+        try {
+            var cached = sessionStorage.getItem(AVAIL_CACHE_KEY);
+            if (cached) {
+                mergeAvailability(JSON.parse(cached));
+                return true;
+            }
+        } catch (e) {}
+        return false;
+    }
+
+    function fetchAvailability() {
+        fetch(AVAILABILITY_API + '&t=' + Date.now())
+            .then(function (res) { return res.json(); })
+            .then(function (data) {
+                try { sessionStorage.setItem(AVAIL_CACHE_KEY, JSON.stringify(data)); } catch (e) {}
+                mergeAvailability(data);
+                renderGrid();
+            })
+            .catch(function () {
+                if (!availLoaded) {
+                    document.querySelectorAll('.p-card-badge.avail-loading').forEach(function (b) {
+                        b.classList.remove('avail-loading');
+                    });
+                }
+            });
+    }
+
     // ── Init ──────────────────────────────────────────────
+    var hadCache = loadCachedAvailability();
     renderGrid();
     updateCartUI();
+
+    if (!hadCache) {
+        document.querySelectorAll('.p-card-badge').forEach(function (b) {
+            b.classList.add('avail-loading');
+        });
+    }
+    fetchAvailability();
 })();

@@ -19,7 +19,7 @@ const vegetablesList = [
     "season": "Year-round",
     "unit": "kg",
     "desc": "Sturdy plants raised organically. Glossy purple fruits perfect for bhartha, bharta, and curries.",
-    "available": true
+    "available": false
   },
   {
     "name": "Tomato",
@@ -28,7 +28,7 @@ const vegetablesList = [
     "season": "Winter",
     "unit": "kg",
     "desc": "Vine-ripened on bamboo stakes inside shade nets. No pesticides — just sun, soil, and care.",
-    "available": true
+    "available": false
   },
   {
     "name": "Coriander",
@@ -64,7 +64,7 @@ const vegetablesList = [
     "season": "Winter",
     "unit": "kg",
     "desc": "Naturally grown potatoes from healthy, chemical-free soil. Firm and flavourful — perfect for curries, parathas, and roasts.",
-    "available": true
+    "available": false
   },
   {
     "name": "Green Chickpea",
@@ -73,7 +73,7 @@ const vegetablesList = [
     "season": "Winter",
     "unit": "kg",
     "desc": "Fresh green chickpeas are the young, tender form of chickpeas harvested before they dry. Mildly sweet, nutty flavour with a soft crunchy texture. Rich in plant protein, fiber, and essential minerals.",
-    "available": true
+    "available": false
   },
   {
     "name": "Beetroot",
@@ -82,6 +82,6 @@ const vegetablesList = [
     "season": "Winter",
     "unit": "kg",
     "desc": "Nutrient-rich root vegetable with a deep red colour and naturally sweet, earthy taste. Packed with antioxidants, fiber, and natural nitrates that support heart health and stamina.",
-    "available": true
+    "available": false
   }
 ];

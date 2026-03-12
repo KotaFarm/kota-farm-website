@@ -718,6 +718,15 @@ body.scroll-locked {
     .produce-grid { grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
 }
 
+.p-card-badge.avail-loading {
+    filter: blur(4px);
+    opacity: 0.5;
+    transition: filter 0.3s ease, opacity 0.3s ease;
+}
+.p-card-badge:not(.avail-loading) {
+    transition: filter 0.3s ease, opacity 0.3s ease;
+}
+
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
         animation-duration: 0.01ms !important;

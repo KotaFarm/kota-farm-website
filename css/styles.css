@@ -704,6 +704,14 @@ video.produce-slide {
     background: var(--clay);
     color: white;
 }
+.produce-badge.avail-loading {
+    filter: blur(4px);
+    opacity: 0.5;
+    transition: filter 0.3s ease, opacity 0.3s ease;
+}
+.produce-badge:not(.avail-loading) {
+    transition: filter 0.3s ease, opacity 0.3s ease;
+}
 .produce-info {
     padding: 1rem 1.25rem 1.25rem;
 }
