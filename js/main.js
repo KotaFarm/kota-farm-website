@@ -321,7 +321,7 @@ function escapeHtml(text) {
 }
 
 // Fresh Produce — vegetable cards for customers
-var AVAILABILITY_API = 'https://script.googleusercontent.com/macros/echo?user_content_key=AY5xjrTXB47qQmwOqobsf-mkeTV_dqBKbSCvE_TLAv9WDbcL4TjGD8723Wb0UVAMkf3w8Vd8dO8Q7VSWXx2f1ENePKFtNkjrUMzdkGIsRr6tb7ag5oMOxbYDcUzvF-ke9azu4x2gxB270tjXPGvlgsnnFt6daw7xwMYEFOYFvK5z_eKdVp96gfPcUDzf-bGT66b-3T256xjNmM8aBV_ktmmaz7kEPI8-KqnSexMEVwM0DcRPDHzqCLDi3xKVgz8cke3BE2ZikxtmgPY9Eur3JRsVY96S59jWPbcE1j5AIIq4&lib=MEv2fg81h-YzakXtALbE6xUf6_5CDyfSd';
+var FARM_API = 'https://script.google.com/macros/s/AKfycbxo11Ng9wAQb7Q9djhdyhDEiBoAL2NG-j5hGbQWyGbsk-oA3aQUP9lwA6DNa80WXtiyHQ/exec';
 
 function renderProducePreview() {
     var grid = document.getElementById('produce-grid');
@@ -384,7 +384,7 @@ function loadProduce() {
         });
     }
 
-    fetch(AVAILABILITY_API + '&t=' + Date.now())
+    fetch(FARM_API + '?t=' + Date.now())
         .then(function(res) { return res.json(); })
         .then(function(data) {
             try { sessionStorage.setItem(AVAIL_CACHE_KEY, JSON.stringify(data)); } catch (e) {}

@@ -3,7 +3,7 @@
 
     var CART_KEY = 'kotaFarmCart';
     var WHATSAPP_NUMBER = '919460813090';
-    var AVAILABILITY_API = 'https://script.googleusercontent.com/macros/echo?user_content_key=AY5xjrTXB47qQmwOqobsf-mkeTV_dqBKbSCvE_TLAv9WDbcL4TjGD8723Wb0UVAMkf3w8Vd8dO8Q7VSWXx2f1ENePKFtNkjrUMzdkGIsRr6tb7ag5oMOxbYDcUzvF-ke9azu4x2gxB270tjXPGvlgsnnFt6daw7xwMYEFOYFvK5z_eKdVp96gfPcUDzf-bGT66b-3T256xjNmM8aBV_ktmmaz7kEPI8-KqnSexMEVwM0DcRPDHzqCLDi3xKVgz8cke3BE2ZikxtmgPY9Eur3JRsVY96S59jWPbcE1j5AIIq4&lib=MEv2fg81h-YzakXtALbE6xUf6_5CDyfSd';
+    var FARM_API = 'https://script.google.com/macros/s/AKfycbxo11Ng9wAQb7Q9djhdyhDEiBoAL2NG-j5hGbQWyGbsk-oA3aQUP9lwA6DNa80WXtiyHQ/exec';
 
     // ── Scroll lock (preserves position, prevents layout shift) ──
     var scrollLockCount = 0;
@@ -463,7 +463,7 @@
     }
 
     function fetchAvailability() {
-        fetch(AVAILABILITY_API + '&t=' + Date.now())
+        fetch(FARM_API + '?t=' + Date.now())
             .then(function (res) { return res.json(); })
             .then(function (data) {
                 try { sessionStorage.setItem(AVAIL_CACHE_KEY, JSON.stringify(data)); } catch (e) {}
@@ -477,6 +477,55 @@
                     });
                 }
             });
+    }
+
+    // ── Notify me subscription ───────────────────────────
+    var NOTIFY_KEY = 'kotaFarmNotify';
+    var notifyForm = document.getElementById('notify-form');
+    var notifyEmail = document.getElementById('notify-email');
+    var notifySuccess = document.getElementById('notify-success');
+    var notifyBanner = document.getElementById('notify-banner');
+
+    function isSubscribed() {
+        return localStorage.getItem(NOTIFY_KEY) === 'true';
+    }
+
+    function showSubscribedState() {
+        if (!notifyBanner) return;
+        if (notifyForm) notifyForm.style.display = 'none';
+        if (notifySuccess) {
+            notifySuccess.style.display = '';
+            notifySuccess.textContent = "You're subscribed — we'll email you when new vegetables are available!";
+        }
+    }
+
+    if (isSubscribed()) {
+        showSubscribedState();
+    }
+
+    if (notifyForm) {
+        notifyForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            var email = notifyEmail.value.trim();
+            if (!email) return;
+
+            var btn = notifyForm.querySelector('.notify-strip-btn');
+            btn.disabled = true;
+            btn.textContent = 'Subscribing...';
+
+            fetch(FARM_API, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain' },
+                body: JSON.stringify({ email: email })
+            }).then(function () {
+                localStorage.setItem(NOTIFY_KEY, 'true');
+                showSubscribedState();
+            }).catch(function () {
+                localStorage.setItem(NOTIFY_KEY, 'true');
+                showSubscribedState();
+            });
+        });
     }
 
     // ── Init ──────────────────────────────────────────────

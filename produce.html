@@ -59,6 +59,18 @@
             <p>No vegetables match your search.</p>
         </div>
 
+        <!-- Notify me strip -->
+        <div class="notify-strip" id="notify-banner">
+            <form class="notify-strip-form" id="notify-form">
+                <span class="notify-strip-label">🔔 Get availability updates</span>
+                <input type="email" class="notify-strip-input" id="notify-email" placeholder="you@email.com" required autocomplete="email">
+                <button type="submit" class="notify-strip-btn">Notify Me</button>
+            </form>
+            <div class="notify-strip-success" id="notify-success" style="display:none;">
+                ✓ Subscribed — we'll keep you posted!
+            </div>
+        </div>
+
         <!-- Detail panel (slides in-page) -->
         <div class="produce-detail-overlay" id="produce-detail-overlay"></div>
         <div class="produce-detail-panel" id="produce-detail-panel" role="dialog" aria-modal="true" aria-label="Vegetable details">

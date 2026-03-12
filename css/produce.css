@@ -727,6 +727,87 @@ body.scroll-locked {
     transition: filter 0.3s ease, opacity 0.3s ease;
 }
 
+/* ── Notify strip ────────────────────────────────────── */
+.notify-strip {
+    margin-top: 2rem;
+    background: linear-gradient(135deg, #f0f6ef 0%, #e8f0e4 100%);
+    border: 1px solid rgba(90, 122, 58, 0.12);
+    border-radius: 10px;
+    padding: 0.85rem 1.25rem;
+}
+.notify-strip-form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+.notify-strip-label {
+    font-size: 0.88rem;
+    color: var(--earth-medium, #4a5a2f);
+    font-weight: 500;
+}
+.notify-strip-input {
+    padding: 0.4rem 0.75rem;
+    border: 1px solid rgba(45, 51, 25, 0.18);
+    border-radius: 6px;
+    font-size: 0.88rem;
+    font-family: inherit;
+    background: white;
+    color: var(--earth-dark, #2d3319);
+    outline: none;
+    width: 190px;
+    transition: border-color 0.2s ease;
+}
+.notify-strip-input::placeholder {
+    color: #999;
+}
+.notify-strip-input:focus {
+    border-color: var(--leaf, #5a7a3a);
+    box-shadow: 0 0 0 2px rgba(90, 122, 58, 0.1);
+}
+.notify-strip-btn {
+    padding: 0.4rem 1rem;
+    background: var(--leaf, #5a7a3a);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s ease;
+}
+.notify-strip-btn:hover {
+    background: var(--earth-medium, #4a5a2f);
+}
+.notify-strip-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+.notify-strip-success {
+    font-size: 0.88rem;
+    color: var(--leaf, #5a7a3a);
+    font-weight: 500;
+    text-align: center;
+}
+
+@media (max-width: 480px) {
+    .notify-strip {
+        padding: 0.75rem 1rem;
+    }
+    .notify-strip-label {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 0.1rem;
+    }
+    .notify-strip-input {
+        flex: 1;
+        min-width: 0;
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
         animation-duration: 0.01ms !important;
