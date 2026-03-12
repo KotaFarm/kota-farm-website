@@ -509,8 +509,14 @@
             var email = notifyEmail.value.trim();
             if (!email) return;
 
-            localStorage.setItem(NOTIFY_KEY, 'true');
-            showSubscribedState();
+            var btn = notifyForm.querySelector('.notify-strip-btn');
+            btn.disabled = true;
+            btn.textContent = '✓';
+
+            setTimeout(function () {
+                localStorage.setItem(NOTIFY_KEY, 'true');
+                showSubscribedState();
+            }, 600);
 
             fetch(FARM_API, {
                 method: 'POST',
