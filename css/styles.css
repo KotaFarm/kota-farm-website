@@ -1656,6 +1656,72 @@ video.produce-slide {
     background: white;
 }
 
+/* ── Gallery Page (standalone) ───────────────────────── */
+.gallery-page-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(245, 243, 239, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(45, 51, 25, 0.1);
+    padding: 0.75rem var(--spacing-md);
+}
+.gallery-page-nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+.gallery-page-nav-back {
+    font-size: 1.4rem;
+    color: var(--earth-medium);
+    text-decoration: none;
+    line-height: 1;
+    padding: 0.25rem;
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.gallery-page-nav-back:hover { color: var(--earth-dark); }
+.gallery-page-nav-logo {
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--earth-dark);
+    text-decoration: none;
+}
+.gallery-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-md) var(--spacing-lg);
+}
+.gallery-page-header {
+    text-align: center;
+    padding: var(--spacing-lg) 0 var(--spacing-md);
+}
+.gallery-page-header h1 {
+    font-family: 'Crimson Pro', serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    color: var(--earth-dark);
+    margin-bottom: 0.5rem;
+}
+.gallery-page-header p {
+    font-size: 1.05rem;
+    color: var(--earth-medium);
+}
+.gallery-page-footer {
+    background: var(--earth-dark);
+    color: var(--sand);
+    text-align: center;
+    padding: var(--spacing-md);
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
 /* ── Blog Section ────────────────────────────────────── */
 .blog-intro {
     text-align: center;

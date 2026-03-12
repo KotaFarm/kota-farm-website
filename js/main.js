@@ -50,161 +50,21 @@ function createGalleryItem(item) {
 }
 
 function loadGallery() {
-    var container = document.getElementById('gallery-grid-container');
-    var filtersBar = document.getElementById('gallery-filters');
-    var loadingEl = document.getElementById('gallery-loading');
+    var preview = document.getElementById('gallery-preview');
+    if (!preview) return;
+    if (typeof galleryItems === 'undefined' || !galleryItems.length) return;
 
-    if (typeof galleryItems === 'undefined' || !galleryItems.length) {
-        if (loadingEl) loadingEl.remove();
-        container.innerHTML = '<p style="color: var(--earth-medium); text-align: center;">Gallery could not be loaded. Make sure gallery-config.js exists.</p>';
-        return;
-    }
-    if (loadingEl) loadingEl.remove();
+    var photos = galleryItems.filter(function(item) { return !item.file.match(/\.(mp4|webm|mov)$/i); });
+    var sample = photos.slice(0, 6);
 
-    // Build category lookup
-    var categories = (typeof galleryCategories !== 'undefined') ? galleryCategories : [];
-    var hasCategories = categories.length > 0 && galleryItems.some(function(i) { return i.category; });
+    var grid = document.createElement('div');
+    grid.className = 'gallery-grid';
+    sample.forEach(function(item) { grid.appendChild(createGalleryItem(item)); });
+    preview.appendChild(grid);
 
-    if (!hasCategories) {
-        // Fallback: flat grid (backwards compatible)
-        var grid = document.createElement('div');
-        grid.className = 'gallery-grid';
-        grid.id = 'gallery-grid';
-        galleryItems.forEach(function(item) { grid.appendChild(createGalleryItem(item)); });
-        container.appendChild(grid);
-    } else {
-        // Group items by category
-        var grouped = {};
-        categories.forEach(function(cat) { grouped[cat.id] = []; });
-        galleryItems.forEach(function(item) {
-            var cid = item.category || '';
-            if (grouped[cid]) grouped[cid].push(item);
-        });
-
-        // Build cycle timeline
-        var timeline = document.getElementById('cycle-timeline');
-        if (timeline) {
-            // "All" node
-            var allNode = document.createElement('div');
-            allNode.className = 'cycle-node cycle-node-all active';
-            allNode.setAttribute('data-filter', 'all');
-            allNode.setAttribute('role', 'tab');
-            allNode.setAttribute('aria-selected', 'true');
-            allNode.setAttribute('tabindex', '0');
-            allNode.innerHTML = '<div class="cycle-icon">All</div><div class="cycle-label">All</div>';
-            allNode.addEventListener('click', function() { filterGallery('all'); });
-            allNode.addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); filterGallery('all'); } });
-            timeline.appendChild(allNode);
-
-            // Connector after All
-            var conn0 = document.createElement('div');
-            conn0.className = 'cycle-connector';
-            timeline.appendChild(conn0);
-
-            var cycleCategories = categories.filter(function(c) { return grouped[c.id] && grouped[c.id].length; });
-            cycleCategories.forEach(function(cat, idx) {
-                // Extract emoji from label
-                var parts = cat.label.split(' ');
-                var emoji = parts[0];
-                var name = parts.slice(1).join(' ');
-
-                var node = document.createElement('div');
-                node.className = 'cycle-node';
-                node.setAttribute('data-filter', cat.id);
-                node.setAttribute('role', 'tab');
-                node.setAttribute('aria-selected', 'false');
-                node.setAttribute('tabindex', '0');
-                node.innerHTML = '<div class="cycle-icon">' + emoji + '</div><div class="cycle-label">' + escapeHtml(name) + '</div>';
-                node.addEventListener('click', function() { filterGallery(cat.id); });
-                node.addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); filterGallery(cat.id); } });
-                timeline.appendChild(node);
-
-                // Connector arrow (not after last)
-                if (idx < cycleCategories.length - 1) {
-                    var conn = document.createElement('div');
-                    conn.className = 'cycle-connector';
-                    timeline.appendChild(conn);
-                }
-            });
-
-            // Return arrow — the loop closes
-            var returnArrow = document.createElement('div');
-            returnArrow.className = 'cycle-return';
-            returnArrow.innerHTML = '⟳';
-            returnArrow.setAttribute('aria-hidden', 'true');
-            returnArrow.setAttribute('title', 'The cycle continues — tend returns to prepare');
-            timeline.appendChild(returnArrow);
-        }
-
-        // Also build hidden filter tabs for backwards compat
-        categories.forEach(function(cat) {
-            if (!grouped[cat.id] || !grouped[cat.id].length) return;
-            var btn = document.createElement('button');
-            btn.className = 'gallery-filter-btn';
-            btn.type = 'button';
-            btn.setAttribute('role', 'tab');
-            btn.setAttribute('aria-selected', 'false');
-            btn.setAttribute('data-filter', cat.id);
-            btn.textContent = cat.label;
-            btn.addEventListener('click', function() { filterGallery(cat.id); });
-            filtersBar.appendChild(btn);
-        });
-
-        // Build category groups
-        categories.forEach(function(cat) {
-            var items = grouped[cat.id];
-            if (!items || !items.length) return;
-
-            var group = document.createElement('div');
-            group.className = 'gallery-category-group';
-            group.setAttribute('data-category', cat.id);
-
-            var title = document.createElement('h3');
-            title.className = 'gallery-category-title fade-in';
-            title.textContent = cat.label;
-            group.appendChild(title);
-
-            var grid = document.createElement('div');
-            grid.className = 'gallery-grid';
-            items.forEach(function(item) { grid.appendChild(createGalleryItem(item)); });
-            group.appendChild(grid);
-
-            container.appendChild(group);
-        });
-    }
-
-    // Re-observe new elements for fade-in animation
     document.querySelectorAll('.fade-in:not(.observed)').forEach(function(el) {
         observer.observe(el);
         el.classList.add('observed');
-    });
-}
-
-function filterGallery(categoryId) {
-    // Update cycle timeline nodes
-    document.querySelectorAll('.cycle-node').forEach(function(node) {
-        var isActive = node.getAttribute('data-filter') === categoryId;
-        node.classList.toggle('active', isActive);
-        node.setAttribute('aria-selected', isActive ? 'true' : 'false');
-    });
-
-    // Update hidden filter tabs
-    document.querySelectorAll('.gallery-filter-btn').forEach(function(btn) {
-        btn.setAttribute('aria-selected', btn.getAttribute('data-filter') === categoryId ? 'true' : 'false');
-    });
-
-    // Show / hide groups
-    document.querySelectorAll('.gallery-category-group').forEach(function(group) {
-        if (categoryId === 'all') {
-            group.classList.remove('hidden');
-        } else {
-            group.classList.toggle('hidden', group.getAttribute('data-category') !== categoryId);
-        }
-    });
-
-    // Re-trigger fade-in for newly visible items
-    document.querySelectorAll('.gallery-category-group:not(.hidden) .fade-in').forEach(function(el) {
-        observer.observe(el);
     });
 }
 
