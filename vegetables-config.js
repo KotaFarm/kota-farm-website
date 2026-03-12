@@ -69,10 +69,19 @@ const vegetablesList = [
   {
     "name": "Green Chickpea",
     "nameHi": "हरा चना",
-    "images": ["gallery/fresh-produce/Green chickpea.jpeg"],
+    "images": ["gallery/fresh-produce/Green chickpea.jpeg", "gallery/fresh-produce/green chana 1.jpeg"],
     "season": "Winter",
     "unit": "kg",
     "desc": "Fresh green chickpeas are the young, tender form of chickpeas harvested before they dry. Mildly sweet, nutty flavour with a soft crunchy texture. Rich in plant protein, fiber, and essential minerals.",
+    "available": false
+  },
+  {
+    "name": "Carrot",
+    "nameHi": "गाजर",
+    "images": ["gallery/fresh-produce/carrot.jpeg"],
+    "season": "Winter",
+    "unit": "kg",
+    "desc": "Sweet, crunchy carrots grown in healthy soil without chemicals. Rich in beta-carotene and perfect for salads, juices, and cooking.",
     "available": false
   },
   {
