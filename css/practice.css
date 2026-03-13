@@ -186,6 +186,9 @@ body {
 .practice-highlights li::before {
     content: '💧 ';
 }
+.practice-highlights[data-icon="leaf"] li::before {
+    content: '🍂 ';
+}
 
 /* ── Back link ───────────────────────────────────────── */
 .practice-back-link {
