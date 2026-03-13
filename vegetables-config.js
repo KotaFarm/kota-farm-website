@@ -69,7 +69,7 @@ const vegetablesList = [
   {
     "name": "Green Chickpea",
     "nameHi": "हरा चना",
-    "images": ["gallery/fresh-produce/Green chickpea.jpeg", "gallery/fresh-produce/green chana 1.jpeg"],
+    "images": ["gallery/fresh-produce/Green chickpea.jpeg", "gallery/fresh-produce/green chana 1.jpeg", "gallery/fresh-produce/WhatsApp Image 2026-03-12 at 18.52.16.jpeg"],
     "season": "Winter",
     "unit": "kg",
     "desc": "Fresh green chickpeas are the young, tender form of chickpeas harvested before they dry. Mildly sweet, nutty flavour with a soft crunchy texture. Rich in plant protein, fiber, and essential minerals.",
