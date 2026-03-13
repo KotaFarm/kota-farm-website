@@ -412,7 +412,6 @@ main section[id] {
 .plants-section .section-next,
 .steps .section-next,
 .community .section-next,
-.news .section-next,
 .contact-section .section-next,
 .map-section .section-next {
     padding-right: var(--spacing-md);
@@ -1653,17 +1652,29 @@ video.produce-slide {
 
 .workshop-image {
     width: 100%;
-    max-width: 100%;
+    max-width: 700px;
     height: auto;
     display: block;
+    margin: var(--spacing-md) auto 0;
     border-radius: 12px;
     box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
-    margin-top: var(--spacing-md);
 }
 
-/* In the News Section */
-.news {
-    background: white;
+/* Community: In the News subsection */
+.community-news-heading {
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: white;
+    margin-top: var(--spacing-lg);
+    margin-bottom: var(--spacing-sm);
+}
+.community .news-intro {
+    color: rgba(255, 255, 255, 0.95);
+    margin-bottom: var(--spacing-md);
+}
+.community .news-grid {
+    margin-top: var(--spacing-md);
 }
 
 /* ── Gallery Page (standalone) ───────────────────────── */
@@ -1826,7 +1837,7 @@ video.produce-slide {
 .news-card-img-wrap {
     position: relative;
     width: 100%;
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 16 / 9;
     overflow: hidden;
     background: rgba(45, 51, 25, 0.06);
 }
