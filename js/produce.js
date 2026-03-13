@@ -29,7 +29,7 @@
 
     // ── Helpers ────────────────────────────────────────────
     function esc(text) {
-        return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
     function getCart() {
         try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; } catch (e) { return []; }
