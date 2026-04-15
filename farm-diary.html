@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A running record of life at Kota Natural Farm — seedlings, harvests, trees, soil, and everything in between.">
+    <title>Farm Diary | Kota Natural Farm</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%232d3319'/%3E%3Cpath d='M16 6c-2 4-1 8 0 11 1-3 5-7 9-8-3 3-6 7-7 11 0 0-1 4-2 6-1-2-2-6-2-6-1-4-4-8-7-11 4 1 8 5 9 8C17 14 18 10 16 6z' fill='%23a8c686'/%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/practice.css">
+    <style>
+        .fd-archive-header {
+            background: var(--sand);
+            padding: 4rem 2rem 3rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(139,152,98,0.25);
+        }
+        .fd-archive-header h1 {
+            font-family: 'Crimson Pro', serif;
+            font-size: clamp(2.2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            color: var(--earth-dark);
+            margin-bottom: 0.5rem;
+        }
+        .fd-archive-header p {
+            color: var(--earth-medium);
+            font-size: 1rem;
+            font-weight: 300;
+            max-width: 440px;
+            margin: 0 auto;
+        }
+
+        .fd-archive-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
+            gap: 1.5rem;
+            max-width: 1100px;
+            margin: 3rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .fd-archive-card {
+            background: white;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 3px 16px rgba(45,51,25,0.08);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+        .fd-archive-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 28px rgba(45,51,25,0.14);
+        }
+        .fd-archive-img {
+            aspect-ratio: 4 / 3;
+            overflow: hidden;
+        }
+        .fd-archive-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s ease;
+        }
+        .fd-archive-card:hover .fd-archive-img img {
+            transform: scale(1.05);
+        }
+        .fd-archive-body {
+            padding: 1.1rem 1.25rem 1.4rem;
+        }
+        .fd-archive-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .fd-archive-tag {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--water);
+            background: rgba(107,144,128,0.12);
+            padding: 0.2rem 0.55rem;
+            border-radius: 10px;
+        }
+        .fd-archive-date {
+            font-size: 0.78rem;
+            color: var(--earth-light);
+        }
+        .fd-archive-title {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--earth-dark);
+            margin-bottom: 0.45rem;
+            line-height: 1.3;
+        }
+        .fd-archive-note {
+            font-size: 0.88rem;
+            color: var(--earth-medium);
+            line-height: 1.65;
+        }
+
+        .fd-empty {
+            text-align: center;
+            padding: 5rem 2rem;
+            color: var(--earth-light);
+            font-size: 1rem;
+            font-weight: 300;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="practice-nav">
+    <div class="practice-nav-inner">
+        <a href="index.html" class="practice-nav-back" aria-label="Back to home">←</a>
+        <a href="index.html" class="practice-nav-logo">Kota Natural Farm</a>
+    </div>
+</nav>
+
+<div class="fd-archive-header">
+    <h1>Farm Diary</h1>
+    <p>A running record of life on the farm — what's growing, what's changing, what we're learning.</p>
+</div>
+
+<div class="fd-archive-grid" id="fd-archive-grid">
+    <!-- Built by JS from diary-config.js -->
+</div>
+
+<footer class="practice-footer">
+    <p>© 2026 Kota Natural Farm · Khedli Pandya, Kota, Rajasthan</p>
+</footer>
+
+<script src="diary-config.js"></script>
+<script>
+(function() {
+    var grid = document.getElementById('fd-archive-grid');
+    if (!grid || typeof DIARY_ENTRIES === 'undefined' || DIARY_ENTRIES.length === 0) {
+        grid.innerHTML = '<p class="fd-empty">Farm updates coming soon.</p>';
+        return;
+    }
+    DIARY_ENTRIES.forEach(function(entry) {
+        var card = document.createElement('div');
+        card.className = 'fd-archive-card';
+        card.innerHTML =
+            '<div class="fd-archive-img">' +
+                '<img src="' + entry.photo + '" alt="' + entry.title + '" loading="lazy">' +
+            '</div>' +
+            '<div class="fd-archive-body">' +
+                '<div class="fd-archive-meta">' +
+                    '<span class="fd-archive-tag">' + entry.tag + '</span>' +
+                    '<span class="fd-archive-date">' + entry.date + '</span>' +
+                '</div>' +
+                '<div class="fd-archive-title">' + entry.title + '</div>' +
+                '<div class="fd-archive-note">' + entry.note + '</div>' +
+            '</div>';
+        grid.appendChild(card);
+    });
+})();
+</script>
+</body>
+</html>

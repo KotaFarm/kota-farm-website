@@ -2638,3 +2638,5 @@ body.font-large .nav-links a { font-size: 1.05rem; }
         opacity: 1;
     }
 }
+
+/* Farm Diary — no custom CSS needed, reuses .blog-card and .section */
