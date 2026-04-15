@@ -551,6 +551,181 @@ body.scroll-locked {
 .detail-cart-btn:hover { background: var(--earth-medium); }
 .detail-cart-btn.in-cart { background: var(--leaf); }
 
+/* ── Veg info tabs (nutrition + India context) ─────────── */
+.veg-info-tabs {
+    display: flex;
+    border-bottom: 2px solid #f0ede6;
+    margin: 0.25rem -1.75rem 0;
+    padding: 0 1.75rem;
+}
+.veg-info-tab {
+    flex: 1;
+    padding: 0.6rem 0.5rem;
+    font-family: inherit;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--earth-light);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+    text-align: center;
+}
+.veg-info-tab.active {
+    color: var(--leaf);
+    border-bottom-color: var(--leaf);
+}
+.veg-info-panel { display: none; padding: 1.1rem 0 0.4rem; }
+.veg-info-panel.active { display: block; }
+
+.good-for-label,
+.nutrients-label {
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--earth-light);
+    margin-bottom: 0.5rem;
+}
+.good-for-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+}
+.good-for-pill {
+    background: #f0f7ea;
+    color: var(--leaf);
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 0.25em 0.75em;
+    border-radius: 999px;
+    border: 1px solid #d4e8c0;
+}
+.nutrients-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    margin-bottom: 1rem;
+}
+.nutrient-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+.nutrient-name {
+    font-size: 0.82rem;
+    color: var(--earth-dark);
+    min-width: 88px;
+}
+.nutrient-bar-wrap {
+    flex: 1;
+    height: 7px;
+    background: #f0ede6;
+    border-radius: 99px;
+    overflow: hidden;
+}
+.nutrient-bar {
+    height: 100%;
+    border-radius: 99px;
+    background: var(--sprout);
+    transition: width 0.5s ease;
+}
+.nutrient-bar.high { background: var(--leaf); }
+.nutrient-pct {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--earth-medium);
+    min-width: 52px;
+    text-align: right;
+    white-space: nowrap;
+}
+.nutrient-pct.high { color: var(--leaf); }
+.nutrient-sub {
+    font-size: 0.7rem;
+    color: #999;
+    margin-top: 0.1rem;
+    padding-left: 88px;
+}
+.did-you-know {
+    background: #f5f9f0;
+    border-left: 3px solid var(--sprout);
+    border-radius: 0 8px 8px 0;
+    padding: 0.65rem 0.9rem;
+    margin-bottom: 0.6rem;
+}
+.did-you-know-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--leaf);
+    margin-bottom: 0.25rem;
+}
+.did-you-know-text {
+    font-size: 0.82rem;
+    color: var(--earth-dark);
+    line-height: 1.55;
+}
+.india-stat-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    margin-bottom: 1rem;
+}
+.india-stat {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.india-stat-icon {
+    font-size: 1.15rem;
+    flex-shrink: 0;
+    margin-top: 0.05rem;
+}
+.india-stat-label {
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--earth-light);
+    margin-bottom: 0.18rem;
+}
+.india-stat-value {
+    font-size: 0.87rem;
+    color: var(--earth-dark);
+    line-height: 1.45;
+}
+.organic-note {
+    background: #fffbf0;
+    border-left: 3px solid var(--clay);
+    border-radius: 0 8px 8px 0;
+    padding: 0.65rem 0.9rem;
+    margin-bottom: 0.6rem;
+}
+.organic-note-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--clay);
+    margin-bottom: 0.25rem;
+}
+.organic-note-text {
+    font-size: 0.82rem;
+    color: var(--earth-dark);
+    line-height: 1.55;
+}
+.data-source {
+    font-size: 0.67rem;
+    color: #aaa;
+    margin-top: 0.5rem;
+}
+
 /* ── Cart drawer ───────────────────────────────────────── */
 .cart-overlay {
     position: fixed;

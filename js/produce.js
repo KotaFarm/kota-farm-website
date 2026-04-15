@@ -294,6 +294,75 @@
         return typeof first === 'string' ? first : (first.src || '');
     }
 
+    // ── Veg info tabs (nutrition + India context) ─────────
+    function buildVegInfoTabs(veg) {
+        if (!veg.nutrition && !veg.indiaContext) return '';
+
+        var hasNutr = !!veg.nutrition;
+        var hasIndia = !!veg.indiaContext;
+
+        var html = '<div class="veg-info-tabs">';
+        if (hasNutr)  html += '<button class="veg-info-tab' + (hasNutr ? ' active' : '') + '" data-tab="nutrition">\uD83E\uDD57 Nutrition</button>';
+        if (hasIndia) html += '<button class="veg-info-tab' + (!hasNutr ? ' active' : '') + '" data-tab="india">\uD83C\uDDEE\uD83C\uDDF3 India</button>';
+        html += '</div>';
+
+        // Nutrition panel
+        if (hasNutr) {
+            var n = veg.nutrition;
+            html += '<div class="veg-info-panel active" data-panel="nutrition">';
+
+            if (n.goodFor && n.goodFor.length) {
+                html += '<div class="good-for-label">Good for</div><div class="good-for-pills">';
+                n.goodFor.forEach(function (item) { html += '<span class="good-for-pill">' + esc(item) + '</span>'; });
+                html += '</div>';
+            }
+
+            if (n.per100g && n.per100g.length) {
+                html += '<div class="nutrients-label">Per 100g \u00B7 % of daily need</div><div class="nutrients-list">';
+                n.per100g.forEach(function (item) {
+                    var barW = Math.min(item.pct, 100);
+                    var isHigh = item.pct > 100;
+                    var pctLabel = isHigh ? (item.pct + '% \u2705') : (item.pct < 5 ? esc(item.value) : (item.pct + '% DV'));
+                    html += '<div>';
+                    html += '<div class="nutrient-row">';
+                    html += '<span class="nutrient-name">' + esc(item.name) + '</span>';
+                    html += '<div class="nutrient-bar-wrap"><div class="nutrient-bar' + (isHigh ? ' high' : '') + '" style="width:' + barW + '%"></div></div>';
+                    html += '<span class="nutrient-pct' + (isHigh ? ' high' : '') + '">' + pctLabel + '</span>';
+                    html += '</div>';
+                    if (item.note) html += '<div class="nutrient-sub">' + esc(item.note) + '</div>';
+                    html += '</div>';
+                });
+                html += '</div>';
+            }
+
+            if (n.didYouKnow) {
+                html += '<div class="did-you-know"><div class="did-you-know-label">Did you know?</div><div class="did-you-know-text">' + esc(n.didYouKnow) + '</div></div>';
+            }
+
+            html += '<div class="data-disclaimer"><span class="data-disclaimer-icon">\u2139\uFE0F</span><div><strong>Source:</strong> ' + esc(n.source || 'ICMR-NIN IFCT 2017') + '. Values are per 100g of raw vegetable. Actual values may vary by variety and cooking method.</div></div>';
+            html += '</div>';
+        }
+
+        // India context panel
+        if (hasIndia) {
+            var ic = veg.indiaContext;
+            html += '<div class="veg-info-panel' + (!hasNutr ? ' active' : '') + '" data-panel="india">';
+            html += '<div class="india-stat-list">';
+            if (ic.producingStates) html += '<div class="india-stat"><span class="india-stat-icon">\uD83C\uDF3E</span><div><div class="india-stat-label">Top producing states</div><div class="india-stat-value">' + esc(ic.producingStates) + '</div></div></div>';
+            if (ic.exportMarkets)   html += '<div class="india-stat"><span class="india-stat-icon">\u2708\uFE0F</span><div><div class="india-stat-label">Export markets</div><div class="india-stat-value">' + esc(ic.exportMarkets) + '</div></div></div>';
+            if (ic.position)        html += '<div class="india-stat"><span class="india-stat-icon">\uD83D\uDCE6</span><div><div class="india-stat-label">India\'s position</div><div class="india-stat-value">' + esc(ic.position) + '</div></div></div>';
+            if (ic.bestSeason)      html += '<div class="india-stat"><span class="india-stat-icon">\uD83D\uDCC5</span><div><div class="india-stat-label">Best season in India</div><div class="india-stat-value">' + esc(ic.bestSeason) + '</div></div></div>';
+            html += '</div>';
+            if (ic.organicAdvantage) {
+                html += '<div class="organic-note"><div class="organic-note-label">\uD83C\uDF31 The organic advantage</div><div class="organic-note-text">' + esc(ic.organicAdvantage) + '</div></div>';
+            }
+            html += '<div class="data-disclaimer"><span class="data-disclaimer-icon">\u2139\uFE0F</span><div><strong>Source:</strong> ' + esc(ic.source || 'APEDA 2024\u201325') + '. Trade figures are approximate and updated annually.</div></div>';
+            html += '</div>';
+        }
+
+        return html;
+    }
+
     // ── Detail panel ──────────────────────────────────────
     var overlay = document.getElementById('produce-detail-overlay');
     var panel = document.getElementById('produce-detail-panel');
@@ -343,11 +412,25 @@
                     '<div class="detail-meta-item"><span class="detail-meta-label">Unit</span>' + esc(veg.unit || 'kg') + '</div>' +
                 '</div>' +
                 '<p class="detail-desc">' + esc(veg.desc) + '</p>' +
+                buildVegInfoTabs(veg) +
                 (veg.available
                     ? '<button type="button" class="detail-cart-btn' + (isInCart(veg.name) ? ' in-cart' : '') + '" data-name="' + esc(veg.name) + '">' +
                         (isInCart(veg.name) ? 'In Cart ✓' : 'Add to Cart') + '</button>'
                     : '') +
             '</div>';
+
+        // Wire veg info tabs
+        detailBody.querySelectorAll('.veg-info-tab').forEach(function (tab) {
+            tab.addEventListener('click', function () {
+                var target = tab.getAttribute('data-tab');
+                detailBody.querySelectorAll('.veg-info-tab').forEach(function (t) {
+                    t.classList.toggle('active', t.getAttribute('data-tab') === target);
+                });
+                detailBody.querySelectorAll('.veg-info-panel').forEach(function (p) {
+                    p.classList.toggle('active', p.getAttribute('data-panel') === target);
+                });
+            });
+        });
 
         // Wire gallery navigation
         if (showNav) {
