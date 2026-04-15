@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Cycle Transparency — Kota Natural Farm</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --earth-dark: #2d3319;
+            --earth-medium: #4a5a2f;
+            --earth-light: #8b9862;
+            --sand: #e8dcc4;
+            --clay: #c4a572;
+            --sprout: #a8c686;
+            --water: #6b9080;
+            --leaf: #5a7a3a;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background: var(--sand);
+            color: var(--earth-dark);
+            line-height: 1.7;
+        }
+
+        /* ── Nav ── */
+        nav {
+            background: var(--earth-dark);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        nav a { color: var(--sand); text-decoration: none; font-size: 0.85rem; opacity: 0.7; }
+        nav .brand { font-family: 'Crimson Pro', serif; font-size: 1.2rem; opacity: 1; font-weight: 600; }
+
+        /* ── Page header ── */
+        .page-header {
+            background: var(--earth-medium);
+            color: var(--sand);
+            padding: 3rem 2rem 2.5rem;
+            text-align: center;
+        }
+        .page-header h1 {
+            font-family: 'Crimson Pro', serif;
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            margin-bottom: 0.5rem;
+        }
+        .page-header p {
+            opacity: 0.8;
+            font-size: 1rem;
+            font-weight: 300;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        /* ── Main layout ── */
+        main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem 4rem;
+        }
+
+        /* ── Crop selector tabs ── */
+        .crop-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        .crop-tab {
+            padding: 0.45rem 1rem;
+            border-radius: 999px;
+            border: 1.5px solid var(--earth-light);
+            background: transparent;
+            color: var(--earth-medium);
+            font-family: 'Work Sans', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .crop-tab:hover { background: var(--sprout); border-color: var(--sprout); color: var(--earth-dark); }
+        .crop-tab.active { background: var(--earth-dark); border-color: var(--earth-dark); color: var(--sand); }
+        .crop-tab .dot {
+            display: inline-block;
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            margin-right: 5px;
+            background: var(--earth-light);
+        }
+        .crop-tab.active .dot { background: var(--sprout); }
+        .crop-tab .avail-dot {
+            background: #6abf69;
+        }
+
+        /* ── Crop cycle card ── */
+        .crop-card { display: none; }
+        .crop-card.visible { display: block; }
+
+        .crop-card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .crop-name {
+            font-family: 'Crimson Pro', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--earth-dark);
+        }
+        .crop-subtitle {
+            font-size: 0.9rem;
+            color: var(--earth-light);
+            margin-top: 0.15rem;
+        }
+        .availability-badge {
+            padding: 0.4rem 1rem;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            flex-shrink: 0;
+        }
+        .available { background: #d4edda; color: #1e6e30; }
+        .unavailable { background: #f0ede6; color: #7a6a50; }
+
+        /* ── Practice tags ── */
+        .practice-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-bottom: 2rem;
+        }
+        .tag {
+            padding: 0.3rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            background: #dde8cc;
+            color: var(--earth-medium);
+        }
+        .tag.highlight { background: var(--earth-medium); color: var(--sand); }
+
+        /* ── Timeline ── */
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 6px;
+            bottom: 6px;
+            width: 2px;
+            background: var(--clay);
+            opacity: 0.4;
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 1.8rem;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -1.65rem;
+            top: 6px;
+            width: 12px; height: 12px;
+            border-radius: 50%;
+            background: var(--clay);
+            border: 2px solid var(--sand);
+        }
+        .timeline-item.current::before { background: var(--earth-medium); }
+        .timeline-item.upcoming::before { background: var(--sand); border-color: var(--clay); }
+
+        .timeline-phase {
+            font-size: 0.72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--earth-light);
+            margin-bottom: 0.2rem;
+        }
+        .timeline-title {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--earth-dark);
+            margin-bottom: 0.25rem;
+        }
+        .timeline-date {
+            font-size: 0.8rem;
+            color: var(--clay);
+            margin-bottom: 0.4rem;
+        }
+        .timeline-body {
+            font-size: 0.92rem;
+            color: #4a4030;
+            background: rgba(255,255,255,0.45);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            border-left: 3px solid var(--clay);
+        }
+        .timeline-body.honest {
+            border-left-color: #c4895a;
+            background: #fdf5ec;
+        }
+
+        /* ── Key facts strip ── */
+        .key-facts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1px;
+            background: var(--clay);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        .key-fact {
+            background: #f5efe4;
+            padding: 1rem 1.2rem;
+            text-align: center;
+        }
+        .key-fact-label {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: var(--earth-light);
+            margin-bottom: 0.25rem;
+        }
+        .key-fact-value {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--earth-dark);
+        }
+
+        /* ── Ajay's note ── */
+        .field-note {
+            display: flex;
+            gap: 1rem;
+            background: var(--earth-dark);
+            color: var(--sand);
+            border-radius: 10px;
+            padding: 1.25rem 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .field-note-avatar {
+            width: 38px; height: 38px;
+            border-radius: 50%;
+            background: var(--earth-medium);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .field-note-label {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            opacity: 0.6;
+            margin-bottom: 0.3rem;
+        }
+        .field-note-text {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            font-style: italic;
+            line-height: 1.6;
+        }
+        .field-note-author {
+            font-size: 0.78rem;
+            opacity: 0.55;
+            margin-top: 0.4rem;
+        }
+
+        /* ── Section divider ── */
+        .section-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--earth-light);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 600px) {
+            .crop-card-header { flex-direction: column; }
+            main { padding: 1.5rem 1rem 3rem; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="index.html">← Home</a>
+    <a href="#" class="brand">Kota Natural Farm</a>
+</nav>
+
+<div class="page-header">
+    <h1>How We Grow</h1>
+    <p>Every crop, every cycle — seed to harvest, nothing hidden.</p>
+</div>
+
+<main>
+
+    <!-- Crop selector -->
+    <div class="crop-tabs" id="tabs">
+        <button class="crop-tab active" data-crop="tomato">
+            <span class="dot avail-dot"></span>Tomato
+        </button>
+        <button class="crop-tab" data-crop="cauliflower">
+            <span class="dot"></span>Cauliflower
+        </button>
+        <button class="crop-tab" data-crop="coriander">
+            <span class="dot avail-dot"></span>Coriander
+        </button>
+    </div>
+
+    <!-- ══ TOMATO ══ -->
+    <div class="crop-card visible" id="crop-tomato">
+
+        <div class="crop-card-header">
+            <div>
+                <div class="crop-name">Tomato</div>
+                <div class="crop-subtitle">Current cycle · Rabi 2025–26</div>
+            </div>
+            <span class="availability-badge available">✓ Available now</span>
+        </div>
+
+        <div class="practice-tags">
+            <span class="tag highlight">No chemicals</span>
+            <span class="tag highlight">No synthetic fertiliser</span>
+            <span class="tag">Open-pollinated seed</span>
+            <span class="tag">Compost-fed</span>
+            <span class="tag">Hand-harvested</span>
+            <span class="tag">Drip irrigated</span>
+        </div>
+
+        <div class="key-facts">
+            <div class="key-fact">
+                <div class="key-fact-label">Seed source</div>
+                <div class="key-fact-value">Saved seed</div>
+            </div>
+            <div class="key-fact">
+                <div class="key-fact-label">Planted</div>
+                <div class="key-fact-value">Nov 12, 2025</div>
+            </div>
+            <div class="key-fact">
+                <div class="key-fact-label">First harvest</div>
+                <div class="key-fact-value">Jan 28, 2026</div>
+            </div>
+            <div class="key-fact">
+                <div class="key-fact-label">Inputs used</div>
+                <div class="key-fact-value">Compost only</div>
+            </div>
+        </div>
+
+        <div class="section-label">Crop journey</div>
+        <div class="timeline">
+
+            <div class="timeline-item">
+                <div class="timeline-phase">Bed preparation · Oct 28</div>
+                <div class="timeline-title">Soil prepared with farm compost</div>
+                <div class="timeline-body">
+                    Beds were turned and mixed with 2-month-old compost from our own pile. No external inputs. Mulched with dry grass from the farm to retain moisture before planting.
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-phase">Sowing · Nov 12</div>
+                <div class="timeline-title">Seedlings raised in the shade net nursery</div>
+                <div class="timeline-body">
+                    Seeds from last season's best tomatoes — saved and dried. Germination took 8 days. Seedlings moved to field beds at 3-week stage.
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-phase">Growth · Dec</div>
+                <div class="timeline-title">Whitefly attack — handled without spray</div>
+                <div class="timeline-body honest">
+                    <strong>Honest note:</strong> We had a whitefly problem in early December. Rather than spraying, we used yellow sticky traps and removed affected leaves by hand. Yield was ~20% lower than expected on the first flush, but no chemicals were used.
+                </div>
+            </div>
+
+            <div class="timeline-item current">
+                <div class="timeline-phase">Harvest · Ongoing</div>
+                <div class="timeline-title">Picking every 2–3 days</div>
+                <div class="timeline-body">
+                    Hand-picked in the early morning. Sorted on-farm and dispatched same day. No cold storage — fresh means fresh.
+                </div>
+            </div>
+
+        </div>
+
+        <div class="field-note">
+            <div class="field-note-avatar">🌱</div>
+            <div>
+                <div class="field-note-label">From the field — Ajay Kumar, Kisan Mitra</div>
+                <div class="field-note-text">"These tomatoes have never seen a chemical. The whitefly gave us trouble but we held our ground. What you're getting is honest produce — a little imperfect on the outside, but clean all the way through."</div>
+                <div class="field-note-author">Ajay Kumar · Farm Manager · Khedli Pandya</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ══ CAULIFLOWER ══ -->
+    <div class="crop-card" id="crop-cauliflower">
+
+        <div class="crop-card-header">
+            <div>
+                <div class="crop-name">Cauliflower</div>
+                <div class="crop-subtitle">Current cycle · Rabi 2025–26</div>
+            </div>
+            <span class="availability-badge unavailable">Coming soon</span>
+        </div>
+
+        <div class="practice-tags">
+            <span class="tag highlight">No chemicals</span>
+            <span class="tag highlight">No synthetic fertiliser</span>
+            <span class="tag">Vermicompost-fed</span>
+            <span class="tag">Hand-harvested</span>
+            <span class="tag">Companion planted</span>
+        </div>
+
+        <div class="key-facts">
+            <div class="key-fact">
+                <div class="key-fact-label">Seed source</div>
+                <div class="key-fact-value">Local supplier</div>
+            </div>
+            <div class="key-fact">
+                <div class="key-fact-label">Planted</div>
+                <div class="key-fact-value">Dec 3, 2025</div>
+            </div>
+            <div class="key-fact">
+                <div class="key-fact-label">Expected harvest</div>
+                <div class="key-fact-value">Late Feb 2026</div>
+            </div>
+            <div class="key-fact">
+                <div class="key-fact-label">Inputs used</div>
+                <div class="key-fact-value">Vermicompost</div>
+            </div>
+        </div>
+
+        <div class="section-label">Crop journey</div>
+        <div class="timeline">
+
+            <div class="timeline-item">
+                <div class="timeline-phase">Bed preparation · Nov 25</div>
+                <div class="timeline-title">Beds amended with vermicompost</div>
+                <div class="timeline-body">
+                    Raised beds prepared with a top dressing of vermicompost from our worm bins. Planted alongside coriander as a companion — helps deter aphids naturally.
+                </div>
+            </div>
+
+            <div class="timeline-item current">
+                <div class="timeline-phase">Growth · In progress</div>
+                <div class="timeline-title">Heads forming, looking healthy</div>
+                <div class="timeline-body">
+                    Plants are at the curd-initiation stage. Outer leaves tied to protect curds from direct sun. No pest pressure so far this season.
+                </div>
+            </div>
+
+            <div class="timeline-item upcoming">
+                <div class="timeline-phase">Harvest · Expected late Feb</div>
+                <div class="timeline-title">Awaiting maturity</div>
+                <div class="timeline-body" style="opacity:0.6; border-style: dashed;">
+                    We'll update this page when harvest begins. You can ask to be notified on WhatsApp.
+                </div>
+            </div>
+
+        </div>
+
+        <div class="field-note">
+            <div class="field-note-avatar">🌱</div>
+            <div>
+                <div class="field-note-label">From the field — Ajay Kumar, Kisan Mitra</div>
+                <div class="field-note-text">"The cauliflower is growing slowly but steadily. Slow growth in natural farming usually means better flavour. We're not rushing it."</div>
+                <div class="field-note-author">Ajay Kumar · Farm Manager · Khedli Pandya</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ══ CORIANDER ══ -->
+    <div class="crop-card" id="crop-coriander">
+
+        <div class="crop-card-header">
+            <div>
+                <div class="crop-name">Coriander</div>
+                <div class="crop-subtitle">Ongoing harvest · Short-cycle crop</div>
+            </div>
+            <span class="availability-badge available">✓ Available now</span>
+        </div>
+
+        <div class="practice-tags">
+            <span class="tag highlight">No chemicals</span>
+            <span class="tag highlight">No synthetic fertiliser</span>
+            <span class="tag">Saved seed</span>
+            <span class="tag">Direct sown</span>
+            <span class="tag">Cut-and-come-again</span>
+        </div>
+
+        <div class="key-facts">
+            <div class="key-fact">
+                <div class="key-fact-label">Seed source</div>
+                <div class="key-fact-value">Farm saved</div>
+            </div>
+            <div class="key-fact">
+                <div class="key-fact-label">Sown</div>
+                <div class="key-fact-value">Dec 18, 2025</div>
+            </div>
+            <div class="key-fact">
+                <div class="key-fact-label">First cut</div>
+                <div class="key-fact-value">Jan 15, 2026</div>
+            </div>
+            <div class="key-fact">
+                <div class="key-fact-label">Harvest method</div>
+                <div class="key-fact-value">Cut & regrow</div>
+            </div>
+        </div>
+
+        <div class="section-label">Crop journey</div>
+        <div class="timeline">
+
+            <div class="timeline-item">
+                <div class="timeline-phase">Sowing · Dec 18</div>
+                <div class="timeline-title">Direct sown in the herb bed</div>
+                <div class="timeline-body">
+                    Seeds soaked for 12 hours before broadcast sowing. Lightly raked in. Our coriander seeds are from plants we let bolt and seed every year — the variety has adapted to our climate over several seasons.
+                </div>
+            </div>
+
+            <div class="timeline-item current">
+                <div class="timeline-phase">Harvest · Ongoing</div>
+                <div class="timeline-title">Cut-and-come-again, harvested weekly</div>
+                <div class="timeline-body">
+                    Cut above the growth node so the plant regrows. Same planting gives 3–4 cuts. Picked early morning and bundled immediately. Reaches you within hours of harvest.
+                </div>
+            </div>
+
+        </div>
+
+        <div class="field-note">
+            <div class="field-note-avatar">🌱</div>
+            <div>
+                <div class="field-note-label">From the field — Ajay Kumar, Kisan Mitra</div>
+                <div class="field-note-text">"Our coriander seeds have been on this land for four years now. They know this soil. That's why the flavour is stronger than what you'll find in the market."</div>
+                <div class="field-note-author">Ajay Kumar · Farm Manager · Khedli Pandya</div>
+            </div>
+        </div>
+
+    </div>
+
+</main>
+
+<script>
+    const tabs = document.querySelectorAll('.crop-tab');
+    const cards = document.querySelectorAll('.crop-card');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            cards.forEach(c => c.classList.remove('visible'));
+            tab.classList.add('active');
+            document.getElementById('crop-' + tab.dataset.crop).classList.add('visible');
+        });
+    });
+</script>
+
+</body>
+</html>

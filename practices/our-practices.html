@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="How Kota Natural Farm grows food — no-till soil, rainwater harvesting, FYM manure, hand sowing, natural mulch, and agroforestry. Everything we do and why.">
+    <meta property="og:title" content="Our Practices | Kota Natural Farm">
+    <meta property="og:description" content="From soil to harvest — the principles behind every crop we grow at Kota Natural Farm.">
+    <meta property="og:type" content="website">
+    <title>Our Practices | Kota Natural Farm</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%232d3319'/%3E%3Cpath d='M16 6c-2 4-1 8 0 11 1-3 5-7 9-8-3 3-6 7-7 11 0 0-1 4-2 6-1-2-2-6-2-6-1-4-4-8-7-11 4 1 8 5 9 8C17 14 18 10 16 6z' fill='%23a8c686'/%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/practice.css">
+    <style>
+
+        /* ── Page header (no photo hero) ──────────────────── */
+        .practices-header {
+            background: var(--earth-dark);
+            color: var(--sand);
+            padding: 3.5rem 2rem 3rem;
+            text-align: center;
+        }
+        .practices-header h1 {
+            font-family: 'Crimson Pro', serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+        }
+        .practices-header p {
+            font-size: 1.05rem;
+            font-weight: 300;
+            opacity: 0.8;
+            max-width: 520px;
+            margin: 0 auto;
+        }
+
+        /* ── Main layout ──────────────────────────────────── */
+        .practices-body {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem 5rem;
+        }
+
+        /* ── Pillar heading ───────────────────────────────── */
+        .pillar {
+            margin-bottom: 3rem;
+        }
+        .pillar-label {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--earth-light);
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.6rem;
+            border-bottom: 1px solid rgba(139,152,98,0.3);
+        }
+        .pillar-label svg { flex-shrink: 0; }
+
+        /* ── Practice card ────────────────────────────────── */
+        .practice-card {
+            display: grid;
+            grid-template-columns: 52px 1fr;
+            gap: 0 1.25rem;
+            background: #fff;
+            border-radius: 12px;
+            padding: 1.4rem 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(196,165,114,0.25);
+            transition: box-shadow 0.2s;
+        }
+        .practice-card:hover { box-shadow: 0 4px 20px rgba(45,51,25,0.08); }
+
+        .card-icon {
+            width: 44px; height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .icon-soil   { background: #ede8d8; }
+        .icon-water  { background: #dceee8; }
+        .icon-grow   { background: #dde8cc; }
+        .icon-care   { background: #f5ece0; }
+
+        .card-content {}
+        .card-title {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--earth-dark);
+            margin-bottom: 0.3rem;
+            line-height: 1.3;
+        }
+        .card-what {
+            font-size: 0.92rem;
+            color: #4a4030;
+            line-height: 1.65;
+            margin-bottom: 0.55rem;
+        }
+        .card-why {
+            font-size: 0.83rem;
+            color: var(--earth-medium);
+            font-weight: 500;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.4rem;
+            line-height: 1.5;
+        }
+        .card-why::before {
+            content: '→';
+            flex-shrink: 0;
+            color: var(--clay);
+        }
+        .card-footer {
+            grid-column: 2;
+            margin-top: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .read-more {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--earth-medium);
+            text-decoration: none;
+            border-bottom: 1.5px solid var(--clay);
+            padding-bottom: 1px;
+            transition: color 0.2s;
+        }
+        .read-more:hover { color: var(--earth-dark); }
+        .coming-soon {
+            font-size: 0.75rem;
+            color: var(--earth-light);
+            font-style: italic;
+        }
+
+        /* ── "What we never use" block ────────────────────── */
+        .never-block {
+            background: var(--earth-dark);
+            color: var(--sand);
+            border-radius: 14px;
+            padding: 2rem 2rem 1.75rem;
+            margin-bottom: 3rem;
+        }
+        .never-block h2 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+        .never-block .never-sub {
+            font-size: 0.88rem;
+            opacity: 0.65;
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+        }
+        .never-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.6rem;
+        }
+        .never-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.88rem;
+            font-weight: 500;
+        }
+        .never-item::before {
+            content: '✕';
+            color: #c4895a;
+            font-weight: 700;
+            font-size: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        /* ── Closing note ─────────────────────────────────── */
+        .closing-note {
+            background: #f0ede6;
+            border-left: 4px solid var(--clay);
+            border-radius: 0 10px 10px 0;
+            padding: 1.25rem 1.5rem;
+            font-size: 0.95rem;
+            color: #4a4030;
+            font-style: italic;
+            margin-bottom: 2rem;
+        }
+        .closing-note strong {
+            display: block;
+            font-style: normal;
+            font-weight: 600;
+            color: var(--earth-dark);
+            margin-bottom: 0.25rem;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        @media (max-width: 560px) {
+            .practice-card { grid-template-columns: 1fr; }
+            .card-icon { display: none; }
+            .card-footer { grid-column: 1; }
+            .practices-header { padding: 2.5rem 1.25rem 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="practice-nav">
+    <div class="practice-nav-inner">
+        <a href="../index.html" class="practice-nav-back" aria-label="Back to home">←</a>
+        <a href="../index.html" class="practice-nav-logo">Kota Natural Farm</a>
+    </div>
+</nav>
+
+<div class="practices-header">
+    <h1>How We Grow</h1>
+    <p>Every practice on this farm is a deliberate choice. Here is what we do, and why — so you know exactly what you're eating.</p>
+</div>
+
+<div class="practices-body">
+
+    <!-- ══ WHAT WE NEVER USE ══ -->
+    <div class="never-block">
+        <h2>What We Never Use</h2>
+        <p class="never-sub">These are non-negotiable. No exceptions, no "just this once."</p>
+        <div class="never-list">
+            <div class="never-item">Synthetic pesticides</div>
+            <div class="never-item">Chemical fertilisers</div>
+            <div class="never-item">Weedkiller (herbicides)</div>
+            <div class="never-item">Hybrid or GMO seeds</div>
+            <div class="never-item">Mechanical plowing</div>
+            <div class="never-item">Growth hormones</div>
+            <div class="never-item">Plastic mulch</div>
+            <div class="never-item">Treated water</div>
+        </div>
+    </div>
+
+    <!-- ══ PILLAR 1: SOIL ══ -->
+    <div class="pillar">
+        <div class="pillar-label">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22V12m0 0C12 7 7 4 2 6m10 6c0-5 5-8 10-6"/></svg>
+            Soil
+        </div>
+
+        <!-- No-till -->
+        <div class="practice-card">
+            <div class="card-icon icon-soil">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7a6040" stroke-width="2"><path d="M3 21h18M3 18h18M7 18V9m4 9V6m4 9V3m4 9v6"/></svg>
+            </div>
+            <div class="card-content">
+                <div class="card-title">No Plowing, No Tilling</div>
+                <div class="card-what">We never turn the soil with a machine or deep plow. The land is prepared by hand where needed, and only the top layer is loosened for planting. The soil structure — built by years of roots, worms, and microbes — stays intact.</div>
+                <div class="card-why">Undisturbed soil holds moisture better and is alive with beneficial organisms. This is what makes our produce different from conventionally farmed food.</div>
+            </div>
+            <div class="card-footer">
+                <span class="coming-soon">Detailed page coming</span>
+            </div>
+        </div>
+
+        <!-- FYM -->
+        <div class="practice-card">
+            <div class="card-icon icon-soil">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7a6040" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+            </div>
+            <div class="card-content">
+                <div class="card-title">FYM — Farm Yard Manure</div>
+                <div class="card-what">We regularly apply FYM (composted cow dung and farm waste) as the primary source of plant nutrition. No bag of chemical fertiliser has ever been opened on this farm. The manure is composted on-site before use, so it feeds the soil slowly and completely.</div>
+                <div class="card-why">FYM builds soil carbon and feeds the microbial network that plants rely on. It means richer nutrition in your food, not just faster growth.</div>
+            </div>
+            <div class="card-footer">
+                <span class="coming-soon">Detailed page coming</span>
+            </div>
+        </div>
+
+        <!-- Agroforestry -->
+        <div class="practice-card">
+            <div class="card-icon icon-soil">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7a6040" stroke-width="2"><path d="M12 22V8"/><path d="M5 3s.55 4 7 4 7-4 7-4"/><path d="M5 11s.55 4 7 4 7-4 7-4"/></svg>
+            </div>
+            <div class="card-content">
+                <div class="card-title">Crops Grown Under Trees</div>
+                <div class="card-what">Vegetables and crops are planted in and around fruit and shade trees — not in open, cleared rows. The trees drop leaves that mulch the soil, their roots break up deep layers, and they attract insects that keep pests in balance. This is the food forest approach.</div>
+                <div class="card-why">Trees are the farm's long-term fertility engine. Crops that grow in this system absorb a richer mix of minerals than those grown in bare, cleared fields.</div>
+            </div>
+            <div class="card-footer">
+                <span class="coming-soon">Detailed page coming</span>
+            </div>
+        </div>
+
+        <!-- Mulch -->
+        <div class="practice-card">
+            <div class="card-icon icon-soil">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7a6040" stroke-width="2"><rect x="2" y="17" width="20" height="3" rx="1"/><path d="M4 17c0-4 2-7 8-10 6 3 8 6 8 10"/></svg>
+            </div>
+            <div class="card-content">
+                <div class="card-title">Natural Mulch Instead of Weedkiller</div>
+                <div class="card-what">We suppress weeds by covering the soil with dry leaves, straw, and farm waste — not herbicides. The mulch layer blocks light from weed seeds while decomposing to feed the soil. Weeding where needed is done by hand.</div>
+                <div class="card-why">No herbicide residue in the soil, none in your food. The mulch also keeps moisture in, so plants stay hydrated without extra watering.</div>
+            </div>
+            <div class="card-footer">
+                <a href="mulching.html" class="read-more">Read the full story →</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ PILLAR 2: WATER ══ -->
+    <div class="pillar">
+        <div class="pillar-label">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></svg>
+            Water
+        </div>
+
+        <!-- Tubewell + filter -->
+        <div class="practice-card">
+            <div class="card-icon icon-water">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3d7a6a" stroke-width="2"><rect x="6" y="2" width="12" height="8" rx="2"/><path d="M9 10v12M15 10v12M9 16h6"/></svg>
+            </div>
+            <div class="card-content">
+                <div class="card-title">Filtered Groundwater from Tubewell</div>
+                <div class="card-what">Our primary water source is a tubewell drawing clean groundwater. Before it reaches any crop, it passes through a filtration system to remove sediment and impurities. Clean water from the ground up — literally.</div>
+                <div class="card-why">The water that irrigates your vegetables is filtered, not from a polluted canal or surface drain. This matters for food safety, especially for leafy greens and root vegetables.</div>
+            </div>
+            <div class="card-footer">
+                <a href="water-smart-irrigation.html" class="read-more">Read the full story →</a>
+            </div>
+        </div>
+
+        <!-- Rainwater harvesting -->
+        <div class="practice-card">
+            <div class="card-icon icon-water">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3d7a6a" stroke-width="2"><path d="M20 16.2A5 5 0 0018 7h-1.26A8 8 0 104 15.25"/><path d="M12 12v9M8 17l4 4 4-4"/></svg>
+            </div>
+            <div class="card-content">
+                <div class="card-title">Rainwater Harvested for Irrigation</div>
+                <div class="card-what">During the monsoon, we collect and store rainwater in our farm pond. This harvested water is used for irrigation through the dry months. The pond bed is unlined — water that seeps through recharges the groundwater table, benefiting the entire neighbourhood.</div>
+                <div class="card-why">Rainwater-fed crops and an aquifer that is replenished rather than depleted — this is what sustainable farming in Rajasthan looks like.</div>
+            </div>
+            <div class="card-footer">
+                <a href="water-smart-irrigation.html" class="read-more">Read the full story →</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ PILLAR 3: GROWING ══ -->
+    <div class="pillar">
+        <div class="pillar-label">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+            Planting & Growing
+        </div>
+
+        <!-- Hand sowing -->
+        <div class="practice-card">
+            <div class="card-icon icon-grow">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4a6a30" stroke-width="2"><path d="M18 11V6H13"/><path d="M15 14H4v5"/><path d="M4 14c4-4 6-2 8-6"/></svg>
+            </div>
+            <div class="card-content">
+                <div class="card-title">Seeds Sown by Hand</div>
+                <div class="card-what">Every seed on this farm is placed by hand — not by machine. Seeds are spaced deliberately, planted at the right depth, in the right spot. There is no mechanical seeder, no industrial row-planting. Just human attention to each planting.</div>
+                <div class="card-why">Hand sowing means each plant gets a proper start. It also keeps our seed source honest — we know exactly what variety went in and where it came from, often saved from our own previous harvests.</div>
+            </div>
+            <div class="card-footer">
+                <span class="coming-soon">Detailed page coming</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ══ CLOSING NOTE ══ -->
+    <div class="closing-note">
+        <strong>A note from the farm</strong>
+        These practices aren't a marketing checklist — they're the result of years of learning what this land in Khedli Pandya, Kota needs to thrive. Some things work well, some we're still learning. We'll be adding detailed pages for each practice as we go.
+    </div>
+
+    <a href="../index.html" class="practice-back-link">← Back to Home</a>
+
+</div>
+
+<footer class="practice-footer">
+    <p>© 2026 Kota Natural Farm · Khedli Pandya, near Jhalipura, Kota, Rajasthan</p>
+</footer>
+
+<script>
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js').catch(function() {});
+    });
+}
+</script>
+</body>
+</html>
