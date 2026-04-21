@@ -5,15 +5,16 @@
 // Comments & reactions are powered by Hyvor Talk
 //   Website ID: 15328    Dashboard: https://talk.hyvor.com
 //
-// Every blog post has a <hyvor-talk-reactions> and <hyvor-talk-comments>
-// block near the bottom of its HTML. Use the post's slug as the page-id:
+// Each blog post gets the comments + reactions widget by including
+// TWO lines near the end of its HTML (just after the closing
+// </article> tag is a good spot):
 //
-//   <hyvor-talk-reactions website-id="15328" page-id="your-post-slug">
-//   </hyvor-talk-reactions>
-//   <hyvor-talk-comments  website-id="15328" page-id="your-post-slug">
-//   </hyvor-talk-comments>
-//   <script src="https://talk.hyvor.com/embed/embed.js" async type="module">
-//   </script>
+//   <div class="blog-comments-mount" data-slug="your-post-slug"></div>
+//   <script src="../js/blog-comments.js" defer></script>
+//
+// That's the whole integration. The shared script (/js/blog-comments.js)
+// handles the Hyvor Talk markup, styles, and embed loading, and uses
+// the data-slug as the page-id so every post has its own thread.
 //
 // ─────────────────────────────────────────────────────────────
 // To add a new blog post:
@@ -21,8 +22,8 @@
 //      existing post as a template). If the post lives somewhere
 //      else on the site (e.g. /practices/), use the `href` field.
 //   2. Put the post's photos inside /blog/images/<post-slug>/
-//   3. In the new post's HTML, set page-id="your-post-slug" in BOTH
-//      <hyvor-talk-reactions> and <hyvor-talk-comments> tags.
+//   3. In the new post's HTML, include the two-line comments block
+//      above with data-slug="your-post-slug".
 //   4. Add a new object at the TOP of the BLOG_POSTS array below
 //      (newest first — the listing shows newest at the top).
 //
