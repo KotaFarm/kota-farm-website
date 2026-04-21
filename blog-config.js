@@ -1,12 +1,29 @@
 // ─────────────────────────────────────────────────────────────
 // Blog — Kota Natural Farm
 // ─────────────────────────────────────────────────────────────
+//
+// Comments & reactions are powered by Hyvor Talk
+//   Website ID: 15328    Dashboard: https://talk.hyvor.com
+//
+// Every blog post has a <hyvor-talk-reactions> and <hyvor-talk-comments>
+// block near the bottom of its HTML. Use the post's slug as the page-id:
+//
+//   <hyvor-talk-reactions website-id="15328" page-id="your-post-slug">
+//   </hyvor-talk-reactions>
+//   <hyvor-talk-comments  website-id="15328" page-id="your-post-slug">
+//   </hyvor-talk-comments>
+//   <script src="https://talk.hyvor.com/embed/embed.js" async type="module">
+//   </script>
+//
+// ─────────────────────────────────────────────────────────────
 // To add a new blog post:
 //   1. Create the post HTML file (usually inside /blog/ — copy an
 //      existing post as a template). If the post lives somewhere
 //      else on the site (e.g. /practices/), use the `href` field.
 //   2. Put the post's photos inside /blog/images/<post-slug>/
-//   3. Add a new object at the TOP of the BLOG_POSTS array below
+//   3. In the new post's HTML, set page-id="your-post-slug" in BOTH
+//      <hyvor-talk-reactions> and <hyvor-talk-comments> tags.
+//   4. Add a new object at the TOP of the BLOG_POSTS array below
 //      (newest first — the listing shows newest at the top).
 //
 // Fields:

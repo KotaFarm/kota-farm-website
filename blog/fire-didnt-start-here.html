@@ -96,6 +96,41 @@
                 aspect-ratio: 16 / 10;
             }
         }
+
+        /* ── Reactions (post-level likes / hearts) ───────────── */
+        .blog-reactions {
+            margin: var(--spacing-lg) 0 var(--spacing-md);
+            padding-top: var(--spacing-md);
+            border-top: 1px solid rgba(139, 152, 98, 0.25);
+            display: flex;
+            justify-content: center;
+        }
+
+        /* ── Comments section ────────────────────────────────── */
+        .blog-comments {
+            background: var(--sand);
+            border-top: 1px solid rgba(139, 152, 98, 0.25);
+            padding: var(--spacing-lg) var(--spacing-md);
+            margin-top: var(--spacing-md);
+        }
+        .blog-comments-inner {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .blog-comments-title {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.8rem;
+            color: var(--earth-dark);
+            margin-bottom: 0.4rem;
+        }
+        .blog-comments-sub {
+            color: var(--earth-medium);
+            font-size: 0.95rem;
+            margin-bottom: var(--spacing-md);
+            line-height: 1.6;
+        }
+        /* Give the Hyvor Talk embed a little breathing room */
+        hyvor-talk-comments { display: block; }
     </style>
 </head>
 <body>
@@ -224,9 +259,26 @@
 
         <p>A fire that doesn't start on your farm can still take parts of your farm. The answer isn't a bigger fence. It's better soil — on our land, and on the land around us. We'll keep doing our part, and keep asking others to do theirs.</p>
 
+        <!-- Reactions (likes, hearts, etc.) — powered by Hyvor Talk -->
+        <div class="blog-reactions">
+            <hyvor-talk-reactions website-id="15328" page-id="fire-didnt-start-here"></hyvor-talk-reactions>
+        </div>
+
         <a href="index.html" class="practice-back-link">&larr; All blog posts</a>
 
     </article>
+
+    <!-- Comments section — powered by Hyvor Talk -->
+    <section class="blog-comments" aria-label="Comments">
+        <div class="blog-comments-inner">
+            <h2 class="blog-comments-title">Join the conversation</h2>
+            <p class="blog-comments-sub">Thoughts, questions, experiences from your own farm — we'd like to hear them.</p>
+            <hyvor-talk-comments website-id="15328" page-id="fire-didnt-start-here"></hyvor-talk-comments>
+        </div>
+    </section>
+
+    <!-- Load Hyvor Talk once (reactions + comments use the same script) -->
+    <script src="https://talk.hyvor.com/embed/embed.js" async type="module"></script>
 
     <footer class="practice-footer">
         <p>&copy; 2026 Kota Natural Farm &middot; Khedli Pandya, Kota, Rajasthan</p>
