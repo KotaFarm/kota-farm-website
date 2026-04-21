@@ -23,7 +23,7 @@ const DIARY_ENTRIES = [
         tag:   "harvest"
     },
     {
-        photo: "diary/88946053-8c1e-4977-bc55-7a55414941b4.jpg",
+        photo: "diary/88946053-8c1e-4977-bc55-7a55414941b4.webp",
         date:  "April 15, 2026",
         title: "First corn on the farm — ever",
         note:  "These corn plants were sown by hand in March. This is our very first corn crop — the field is standing tall and first harvest is just weeks away.",

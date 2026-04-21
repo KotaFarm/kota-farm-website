@@ -6,7 +6,7 @@ const vegetablesList = [
   {
     "name": "Cauliflower",
     "nameHi": "फूलगोभी",
-    "images": ["gallery/fresh-produce/veg-cauliflower.jpeg"],
+    "images": ["gallery/fresh-produce/veg-cauliflower.webp"],
     "season": "Winter",
     "unit": "piece",
     "desc": "Grown naturally under shade nets without chemicals. Firm, white heads with a sweet, nutty flavour.",
@@ -35,7 +35,7 @@ const vegetablesList = [
   {
     "name": "Brinjal",
     "nameHi": "बैंगन",
-    "images": ["gallery/fresh-produce/brinjal.jpeg", "gallery/fresh-produce/veg-brinjal.jpeg"],
+    "images": ["gallery/fresh-produce/brinjal.webp", "gallery/fresh-produce/veg-brinjal.webp"],
     "season": "Year-round",
     "unit": "kg",
     "desc": "Sturdy plants raised organically. Glossy purple fruits perfect for bhartha, bharta, and curries.",
@@ -64,7 +64,7 @@ const vegetablesList = [
   {
     "name": "Tomato",
     "nameHi": "टमाटर",
-    "images": ["gallery/fresh-produce/tomato2.jpeg", "gallery/fresh-produce/tomato3.jpeg", "gallery/fresh-produce/veg-tomato.jpeg", "gallery/fresh-produce/tomato1.jpeg", "gallery/fresh-produce/veg-tomato-plants.jpeg", { "type": "video", "src": "gallery/fresh-produce/veg-tomato-video.mp4" }],
+    "images": ["gallery/fresh-produce/tomato2.webp", "gallery/fresh-produce/tomato3.webp", "gallery/fresh-produce/veg-tomato.webp", "gallery/fresh-produce/tomato1.webp", "gallery/fresh-produce/veg-tomato-plants.webp", { "type": "video", "src": "gallery/fresh-produce/veg-tomato-video.mp4" }],
     "season": "Winter",
     "unit": "kg",
     "desc": "Vine-ripened on bamboo stakes inside shade nets. No pesticides — just sun, soil, and care.",
@@ -93,7 +93,7 @@ const vegetablesList = [
   {
     "name": "Coriander",
     "nameHi": "धनिया",
-    "images": ["gallery/fresh-produce/veg-coriander.jpeg"],
+    "images": ["gallery/fresh-produce/veg-coriander.webp"],
     "season": "Winter",
     "unit": "bunch",
     "desc": "Fresh, fragrant bunches grown with sprinkler irrigation. Harvested same-day for maximum flavour.",
@@ -122,7 +122,7 @@ const vegetablesList = [
   {
     "name": "Bitter Gourd",
     "nameHi": "करेला",
-    "images": ["gallery/fresh-produce/karela.jpeg"],
+    "images": ["gallery/fresh-produce/karela.webp"],
     "season": "Summer / Monsoon",
     "unit": "kg",
     "desc": "Organically grown on shade-net trellises. Bumpy, dark-green fruits rich in nutrients and prized in traditional cooking.",
@@ -151,7 +151,7 @@ const vegetablesList = [
   {
     "name": "Ridge Gourd",
     "nameHi": "तोरई",
-    "images": ["gallery/fresh-produce/vegiie.jpeg"],
+    "images": ["gallery/fresh-produce/vegiie.webp"],
     "season": "Summer / Monsoon",
     "unit": "kg",
     "desc": "Long, tender ridge gourds climbing naturally on trellises. Harvested young for the best texture and flavour.",
@@ -180,7 +180,7 @@ const vegetablesList = [
   {
     "name": "Potato",
     "nameHi": "आलू",
-    "images": ["gallery/fresh-produce/potato.jpeg"],
+    "images": ["gallery/fresh-produce/potato.webp"],
     "season": "Winter",
     "unit": "kg",
     "desc": "Naturally grown potatoes from healthy, chemical-free soil. Firm and flavourful — perfect for curries, parathas, and roasts.",
@@ -209,7 +209,7 @@ const vegetablesList = [
   {
     "name": "Green Chickpea",
     "nameHi": "हरा चना",
-    "images": ["gallery/fresh-produce/Green chickpea.jpeg", "gallery/fresh-produce/green chana 1.jpeg", "gallery/fresh-produce/WhatsApp Image 2026-03-12 at 18.52.16.jpeg"],
+    "images": ["gallery/fresh-produce/Green chickpea.webp", "gallery/fresh-produce/green chana 1.webp", "gallery/fresh-produce/WhatsApp Image 2026-03-12 at 18.52.16.webp"],
     "season": "Winter",
     "unit": "kg",
     "desc": "Fresh green chickpeas are the young, tender form of chickpeas harvested before they dry. Mildly sweet, nutty flavour with a soft crunchy texture. Rich in plant protein, fiber, and essential minerals.",
@@ -238,7 +238,7 @@ const vegetablesList = [
   {
     "name": "Carrot",
     "nameHi": "गाजर",
-    "images": ["gallery/fresh-produce/carrot.jpeg"],
+    "images": ["gallery/fresh-produce/carrot.webp"],
     "season": "Winter",
     "unit": "kg",
     "desc": "Sweet, crunchy carrots grown in healthy soil without chemicals. Rich in beta-carotene and perfect for salads, juices, and cooking.",
@@ -267,7 +267,7 @@ const vegetablesList = [
   {
     "name": "Corn",
     "nameHi": "मक्का",
-    "images": ["gallery/fresh-produce/WhatsApp Image 2026-04-09 at 02.14.50.jpeg", "gallery/fresh-produce/WhatsApp Image 2026-04-11 at 22.50.25.jpeg"],
+    "images": ["gallery/fresh-produce/WhatsApp Image 2026-04-09 at 02.14.50.webp", "gallery/fresh-produce/WhatsApp Image 2026-04-11 at 22.50.25.webp"],
     "season": "Summer / Monsoon",
     "unit": "piece",
     "desc": "Sweet, tender corn grown naturally at Kota Farm. Harvested at peak ripeness for maximum sweetness — perfect for roasting, boiling, or eating fresh off the cob.",
@@ -296,7 +296,7 @@ const vegetablesList = [
   {
     "name": "Beetroot",
     "nameHi": "चुकंदर",
-    "images": ["gallery/fresh-produce/beet root 1.jpeg", "gallery/fresh-produce/Beetroot.jpeg"],
+    "images": ["gallery/fresh-produce/beet root 1.webp", "gallery/fresh-produce/Beetroot.webp"],
     "season": "Winter",
     "unit": "kg",
     "desc": "Nutrient-rich root vegetable with a deep red colour and naturally sweet, earthy taste. Packed with antioxidants, fiber, and natural nitrates that support heart health and stamina.",

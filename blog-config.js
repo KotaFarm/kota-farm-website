@@ -58,7 +58,7 @@ const BLOG_POSTS = [
         date:        "March 2026",
         title:       "Mulching — Nothing Leaves the Farm",
         summary:     "Fallen leaves, coir pith rings, living ground cover — how we keep soil protected and build fertility without burning or discarding anything.",
-        cover:       "gallery/practices/mulching/mulch-rows-overview.jpeg",
+        cover:       "gallery/practices/mulching/mulch-rows-overview.webp",
         tag:         "practice",
         readingTime: "4 min read"
     },
@@ -68,7 +68,7 @@ const BLOG_POSTS = [
         date:        "March 2026",
         title:       "Water-Smart Irrigation",
         summary:     "Drip systems, sprinklers, and rainwater harvesting — how we make every drop count in Rajasthan's semi-arid climate.",
-        cover:       "gallery/practices/irrigation/drip-installation.jpg",
+        cover:       "gallery/practices/irrigation/drip-installation.webp",
         tag:         "practice",
         readingTime: "4 min read"
     }
