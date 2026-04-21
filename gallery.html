@@ -13,13 +13,27 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/site-nav.css">
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <nav class="gallery-page-nav">
-        <div class="gallery-page-nav-inner">
-            <a href="index.html" class="gallery-page-nav-back" aria-label="Back to home">&larr;</a>
-            <a href="index.html" class="gallery-page-nav-logo">Kota Natural Farm</a>
+    <nav id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">Kota Natural Farm</a>
+            <button type="button" class="nav-toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-links">
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="index.html#practices">Practices</a></li>
+                <li><a href="gallery.html" class="active">Gallery</a></li>
+                <li><a href="produce.html" class="nav-highlight">Fresh Produce</a></li>
+                <li><a href="blog/index.html">Blog</a></li>
+                <li><a href="farm-diary.html">Farm Diary</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+            </ul>
         </div>
     </nav>
 
@@ -50,6 +64,7 @@
         <div class="lightbox-counter" id="lightbox-counter"></div>
     </div>
 
+    <script src="js/site-nav.js" defer></script>
     <script src="gallery-config.js"></script>
     <script src="js/gallery.js"></script>
 </body>
