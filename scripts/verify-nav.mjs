@@ -23,6 +23,7 @@ const PAGES = [
     { file: 'gallery.html',                             prefix: '',      active: 'Gallery' },
     { file: 'produce.html',                             prefix: '',      active: 'Fresh Produce' },
     { file: 'farm-diary.html',                          prefix: '',      active: 'Farm Diary' },
+    { file: 'visit.html',                               prefix: '',      active: 'Contact' },
     { file: 'blog/index.html',                          prefix: '../',   active: 'Blog',       blogSelf: 'index.html' },
     { file: 'blog/fire-didnt-start-here.html',          prefix: '../',   active: 'Blog',       blogSelf: 'index.html' },
     { file: 'practices/mulching.html',                  prefix: '../',   active: 'Practices' },
@@ -116,8 +117,30 @@ console.log('\n[Visit the Farm card]');
     else ok('"Visit the Farm" heading present');
     if (!/Ajay Kumar/.test(html))        fails.push('[index.html] Ajay Kumar name missing from contact');
     else ok('Ajay Kumar named in contact');
-    if (!/wa\.me\/918340684878/.test(html)) fails.push('[index.html] Ajay WhatsApp link missing');
-    else ok('Ajay WhatsApp link present');
+    // Both homepage CTAs ("Plan a Visit" hero button + contact card) now route through visit.html
+    // rather than straight to WhatsApp — that's the whole point of the expectation-setting page.
+    const heroVisitLink = /href="visit\.html"[^>]*class="cta-button">Plan a Visit</.test(html);
+    if (!heroVisitLink) fails.push('[index.html] hero "Plan a Visit" button should link to visit.html');
+    else ok('hero "Plan a Visit" button routes through visit.html');
+    const contactVisitCard = /href="visit\.html"[^>]*class="contact-card/.test(html);
+    if (!contactVisitCard) fails.push('[index.html] "Plan a Visit" contact card should link to visit.html');
+    else ok('"Plan a Visit" contact card routes through visit.html');
+}
+
+// ---- Visit page content ----
+console.log('\n[visit.html content]');
+{
+    const html = await fs.readFile(path.join(ROOT, 'visit.html'), 'utf8');
+    if (!/Visit Kota Natural Farm/.test(html)) fails.push('[visit.html] hero heading missing');
+    else ok('visit.html has hero heading');
+    if (!/wa\.me\/918340684878/.test(html)) fails.push('[visit.html] Ajay WhatsApp CTA missing');
+    else ok('visit.html has Ajay WhatsApp CTA');
+    if (!/20.minute/i.test(html)) fails.push('[visit.html] 20-minute tour framing missing');
+    else ok('visit.html sets the 20-minute expectation');
+    if (!/Jhalipura/.test(html)) fails.push('[visit.html] Jhalipura directions missing');
+    else ok('visit.html gives Jhalipura directions');
+    if (!/children/i.test(html)) fails.push('[visit.html] "bring the kids" message missing');
+    else ok('visit.html invites children');
 }
 
 console.log('\n──────────────────────────────────────────────');

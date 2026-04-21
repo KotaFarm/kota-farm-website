@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Plan a visit to Kota Natural Farm — a 20-minute guided tour through our young food forest, pond, and water-smart practices. 30 minutes from Kota City. Children welcome.">
+    <meta property="og:title" content="Visit Kota Natural Farm">
+    <meta property="og:description" content="A 20-minute guided tour of our food forest, pond, and natural farming practices. 30 minutes from Kota. Bring the kids.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://kotanaturalfarm.in/gallery/the-land/farm-sunset.jpeg">
+    <title>Visit Us | Kota Natural Farm</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%232d3319'/%3E%3Cpath d='M16 6c-2 4-1 8 0 11 1-3 5-7 9-8-3 3-6 7-7 11 0 0-1 4-2 6-1-2-2-6-2-6-1-4-4-8-7-11 4 1 8 5 9 8C17 14 18 10 16 6z' fill='%23a8c686'/%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/site-nav.css">
+    <link rel="stylesheet" href="css/practice.css">
+    <style>
+        /* ── Visit-page-specific additions (kept small; leans on practice.css) ── */
+
+        /* Expectation grid: what you'll see */
+        .visit-expect-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            margin: 1.25rem 0 1.5rem;
+        }
+        .visit-expect-card {
+            background: #fff;
+            border: 1px solid rgba(196,165,114,0.25);
+            border-radius: 12px;
+            padding: 1.1rem 1.2rem;
+        }
+        .visit-expect-card h4 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--earth-dark);
+            margin: 0 0 0.35rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .visit-expect-card h4 svg {
+            width: 1.15rem;
+            height: 1.15rem;
+            color: var(--sprout);
+            flex-shrink: 0;
+        }
+        .visit-expect-card p {
+            font-size: 0.92rem;
+            color: #4a4030;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* Tour list: what the 20-min walk covers */
+        .visit-tour {
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0 1.5rem;
+            display: grid;
+            gap: 0.75rem;
+        }
+        .visit-tour li {
+            display: grid;
+            grid-template-columns: 2.25rem 1fr;
+            gap: 0.85rem;
+            align-items: start;
+            padding: 0.9rem 1rem;
+            background: #f0ede6;
+            border-radius: 10px;
+            border-left: 3px solid var(--sprout);
+        }
+        .visit-tour li svg {
+            width: 1.5rem;
+            height: 1.5rem;
+            color: var(--sprout);
+            margin-top: 0.1rem;
+        }
+        .visit-tour li strong {
+            color: var(--earth-dark);
+            display: block;
+            margin-bottom: 0.1rem;
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.05rem;
+        }
+        .visit-tour li p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #4a4030;
+            line-height: 1.55;
+        }
+
+        /* Kids callout */
+        .visit-kids-callout {
+            background: linear-gradient(135deg, #eef3e3 0%, #f5ece0 100%);
+            border-radius: 14px;
+            padding: 1.4rem 1.5rem;
+            margin: 1.5rem 0;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        .visit-kids-callout svg {
+            width: 2.5rem;
+            height: 2.5rem;
+            color: var(--sprout);
+            flex-shrink: 0;
+        }
+        .visit-kids-callout p {
+            margin: 0;
+            color: #3d3528;
+            font-size: 0.98rem;
+            line-height: 1.55;
+        }
+        .visit-kids-callout p strong {
+            color: var(--earth-dark);
+        }
+
+        /* Directions block */
+        .visit-directions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 0.9rem;
+            margin: 1rem 0 1.5rem;
+        }
+        .visit-directions > div {
+            background: #fff;
+            border: 1px solid rgba(196,165,114,0.25);
+            border-radius: 10px;
+            padding: 1rem 1.1rem;
+        }
+        .visit-directions h4 {
+            font-family: 'Work Sans', sans-serif;
+            font-size: 0.72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--earth-medium);
+            margin: 0 0 0.4rem;
+        }
+        .visit-directions p {
+            margin: 0;
+            font-size: 0.95rem;
+            color: var(--earth-dark);
+            line-height: 1.45;
+            font-weight: 500;
+        }
+
+        /* Final CTA block */
+        .visit-cta {
+            background: var(--earth-dark);
+            color: var(--sand);
+            border-radius: 14px;
+            padding: 2rem 1.75rem;
+            margin: 2rem 0 1rem;
+            text-align: center;
+        }
+        .visit-cta h3 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin: 0 0 0.5rem;
+            color: var(--sand);
+        }
+        .visit-cta p {
+            margin: 0 0 1.25rem;
+            font-size: 0.98rem;
+            opacity: 0.85;
+            line-height: 1.55;
+        }
+        .visit-cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: var(--sprout);
+            color: var(--earth-dark);
+            text-decoration: none;
+            padding: 0.85rem 1.6rem;
+            border-radius: 30px;
+            font-family: 'Work Sans', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: background 0.2s, transform 0.2s;
+        }
+        .visit-cta-button:hover {
+            background: var(--leaf);
+            color: #fff;
+            transform: translateY(-1px);
+        }
+        .visit-cta-button svg {
+            width: 1.2rem;
+            height: 1.2rem;
+        }
+        .visit-cta-note {
+            margin-top: 0.9rem;
+            font-size: 0.82rem;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 560px) {
+            .visit-kids-callout { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <nav id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">Kota Natural Farm</a>
+            <button type="button" class="nav-toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-links">
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="index.html#practices">Practices</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="produce.html" class="nav-highlight">Fresh Produce</a></li>
+                <li><a href="blog/index.html">Blog</a></li>
+                <li><a href="farm-diary.html">Farm Diary</a></li>
+                <li><a href="index.html#contact" class="active">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+    <script src="js/site-nav.js" defer></script>
+
+    <!-- Hero -->
+    <div class="practice-hero">
+        <img src="gallery/practices/mulching/mulch-rows-overview.webp" alt="Rows of young fruit trees with mulched ground at Kota Natural Farm" fetchpriority="high">
+        <div class="practice-hero-overlay">
+            <h1>Visit Kota Natural Farm</h1>
+            <p class="practice-tagline">A 20-minute walk through a young food forest, a pond, and a different way of farming.</p>
+        </div>
+    </div>
+
+    <article class="practice-article">
+
+        <h2>What this visit is about</h2>
+        <p>This isn't a polished agritourism site. Kota Natural Farm is a working permaculture farm in Khedli Pandya, just outside Kota. When you visit, you'll walk the land with someone who tends it daily, see the real state of things — good, growing, or still taking shape — and leave with a clearer sense of what natural farming actually looks like in Rajasthan's soil and climate.</p>
+        <p>We want you to arrive with the right expectations, because the best visits happen when you come curious rather than looking for a manicured showpiece.</p>
+
+        <h2>What you'll see</h2>
+        <p>Most of our food forest is only one to two years old. That means you'll see <em>young trees</em>, not a canopy — saplings gaining height, learning to hold their own against the heat, beginning to bear in some cases. A mature food forest takes a decade. You're seeing the early years of one.</p>
+
+        <div class="visit-expect-grid">
+            <div class="visit-expect-card">
+                <h4>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V8"/><path d="M5 3s.55 4 7 4 7-4 7-4"/><path d="M5 11s.55 4 7 4 7-4 7-4"/></svg>
+                    Native tree species
+                </h4>
+                <p>Neem, moringa, and indigenous trees that belong to this land — building shade, habitat, and deep-rooted resilience.</p>
+            </div>
+            <div class="visit-expect-card">
+                <h4>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                    Food forest saplings
+                </h4>
+                <p>Guava, pomegranate, banana, and more — young plants, 1–2 years old, laid out in a multi-layered planting pattern.</p>
+            </div>
+            <div class="visit-expect-card">
+                <h4>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></svg>
+                    The farm pond
+                </h4>
+                <p>Our rainwater-harvesting pond — unlined, so it also recharges the groundwater under the neighbourhood.</p>
+            </div>
+            <div class="visit-expect-card">
+                <h4>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="17" width="20" height="3" rx="1"/><path d="M4 17c0-4 2-7 8-10 6 3 8 6 8 10"/></svg>
+                    Mulched ground
+                </h4>
+                <p>Straw, fallen leaves, coir rings, living ground cover. The soil is never bare — you'll see why, in person.</p>
+            </div>
+        </div>
+
+        <div class="practice-photo">
+            <img src="gallery/practices/mulching/living-mulch-sapling.jpeg" alt="A young sapling surrounded by living ground cover — an example of what visitors will see on the farm walk" loading="lazy">
+            <div class="practice-photo-caption">A young sapling with living ground cover — honest, early-stage food forest.</div>
+        </div>
+
+        <h2>Your 20-minute tour</h2>
+        <p>Ajay, our farm supervisor, walks you through the farm and explains what we do and — more importantly — why. It's short enough that children stay engaged, and long enough to genuinely understand the system.</p>
+
+        <ol class="visit-tour">
+            <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M12 7c0-2 2-4 5-4-1 3-3 5-5 5"/><path d="M12 11c0-2-2-4-5-4 1 3 3 5 5 5"/></svg>
+                <div>
+                    <strong>Why natural farming?</strong>
+                    <p>The core idea: work with the land instead of against it. What we've stopped using, and what we've started trusting.</p>
+                </div>
+            </li>
+            <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></svg>
+                <div>
+                    <strong>Water harvesting</strong>
+                    <p>How our pond collects monsoon rain, and how that water carries us through the dry months while recharging the groundwater table.</p>
+                </div>
+            </li>
+            <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 16.2A5 5 0 0018 7h-1.26A8 8 0 104 15.25"/><path d="M12 12v9M8 17l4 4 4-4"/></svg>
+                <div>
+                    <strong>Efficient irrigation</strong>
+                    <p>Drip and sprinkler systems deliver water exactly where it's needed — minimising waste in a semi-arid climate.</p>
+                </div>
+            </li>
+            <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V8"/><path d="M5 3s.55 4 7 4 7-4 7-4"/><path d="M5 11s.55 4 7 4 7-4 7-4"/></svg>
+                <div>
+                    <strong>Farming with nature</strong>
+                    <p>The food forest logic: layered planting, trees feeding soil, insects managing insects, ground cover doing the work of a plough.</p>
+                </div>
+            </li>
+            <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <div>
+                    <strong>Real challenges</strong>
+                    <p>Heat, pests, patience. What doesn't work, what took longer than we thought, what we're still figuring out.</p>
+                </div>
+            </li>
+            <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
+                <div>
+                    <strong>Sustainability, widened</strong>
+                    <p>Why this approach matters beyond our fence — for food, for groundwater, for the climate conversation we're all inside.</p>
+                </div>
+            </li>
+        </ol>
+
+        <h2>Bring the kids</h2>
+        <div class="visit-kids-callout">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 100 8 4 4 0 000-8z"/><path d="M6 22v-4a2 2 0 012-2h8a2 2 0 012 2v4"/><path d="M8 14v8M16 14v8"/></svg>
+            <p><strong>Please do bring your children.</strong> A farm visit gives them something a screen can't — hands in soil, a tree they can watch grow over years, an earthworm up close, the smell of fresh mulch. This is where reconnection with nature actually begins.</p>
+        </div>
+
+        <h2>How to reach us</h2>
+        <p>The farm is easy to reach. We're about <strong>30 minutes from Kota City</strong>. Take the highway, then turn onto the 30-foot road that runs through Jhalipura village — the farm is a short drive further. Highway connectivity is good, and the village road is fine for cars and two-wheelers.</p>
+
+        <div class="visit-directions">
+            <div>
+                <h4>Distance</h4>
+                <p>~30 minutes from Kota City</p>
+            </div>
+            <div>
+                <h4>Route</h4>
+                <p>Highway → Jhalipura village road</p>
+            </div>
+            <div>
+                <h4>Location</h4>
+                <p>Khedli Pandya, near Jhalipura, Kota, Rajasthan</p>
+            </div>
+            <div>
+                <h4>Best time</h4>
+                <p>Mornings or late afternoons</p>
+            </div>
+        </div>
+
+        <p style="text-align:center; margin: 0.5rem 0 1.5rem;">
+            <a href="https://www.google.com/maps?q=25.20101783154429,75.94780607626492" target="_blank" rel="noopener noreferrer" class="practice-back-link" style="display:inline-block;">Open in Google Maps &rarr;</a>
+        </p>
+
+        <div class="practice-highlights" data-icon="leaf">
+            <h3>Before you message</h3>
+            <ul>
+                <li>The food forest is 1–2 years old — young, growing, not yet a canopy</li>
+                <li>Tour takes about 20 minutes and covers natural farming, water, and soil</li>
+                <li>Children are very welcome — please bring them</li>
+                <li>Wear walking shoes; there's real ground, not a paved path</li>
+                <li>Ajay will confirm a time that works for both sides</li>
+            </ul>
+        </div>
+
+        <div class="visit-cta">
+            <h3>Ready to plan your visit?</h3>
+            <p>Message Ajay on WhatsApp with a date that works for you. He'll reply to confirm a time and answer any questions.</p>
+            <a href="https://wa.me/918340684878?text=Hi%20Ajay%2C%20I%27d%20like%20to%20visit%20Kota%20Natural%20Farm." target="_blank" rel="noopener noreferrer" class="visit-cta-button">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                Message Ajay on WhatsApp
+            </a>
+            <p class="visit-cta-note">Ajay Kumar · Farm supervisor (Kisan Mitra) · +91 83406 84878</p>
+        </div>
+
+        <a href="index.html" class="practice-back-link">&larr; Back to Home</a>
+
+    </article>
+
+    <footer class="practice-footer">
+        <p>&copy; 2026 Kota Natural Farm &middot; Khedli Pandya, near Jhalipura, Kota, Rajasthan</p>
+    </footer>
+
+    <script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+            navigator.serviceWorker.register('/sw.js').catch(function() {});
+        });
+    }
+    </script>
+</body>
+</html>
