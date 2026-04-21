@@ -45,12 +45,12 @@
 const BLOG_POSTS = [
     {
         slug:        "fire-didnt-start-here",
-        date:        "April 20, 2026",
+        date:        "April 20–21, 2026",
         title:       "The Fire Didn't Start Here",
-        summary:     "Chemicals, flooding, fire — three ways a neighbouring farm can change yours. Yesterday, the third one reached ours. What we lost, why parali is the real danger, and what every farmer on the road can do about it.",
+        summary:     "Chemicals, flooding, fire — three ways a neighbouring farm can change yours. This week the third reached ours — and a five-minute heat wave the next day did even more damage than the flames. The full scale of what we lost, and what every farmer on the road can do about it.",
         cover:       "blog/images/fire-didnt-start-here/neighbour-field-fire.jpg",
         tag:         "climate",
-        readingTime: "5 min read"
+        readingTime: "6 min read"
     },
     {
         slug:        "mulching",
