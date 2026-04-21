@@ -115,8 +115,8 @@ console.log('\n[Visit the Farm card]');
     const html = await fs.readFile(path.join(ROOT, 'index.html'), 'utf8');
     if (!/Visit the Farm/.test(html))    fails.push('[index.html] "Visit the Farm" heading missing');
     else ok('"Visit the Farm" heading present');
-    if (!/Ajay Kumar/.test(html))        fails.push('[index.html] Ajay Kumar name missing from contact');
-    else ok('Ajay Kumar named in contact');
+    if (!/farm supervisor/i.test(html)) fails.push('[index.html] "farm supervisor" role missing from contact');
+    else ok('farm supervisor referenced in contact');
     // Both homepage CTAs ("Plan a Visit" hero button + contact card) now route through visit.html
     // rather than straight to WhatsApp — that's the whole point of the expectation-setting page.
     const heroVisitLink = /href="visit\.html"[^>]*class="cta-button">Plan a Visit</.test(html);
@@ -133,8 +133,8 @@ console.log('\n[visit.html content]');
     const html = await fs.readFile(path.join(ROOT, 'visit.html'), 'utf8');
     if (!/Visit Kota Natural Farm/.test(html)) fails.push('[visit.html] hero heading missing');
     else ok('visit.html has hero heading');
-    if (!/wa\.me\/918340684878/.test(html)) fails.push('[visit.html] Ajay WhatsApp CTA missing');
-    else ok('visit.html has Ajay WhatsApp CTA');
+    if (!/wa\.me\/918340684878/.test(html)) fails.push('[visit.html] WhatsApp CTA missing');
+    else ok('visit.html has WhatsApp CTA');
     if (!/20.minute/i.test(html)) fails.push('[visit.html] 20-minute tour framing missing');
     else ok('visit.html sets the 20-minute expectation');
     if (!/Jhalipura/.test(html)) fails.push('[visit.html] Jhalipura directions missing');
