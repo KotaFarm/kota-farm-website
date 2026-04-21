@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Chemicals, flooding, fire — three ways a neighbouring farm can change yours. Yesterday, the third one crossed into Kota Natural Farm. The story of what we lost, and what parali and climate change have to do with it.">
+    <meta property="og:title" content="The Fire Didn't Start Here | Kota Natural Farm">
+    <meta property="og:description" content="Chemicals, flooding, fire — three ways a neighbour's farm can reach across the fence. Yesterday, the third one reached ours.">
+    <meta property="og:type" content="article">
+    <meta property="og:image" content="https://kotanaturalfarm.in/blog/images/fire-didnt-start-here/neighbour-field-fire.jpg">
+    <meta property="article:published_time" content="2026-04-20">
+    <title>The Fire Didn't Start Here | Kota Natural Farm</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%232d3319'/%3E%3Cpath d='M16 6c-2 4-1 8 0 11 1-3 5-7 9-8-3 3-6 7-7 11 0 0-1 4-2 6-1-2-2-6-2-6-1-4-4-8-7-11 4 1 8 5 9 8C17 14 18 10 16 6z' fill='%23a8c686'/%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/practice.css">
+    <style>
+        /* Blog-post-specific tweaks on top of practice.css */
+        .blog-post-meta {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 1.25rem var(--spacing-md) 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            font-family: 'Work Sans', sans-serif;
+            font-size: 0.85rem;
+            color: var(--earth-light);
+        }
+        .blog-post-meta .blog-tag {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--water);
+            background: rgba(107, 144, 128, 0.12);
+            padding: 0.25rem 0.6rem;
+            border-radius: 10px;
+        }
+        .blog-post-meta .blog-sep {
+            opacity: 0.5;
+        }
+        .practice-highlights[data-icon="fire"] li::before {
+            content: '🔥 ';
+        }
+        .practice-highlights[data-icon="seed"] li::before {
+            content: '🌱 ';
+        }
+        .blog-pullquote {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.3rem;
+            font-style: italic;
+            color: var(--earth-dark);
+            border-left: 4px solid var(--clay);
+            padding: 0.75rem 0 0.75rem 1.25rem;
+            margin: var(--spacing-md) 0;
+            line-height: 1.5;
+        }
+
+        /* ── Image sizing fixes specific to this post ────────── */
+
+        /* Hero photo is a tall phone shot — shift the crop upward so the
+           fire (which sits in the upper-middle of the frame) is visible,
+           and give the hero a bit more height so less is chopped. */
+        .practice-hero {
+            height: 55vh;
+            min-height: 340px;
+            max-height: 520px;
+        }
+        .practice-hero img {
+            object-position: center 38%;
+        }
+
+        /* Force both photos in the before/after grid to the same aspect
+           ratio so the shorter (landscape) "before" image doesn't leave
+           empty white space when the other (portrait) image stretches. */
+        .practice-photo-grid .practice-photo img {
+            aspect-ratio: 4 / 3;
+            width: 100%;
+            height: auto;
+            max-height: none;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        /* On narrow screens, the grid collapses to one column in the base
+           styles — let each image breathe at a natural aspect ratio. */
+        @media (max-width: 640px) {
+            .practice-photo-grid {
+                grid-template-columns: 1fr;
+            }
+            .practice-photo-grid .practice-photo img {
+                aspect-ratio: 16 / 10;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="practice-nav">
+        <div class="practice-nav-inner">
+            <a href="../index.html" class="practice-nav-back" aria-label="Back to home">&larr;</a>
+            <a href="../index.html" class="practice-nav-logo">Kota Natural Farm</a>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <div class="practice-hero">
+        <img src="images/fire-didnt-start-here/neighbour-field-fire.jpg" alt="A wall of flame and smoke rising from a neighbouring wheat field near Kota Natural Farm" fetchpriority="high">
+        <div class="practice-hero-overlay">
+            <h1>The Fire Didn't Start Here</h1>
+            <p class="practice-tagline">What a neighbour's dry field, a single spark, and a changing climate taught us about farm design.</p>
+        </div>
+    </div>
+
+    <div class="blog-post-meta">
+        <span class="blog-tag">Climate</span>
+        <span>April 20, 2026</span>
+        <span class="blog-sep">·</span>
+        <span>5 min read</span>
+    </div>
+
+    <article class="practice-article">
+
+        <h2>Before This Is a Story About Fire</h2>
+
+        <p>Before this is a story about fire, it is a story about neighbours. A farm does not live alone. What the farm next to yours does — what they spray, what they flood, what they leave behind — can change the fate of your soil, your water, and your crop. Over time we have come to see three ways a neighbouring farm can reach across the fence line and affect ours:</p>
+
+        <div class="practice-highlights" data-icon="leaf">
+            <h3>Three ways a neighbour's farm can change yours</h3>
+            <ul>
+                <li><strong>Chemicals.</strong> Pesticide and herbicide drift from conventional spraying — carried by wind, it settles on your leaves, your soil, and eventually your food.</li>
+                <li><strong>Flooding.</strong> Heavy water use on neighbouring paddy (rice) fields — over-irrigation seeps sideways and raises the water table under your own land, creating unwanted moisture, waterlogged roots, and salt build-up.</li>
+                <li><strong>Fire.</strong> Dry fields left empty between crops, catching on any spark and racing into the next farm, and the next.</li>
+            </ul>
+        </div>
+
+        <p>This blog is about the third. It happened to us yesterday.</p>
+
+        <h2>A Wall of Flame Across the Next Field</h2>
+
+        <p>On the afternoon of April 19, 2026, smoke rose over Khedli Pandya. Not from our farm — from the next one. Within minutes, a wall of flame was moving across the wheat stubble of the neighbouring field, pulled forward by the dry pre-monsoon wind. By the time anyone reached the boundary, hundreds of acres of surrounding farmland were on fire.</p>
+
+        <p>Our farm caught the edge of it. We lost 10 plants — two years of growth — and the small bamboo-thatched hut that housed our tubewell. But the real story isn't what we lost. It's why this keeps happening, and why it will likely happen again.</p>
+
+        <h2>What Is Parali, and Why Does It Burn?</h2>
+
+        <p>Across the fields that surround us, farmers grow wheat in the winter season. By early April, the harvest is done. What's left behind is <em>parali</em> — the dry stalks and stubble of the cut crop, rooted in earth that has already started to bake under the rising summer sun.</p>
+
+        <p>Parali is extraordinarily flammable. After a Rajasthan winter and the first weeks of April heat, it is bone-dry. Traditionally, many farmers burn it on purpose — a quick, cheap way to clear the field and prepare it for the next crop. This year, the farmers near us <em>didn't</em> light it. They knew the wind was wrong, the heat was rising, the risk was high. And it still caught fire anyway.</p>
+
+        <blockquote class="blog-pullquote">A spark — from a wire, a cigarette, a passing tractor — is all it takes. Once a dry parali field catches, the fire moves at the speed of the wind.</blockquote>
+
+        <h2>What Reached Us</h2>
+
+        <p>The fire crossed our north boundary and stopped, mostly, at the edge of the green. Ten plants — two years old, just starting to give us shade and roots — were burned. That hurt, but the real damage was infrastructure.</p>
+
+        <p>Our tubewell sits near the boundary. We had housed the motor and control system inside a bamboo-and-thatch hut — a deliberate sustainability choice, using farm-grown materials instead of concrete and steel. The hut burned completely. The drip irrigation network feeding the nearby beds is gone. The motor itself slipped down into the well shaft as the structure collapsed. We are now bringing in a drilling rig to pull it back out.</p>
+
+        <div class="practice-photo-grid">
+            <div class="practice-photo">
+                <img src="images/fire-didnt-start-here/tubewell-hut-before.jpg" alt="The bamboo-and-thatch hut housing the tubewell, with the pond visible just behind it" loading="lazy">
+                <div class="practice-photo-caption">Before. Bamboo, thatch, and drip lines — the tubewell hut, with our pond just behind.</div>
+            </div>
+            <div class="practice-photo">
+                <img src="images/fire-didnt-start-here/aftermath-tubewell.jpg" alt="The burned-out tubewell area, brick pillars standing in ash, pipes and a blue bucket visible" loading="lazy">
+                <div class="practice-photo-caption">After. The brick pillars are all that's left — and a blue bucket in the corner, which was the first line of defence.</div>
+            </div>
+        </div>
+
+        <h2>Why the Rest of the Farm Held</h2>
+
+        <p>The 10 plants we lost sit on the immediate boundary. Everything behind them — the food forest, the vegetable beds, the mature trees — did not burn. That wasn't luck. It was design.</p>
+
+        <p>Our fields were green. We had standing crops, living mulch, and canopy trees holding moisture in the soil and the air. We have a pond just inside the northern fence line, which acted as a natural firebreak: the fire reached the water and stopped. A monoculture field is a desert between seasons — dry, dead, and combustible. A permaculture farm is never fully empty. That difference is what kept the rest of the farm standing.</p>
+
+        <div class="practice-photo">
+            <img src="images/fire-didnt-start-here/drill-rig-boundary.jpg" alt="A blue drilling rig next to the tubewell, with the blackened neighbour's field on the left and the green Kota Natural Farm field on the right" loading="lazy">
+            <div class="practice-photo-caption">The line between what burned and what didn't. Scorched parali on the left, our green farm on the right. The drill rig has come to pull the motor back out.</div>
+        </div>
+
+        <h2>This Is the Second Year</h2>
+
+        <p>This is not the first time. The same thing happened last year, on a neighbouring farm boundary, in the same season. Two years running — which means this isn't an accident. It is a pattern.</p>
+
+        <p>The state recognises the problem but has no real answer for it. Across Kota district, the government's response is to cut off farm electricity from 9 AM to 6 PM for the entire summer, to reduce the chance of accidental short-circuit ignitions on dry fields. When the official fire-prevention policy is "turn off the power," you know the system has run out of ideas.</p>
+
+        <p>Meanwhile, summers keep getting hotter. April in Kota now routinely crosses 42°C. Soil holds less moisture. Stubble dries faster. Every year, the window between "safe" and "catastrophic" narrows.</p>
+
+        <h2>What We're Asking Our Neighbours</h2>
+
+        <p>You can't control what the farm next to you does. But of the three pressures above, fire is the one where a simple, profitable change on a neighbour's field would protect everyone on the road. So this is what we are asking.</p>
+
+        <div class="practice-highlights" data-icon="seed">
+            <h3>A simple ask to every farmer on the road</h3>
+            <ul>
+                <li>Don't leave the field empty in the crop-changing season. Even a short, simple cover crop closes the window of fire risk.</li>
+                <li>Plant nitrogen-fixing legumes between wheat and the next crop — <strong>dal (lentils), chana (chickpea), moong</strong>. They fix nitrogen into the soil for free, don't need much water, give a small harvest, and keep the field alive and green.</li>
+                <li>Don't burn parali to clear fields. Mulch it back into the soil, compost it, or let animals graze it down. Every acre of burned stubble is a potential source for the next wildfire.</li>
+                <li>Talk to your neighbours. The economics work — legumes earn money and improve the next crop. The fire risk affects everyone on the road.</li>
+            </ul>
+        </div>
+
+        <h2>And What Every Farm Can Do for Itself</h2>
+
+        <p>If you cannot be sure what your neighbour's field will look like in April, design for the worst case:</p>
+
+        <div class="practice-highlights" data-icon="fire">
+            <h3>Farm-level fire resilience</h3>
+            <ul>
+                <li><strong>A water body near your boundary.</strong> A pond, a large tank, even a wide check dam. It is a firebreak that doubles as irrigation storage.</li>
+                <li><strong>Trees along the fence line.</strong> A living green wall holds moisture and slows wind-driven fire. Choose species that stay green into summer.</li>
+                <li><strong>Green ground cover year-round.</strong> Mulched, alive, shaded soil does not burn easily. Bare dry soil does.</li>
+                <li><strong>Keep critical infrastructure away from the edge.</strong> Our tubewell was near the boundary for convenience. We're rebuilding it further in.</li>
+                <li><strong>Diversify.</strong> Monoculture leaves fields empty between seasons. A food forest is never empty.</li>
+            </ul>
+        </div>
+
+        <h2>What We're Doing Next</h2>
+
+        <p>The drill rig is on site to pull the motor out of the well. Over the next few weeks we'll rebuild the irrigation system — further from the boundary this time. We're adding a proper firebreak along the north edge, and we're starting conversations with farmers on the surrounding roads about parali and cover crops.</p>
+
+        <p>A fire that doesn't start on your farm can still take parts of your farm. The answer isn't a bigger fence. It's better soil — on our land, and on the land around us. We'll keep doing our part, and keep asking others to do theirs.</p>
+
+        <a href="index.html" class="practice-back-link">&larr; All blog posts</a>
+
+    </article>
+
+    <footer class="practice-footer">
+        <p>&copy; 2026 Kota Natural Farm &middot; Khedli Pandya, Kota, Rajasthan</p>
+    </footer>
+
+    <script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+            navigator.serviceWorker.register('/sw.js').catch(function() {});
+        });
+    }
+    </script>
+</body>
+</html>
