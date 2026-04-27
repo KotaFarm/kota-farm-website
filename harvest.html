@@ -283,28 +283,81 @@
             color: var(--earth-dark);
             margin-bottom: 1rem;
         }
-        .hv-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr));
-            gap: 0.75rem;
+        .hv-carousel-wrap {
+            position: relative;
             margin-bottom: 2rem;
         }
+        .hv-grid {
+            display: flex;
+            gap: 0.75rem;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-padding: 0.5rem;
+            padding: 0.25rem 0.25rem 0.75rem;
+            scroll-behavior: smooth;
+            scrollbar-width: thin;
+            scrollbar-color: var(--clay) transparent;
+            -webkit-overflow-scrolling: touch;
+        }
+        .hv-grid::-webkit-scrollbar { height: 6px; }
+        .hv-grid::-webkit-scrollbar-thumb {
+            background: var(--clay);
+            border-radius: 3px;
+        }
+        .hv-grid::-webkit-scrollbar-track { background: transparent; }
         .hv-card {
             position: relative;
-            border-radius: 14px;
+            border-radius: 12px;
             overflow: hidden;
             box-shadow: var(--shadow-sm);
             cursor: pointer;
             transition: transform 0.25s ease, box-shadow 0.25s ease;
-            aspect-ratio: 1 / 1;
             background: linear-gradient(135deg, var(--sand), var(--sprout));
+            flex: 0 0 auto;
+            width: 220px;
+            aspect-ratio: 4 / 3;
+            scroll-snap-align: start;
         }
-        .hv-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+        @media (max-width: 600px) {
+            .hv-card { width: 180px; }
+        }
+        .hv-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
         .hv-card:focus { outline: 2px solid var(--leaf); outline-offset: 3px; }
         .hv-card img {
             width: 100%; height: 100%;
             object-fit: cover;
             display: block;
+        }
+        .hv-carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(45,51,25,0.85);
+            color: var(--sand);
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+            opacity: 0;
+            transition: opacity 0.2s ease, background 0.2s ease;
+            z-index: 2;
+        }
+        .hv-carousel-nav:hover { background: var(--earth-dark); }
+        .hv-carousel-wrap:hover .hv-carousel-nav { opacity: 1; }
+        .hv-carousel-nav.prev { left: -8px; }
+        .hv-carousel-nav.next { right: -8px; }
+        .hv-carousel-nav[disabled] {
+            opacity: 0 !important;
+            pointer-events: none;
+        }
+        @media (hover: none) {
+            .hv-carousel-nav { display: none; }
         }
 
         /* ── Empty state ───────────────────────────────────── */
@@ -428,13 +481,14 @@
             </div>
         </div>
 
-        <!-- Recent harvest grid -->
+        <!-- Recent harvest carousel -->
         <h2 class="hv-section-title">Recent Harvests</h2>
-        <div class="hv-grid" id="hv-grid"></div>
+        <div class="hv-carousel-wrap">
+            <button type="button" class="hv-carousel-nav prev" id="hv-carousel-prev" aria-label="Previous photos">‹</button>
+            <div class="hv-grid" id="hv-grid"></div>
+            <button type="button" class="hv-carousel-nav next" id="hv-carousel-next" aria-label="Next photos">›</button>
+        </div>
 
-        <p class="hv-footer-note">
-            Data flows from our farm Google Sheet — every harvest Ajay or Prabha logs appears here within minutes.
-        </p>
     </main>
 
     <!-- Modal for harvest detail -->
@@ -794,6 +848,27 @@
                     if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openHarvestModal(withPhotos[parseInt(card.dataset.idx)]); }
                 });
             });
+
+            updateCarouselNav();
+        }
+
+        // ── Carousel navigation ────────────────────────────
+        function updateCarouselNav() {
+            var grid = document.getElementById('hv-grid');
+            var prev = document.getElementById('hv-carousel-prev');
+            var next = document.getElementById('hv-carousel-next');
+            if (!grid || !prev || !next) return;
+            var atStart = grid.scrollLeft <= 4;
+            var atEnd = grid.scrollLeft + grid.clientWidth >= grid.scrollWidth - 4;
+            prev.disabled = atStart;
+            next.disabled = atEnd;
+        }
+        function scrollCarousel(direction) {
+            var grid = document.getElementById('hv-grid');
+            if (!grid) return;
+            // Scroll by ~80% of visible width so a couple cards stay anchored
+            var amount = Math.round(grid.clientWidth * 0.8);
+            grid.scrollBy({ left: direction * amount, behavior: 'smooth' });
         }
 
         // ── Modal ──────────────────────────────────────────
@@ -868,6 +943,15 @@
             document.addEventListener('keydown', function (e) {
                 if (e.key === 'Escape') closeHarvestModal();
             });
+
+            // Carousel arrows
+            var prev = document.getElementById('hv-carousel-prev');
+            var next = document.getElementById('hv-carousel-next');
+            if (prev) prev.addEventListener('click', function () { scrollCarousel(-1); });
+            if (next) next.addEventListener('click', function () { scrollCarousel(1); });
+            var grid = document.getElementById('hv-grid');
+            if (grid) grid.addEventListener('scroll', updateCarouselNav, { passive: true });
+            window.addEventListener('resize', updateCarouselNav);
         }
 
         // ── Data ingestion (sample now, swap to live later) ──
