@@ -488,6 +488,49 @@
             { date: '2026-02-17', crop: 'Palak',       weight: 1.50,  quality: 'High',   photoUrl: '', notes: 'Fresh leafy greens' }
         ];
 
+        // ════════════════════════════════════════════════════════════
+        //  BASELINE — lifetime harvest totals from before active tracking
+        //  began (and amounts not yet logged row-by-row).
+        //  Computed once: user's all-time total − what was in the sheet
+        //  at backfill time. New sheet rows naturally grow display totals
+        //  on top of these. Applied ONLY to lifetime tiles + Top Crops
+        //  chart when period === 'all'. Excluded from trend chart,
+        //  Harvest Days count, and photo grid (those stay sheet-only).
+        // ════════════════════════════════════════════════════════════
+        var BASELINE = {
+            'Tomato':       91.95,
+            'Palak':        66.50,
+            'Cauliflower':  60.00,
+            'Green Peas':   27.00,
+            'Carrot':       17.00,
+            'Potato':       15.00,
+            'Radish':       15.00,
+            'Chana':        14.00,
+            'Cabbage':      10.00,
+            'Methi leaves': 10.00,
+            'Kalibatli':    10.00,
+            'Wild Spinach':  8.00,
+            'Brinjal':       7.00,
+            'Coriander':     5.00,
+            'Beetroot':      4.20,
+            'Methi seeds':   2.00,
+            'Cowpea':        2.00,
+            'Okra':          1.25
+        };
+
+        // Merge baseline into a {crop: kg} object — only when looking
+        // at All Time, and respecting any active crop filter.
+        function withBaseline(cropTotals) {
+            if (currentPeriod !== 'all') return cropTotals;
+            var merged = {};
+            Object.keys(cropTotals).forEach(function (k) { merged[k] = cropTotals[k]; });
+            Object.keys(BASELINE).forEach(function (crop) {
+                if (currentCrop && currentCrop !== crop) return;
+                merged[crop] = (merged[crop] || 0) + BASELINE[crop];
+            });
+            return merged;
+        }
+
         // ── State ──────────────────────────────────────────
         var allData = [];
         var currentPeriod = 'all';
@@ -595,15 +638,17 @@
 
         // ── Tiles ──────────────────────────────────────────
         function renderTiles(filtered) {
-            var totalKg = filtered.reduce(function (s, e) { return s + (e.weight || 0); }, 0);
             var crops = {};
             var dates = {};
             filtered.forEach(function (e) {
                 crops[e.crop] = (crops[e.crop] || 0) + (e.weight || 0);
                 if (e.date) dates[e.date] = true;
             });
-            var topCrop = Object.keys(crops).sort(function (a, b) { return crops[b] - crops[a]; })[0];
-            var topCropKg = topCrop ? crops[topCrop] : 0;
+            // Include baseline (lifetime undated harvests) for All Time view
+            var cropsMerged = withBaseline(crops);
+            var totalKg = Object.keys(cropsMerged).reduce(function (s, k) { return s + cropsMerged[k]; }, 0);
+            var topCrop = Object.keys(cropsMerged).sort(function (a, b) { return cropsMerged[b] - cropsMerged[a]; })[0];
+            var topCropKg = topCrop ? cropsMerged[topCrop] : 0;
 
             var tiles = document.getElementById('hv-tiles');
             tiles.innerHTML = [
@@ -616,7 +661,7 @@
                 '<div class="hv-tile">',
                     '<span class="hv-tile-icon">🌱</span>',
                     '<div class="hv-tile-label">Crops Harvested</div>',
-                    '<div class="hv-tile-value">' + Object.keys(crops).length + '</div>',
+                    '<div class="hv-tile-value">' + Object.keys(cropsMerged).length + '</div>',
                     '<div class="hv-tile-sub">Different varieties</div>',
                 '</div>',
                 '<div class="hv-tile">',
@@ -642,6 +687,7 @@
         function renderCropsChart(filtered) {
             var crops = {};
             filtered.forEach(function (e) { crops[e.crop] = (crops[e.crop] || 0) + (e.weight || 0); });
+            crops = withBaseline(crops);
             var sorted = Object.keys(crops)
                 .map(function (k) { return { name: k, kg: crops[k] }; })
                 .sort(function (a, b) { return b.kg - a.kg; })
@@ -786,6 +832,7 @@
             var sel = document.getElementById('hv-crop-select');
             var crops = {};
             allData.forEach(function (e) { crops[e.crop] = true; });
+            Object.keys(BASELINE).forEach(function (c) { crops[c] = true; });
             var sorted = Object.keys(crops).sort();
             sorted.forEach(function (c) {
                 var opt = document.createElement('option');
