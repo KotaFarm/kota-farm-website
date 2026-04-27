@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Live harvest meter — what's been picked at Kota Natural Farm, with weights, quality, and photos straight from the field.">
+    <meta property="og:title" content="Harvest Meter | Kota Natural Farm">
+    <meta property="og:description" content="Live harvest data from a permaculture farm in Kota, Rajasthan.">
+    <meta property="og:type" content="website">
+    <title>Harvest Meter | Kota Natural Farm</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%232d3319'/%3E%3Cpath d='M16 6c-2 4-1 8 0 11 1-3 5-7 9-8-3 3-6 7-7 11 0 0-1 4-2 6-1-2-2-6-2-6-1-4-4-8-7-11 4 1 8 5 9 8C17 14 18 10 16 6z' fill='%23a8c686'/%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --earth-dark: #2d3319;
+            --earth-medium: #4a5a2f;
+            --earth-light: #8b9862;
+            --sand: #e8dcc4;
+            --clay: #c4a572;
+            --sprout: #a8c686;
+            --water: #6b9080;
+            --leaf: #5a7a3a;
+            --bg: #f5f3ef;
+            --card: #ffffff;
+            --shadow-sm: 0 2px 10px rgba(45,51,25,0.06);
+            --shadow-md: 0 4px 20px rgba(45,51,25,0.10);
+            --quality-high: #5a7a3a;
+            --quality-medium: #c4a572;
+            --quality-low: #b06a4f;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; overflow-x: clip; }
+        body {
+            font-family: 'Work Sans', sans-serif;
+            color: var(--earth-dark);
+            background: var(--bg);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* ── Page header ─────────────────────────────────────── */
+        .hv-header {
+            background: var(--sand);
+            padding: 3.5rem 1.5rem 2.5rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(139,152,98,0.25);
+        }
+        .hv-header h1 {
+            font-family: 'Crimson Pro', serif;
+            font-size: clamp(2rem, 4.5vw, 3.2rem);
+            font-weight: 700;
+            color: var(--earth-dark);
+            margin-bottom: 0.4rem;
+            letter-spacing: -0.5px;
+        }
+        .hv-header p {
+            color: var(--earth-medium);
+            font-size: 1rem;
+            font-weight: 300;
+            max-width: 540px;
+            margin: 0 auto;
+        }
+        .hv-live-dot {
+            display: inline-block;
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--sprout);
+            margin-right: 8px;
+            animation: pulse 1.8s ease-in-out infinite;
+            vertical-align: middle;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.3); }
+        }
+        .hv-live-label {
+            display: inline-block;
+            margin-top: 0.8rem;
+            font-size: 0.85rem;
+            color: var(--earth-medium);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 500;
+        }
+
+        /* ── Container ─────────────────────────────────────── */
+        .hv-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+
+        /* ── Filter bar ────────────────────────────────────── */
+        .hv-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+            align-items: center;
+        }
+        .hv-filter-group {
+            display: flex;
+            gap: 0.4rem;
+            background: var(--card);
+            padding: 0.35rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+        }
+        .hv-filter-btn {
+            border: none;
+            background: transparent;
+            padding: 0.55rem 1rem;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.88rem;
+            font-weight: 500;
+            color: var(--earth-medium);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .hv-filter-btn:hover { color: var(--earth-dark); background: var(--sand); }
+        .hv-filter-btn.active {
+            background: var(--earth-dark);
+            color: var(--sand);
+        }
+        .hv-crop-select {
+            border: none;
+            background: var(--card);
+            padding: 0.7rem 1rem;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            color: var(--earth-dark);
+            box-shadow: var(--shadow-sm);
+            cursor: pointer;
+            min-width: 160px;
+        }
+        .hv-crop-select:focus { outline: 2px solid var(--sprout); outline-offset: 2px; }
+
+        /* ── Hero metric tiles ─────────────────────────────── */
+        .hv-tiles {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .hv-tile {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .hv-tile:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+        .hv-tile-icon {
+            font-size: 1.8rem;
+            margin-bottom: 0.8rem;
+            display: block;
+        }
+        .hv-tile-label {
+            font-size: 0.78rem;
+            color: var(--earth-medium);
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            font-weight: 500;
+            margin-bottom: 0.3rem;
+        }
+        .hv-tile-value {
+            font-family: 'Crimson Pro', serif;
+            font-size: 2.4rem;
+            font-weight: 700;
+            color: var(--earth-dark);
+            line-height: 1;
+        }
+        .hv-tile-unit {
+            font-size: 1rem;
+            color: var(--earth-medium);
+            font-weight: 400;
+            margin-left: 4px;
+        }
+        .hv-tile-sub {
+            font-size: 0.85rem;
+            color: var(--earth-medium);
+            margin-top: 0.4rem;
+        }
+        .hv-tile-accent::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 4px; height: 100%;
+            background: var(--sprout);
+        }
+
+        /* ── Chart row ─────────────────────────────────────── */
+        .hv-chart-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        @media (max-width: 800px) {
+            .hv-chart-row { grid-template-columns: 1fr; }
+        }
+        .hv-chart-card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+        .hv-chart-card h3 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--earth-dark);
+            margin-bottom: 1rem;
+        }
+        .hv-chart-wrap {
+            position: relative;
+            height: 280px;
+        }
+        .hv-chart-wrap.tall { height: 320px; }
+
+        /* ── Trend chart (full width) ──────────────────────── */
+        .hv-trend {
+            margin-bottom: 2rem;
+        }
+
+        /* ── Recent harvest grid ───────────────────────────── */
+        .hv-section-title {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--earth-dark);
+            margin-bottom: 1rem;
+        }
+        .hv-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr));
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+        .hv-card {
+            position: relative;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            cursor: pointer;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            aspect-ratio: 1 / 1;
+            background: linear-gradient(135deg, var(--sand), var(--sprout));
+        }
+        .hv-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+        .hv-card:focus { outline: 2px solid var(--leaf); outline-offset: 3px; }
+        .hv-card img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* ── Empty state ───────────────────────────────────── */
+        .hv-empty {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--earth-medium);
+            background: var(--card);
+            border-radius: 14px;
+            box-shadow: var(--shadow-sm);
+        }
+        .hv-empty-icon {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 0.8rem;
+            opacity: 0.5;
+        }
+
+        /* ── Footer note ───────────────────────────────────── */
+        .hv-footer-note {
+            text-align: center;
+            color: var(--earth-medium);
+            font-size: 0.85rem;
+            margin-top: 2rem;
+            padding: 1rem;
+        }
+        .hv-footer-note a { color: var(--leaf); text-decoration: none; }
+        .hv-footer-note a:hover { text-decoration: underline; }
+
+        /* ── Modal ─────────────────────────────────────────── */
+        .hv-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(45,51,25,0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+        .hv-modal-overlay.open { display: flex; }
+        .hv-modal {
+            background: var(--card);
+            border-radius: 18px;
+            max-width: 540px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .hv-modal-img {
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            object-fit: cover;
+            background: var(--sand);
+        }
+        .hv-modal-body {
+            padding: 1.5rem;
+        }
+        .hv-modal-close {
+            float: right;
+            background: none;
+            border: none;
+            font-size: 1.6rem;
+            color: var(--earth-medium);
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body>
+    <header class="hv-header">
+        <h1>Harvest Meter</h1>
+        <p>What we've picked from the food forest, fields, and beds — straight from the farm log.</p>
+        <div class="hv-live-label"><span class="hv-live-dot"></span>Live · updates from the farm sheet</div>
+    </header>
+
+    <main class="hv-container">
+
+        <!-- Filter bar -->
+        <div class="hv-filters" role="region" aria-label="Filter harvest data">
+            <div class="hv-filter-group" id="hv-period-filter" role="tablist" aria-label="Time period">
+                <button type="button" class="hv-filter-btn" data-period="month">This Month</button>
+                <button type="button" class="hv-filter-btn" data-period="3months">Last 3 Months</button>
+                <button type="button" class="hv-filter-btn" data-period="year">This Year</button>
+                <button type="button" class="hv-filter-btn active" data-period="all">All Time</button>
+            </div>
+            <select id="hv-crop-select" class="hv-crop-select" aria-label="Filter by crop">
+                <option value="">All Crops</option>
+            </select>
+        </div>
+
+        <!-- Hero metric tiles -->
+        <div class="hv-tiles" id="hv-tiles"></div>
+
+        <!-- Top crops chart -->
+        <div class="hv-chart-card" style="margin-bottom: 2rem;">
+            <h3>Top Crops by Weight</h3>
+            <div class="hv-chart-wrap tall">
+                <canvas id="hv-chart-crops"></canvas>
+            </div>
+        </div>
+
+        <!-- Trend chart -->
+        <div class="hv-chart-card hv-trend">
+            <h3>Harvest Over Time</h3>
+            <div class="hv-chart-wrap tall">
+                <canvas id="hv-chart-trend"></canvas>
+            </div>
+        </div>
+
+        <!-- Recent harvest grid -->
+        <h2 class="hv-section-title">Recent Harvests</h2>
+        <div class="hv-grid" id="hv-grid"></div>
+
+        <p class="hv-footer-note">
+            Data flows from our farm Google Sheet — every harvest Ajay or Prabha logs appears here within minutes.
+        </p>
+    </main>
+
+    <!-- Modal for harvest detail -->
+    <div class="hv-modal-overlay" id="hv-modal-overlay" onclick="closeHarvestModal(event)">
+        <div class="hv-modal" onclick="event.stopPropagation()">
+            <button type="button" class="hv-modal-close" onclick="closeHarvestModal()" aria-label="Close">×</button>
+            <img class="hv-modal-img" id="hv-modal-img" src="" alt="">
+            <div class="hv-modal-body" id="hv-modal-body"></div>
+        </div>
+    </div>
+
+    <script>
+    (function () {
+        'use strict';
+
+        // ════════════════════════════════════════════════════════════
+        //  DATA SOURCE
+        //  Right now: baked-in sample data (so the page works offline).
+        //  When ready, swap to Google Sheet:
+        //    Option A — Apps Script JSON endpoint (matches produce.js pattern):
+        //      Set HARVEST_API to your Apps Script /exec URL that returns
+        //      JSON array of {date, crop, weight, quality, photoUrl, notes}.
+        //    Option B — Published-to-web CSV:
+        //      Set HARVEST_CSV_URL and uncomment the CSV fetch path.
+        //  Then delete the SAMPLE_DATA array below.
+        // ════════════════════════════════════════════════════════════
+        var HARVEST_API = '';        // e.g. 'https://script.google.com/macros/s/.../exec'
+        var HARVEST_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQZb8u89bi2HsIKPs5YVB-Sd8aeX7MiOWhTySr-K7K0mr977JfSOUIC84XEGjs4nQUmfnaDoNIBIPTR/pub?gid=100&single=true&output=csv';
+
+        var SAMPLE_DATA = [
+            { date: '2026-04-25', crop: 'Garlic',      weight: 18.85, quality: 'Medium', photoUrl: 'https://drive.google.com/file/d/1HucvlX1c_6F7mJWG8vT1_zPWHH4UgMWY/view?usp=drive_link', notes: 'Small bulbs; curing on floor — hang with airflow to protect quality' },
+            { date: '2026-04-24', crop: 'Brinjal',     weight: 2.00,  quality: 'High',   photoUrl: 'https://drive.google.com/file/d/1yncEY8N-hidPb7spNcYOOLn8ahXn-IlK/view?usp=drive_link', notes: 'Small round variety; healthy' },
+            { date: '2026-04-24', crop: 'Okra',        weight: 3.75,  quality: 'Medium', photoUrl: '', notes: 'Some pods over-mature — pick younger next time' },
+            { date: '2026-04-24', crop: 'Tomato',      weight: 2.35,  quality: 'High',   photoUrl: '', notes: 'Cherry/small variety; ripe and uniform' },
+            { date: '2026-04-24', crop: 'Carrot',      weight: 1.50,  quality: 'Medium', photoUrl: '', notes: 'Small but typical for natural farming' },
+            { date: '2026-04-24', crop: 'Palak',       weight: 5.00,  quality: 'High',   photoUrl: '', notes: 'Excellent — full leaves, fresh color' },
+            { date: '2026-04-19', crop: 'Okra',        weight: 5.00,  quality: 'High',   photoUrl: 'https://drive.google.com/file/d/125ngi_2zYZ6yVtVVluDPuzdGw8TDFuzh/view?usp=drive_link', notes: 'Small-medium pods, fresh green' },
+            { date: '2026-04-19', crop: 'Tomato',      weight: 1.20,  quality: 'High',   photoUrl: '', notes: 'Yellow cherry variety, ripe and uniform' },
+            { date: '2026-04-19', crop: 'Palak',       weight: 7.00,  quality: 'High',   photoUrl: '', notes: 'Full leaves, vibrant color' },
+            { date: '2026-04-11', crop: 'Corn',        weight: 5.00,  quality: 'High',   photoUrl: 'https://drive.google.com/file/d/15Je2BsgJdgSCwvhjC1p5iF83perAgF_h/view?usp=drive_link', notes: 'Fresh green husks, recently picked; ~20 cobs' },
+            { date: '2026-03-28', crop: 'Chana',       weight: 11.00, quality: 'High',   photoUrl: 'https://drive.google.com/file/d/1_igwp6DbPEl416tp0lubkD1Tb8i08LKQ/view?usp=drive_link', notes: 'Estimated weight; dried/threshed' },
+            { date: '2026-03-28', crop: 'Urad Dal',    weight: 2.50,  quality: 'High',   photoUrl: 'https://drive.google.com/file/d/1_igwp6DbPEl416tp0lubkD1Tb8i08LKQ/view?usp=drive_link', notes: 'Estimated weight; minor chaff' },
+            { date: '2026-03-28', crop: 'Methi seeds', weight: 4.00,  quality: 'High',   photoUrl: 'https://drive.google.com/file/d/1_igwp6DbPEl416tp0lubkD1Tb8i08LKQ/view?usp=drive_link', notes: 'Estimated weight; fine and uniform' },
+            { date: '2026-03-19', crop: 'Potato',      weight: 10.00, quality: 'High',   photoUrl: 'https://drive.google.com/file/d/1cnedT3ahkSvlX3lsXbqM4hQKgSfYlniq/view?usp=drive_link', notes: 'Two bowls combined; varied sizes' },
+            { date: '2026-03-19', crop: 'Tomato',      weight: 3.00,  quality: 'High',   photoUrl: '', notes: 'Cherry variety; ripe and uniform' },
+            { date: '2026-03-19', crop: 'Carrot',      weight: 1.50,  quality: 'High',   photoUrl: '', notes: 'Red Indian variety; good color' },
+            { date: '2026-03-19', crop: 'Beetroot',    weight: 0.80,  quality: 'High',   photoUrl: '', notes: 'Small bulbs with stems' },
+            { date: '2026-02-17', crop: 'Green Peas',  weight: 5.00,  quality: 'High',   photoUrl: 'https://drive.google.com/file/d/1mMwxzsLJv7ltgxKpUFbYgbZKVRO0WILp/view?usp=drive_link', notes: 'Big bowl; pods look plump and fresh' },
+            { date: '2026-02-17', crop: 'Brinjal',     weight: 1.00,  quality: 'High',   photoUrl: '', notes: 'Small long purple variety; firm and glossy' },
+            { date: '2026-02-17', crop: 'Tomato',      weight: 1.50,  quality: 'Medium', photoUrl: '', notes: 'Mix of ripe red and unripe green' },
+            { date: '2026-02-17', crop: 'Palak',       weight: 1.50,  quality: 'High',   photoUrl: '', notes: 'Fresh leafy greens' }
+        ];
+
+        // ── State ──────────────────────────────────────────
+        var allData = [];
+        var currentPeriod = 'all';
+        var currentCrop = '';
+        var charts = { crops: null, trend: null };
+
+        // Brand colors used by charts
+        var COLORS = {
+            sprout:  '#a8c686',
+            leaf:    '#5a7a3a',
+            earthDk: '#2d3319',
+            earthMd: '#4a5a2f',
+            sand:    '#e8dcc4',
+            clay:    '#c4a572',
+            water:   '#6b9080',
+            high:    '#5a7a3a',
+            medium:  '#c4a572',
+            low:     '#b06a4f'
+        };
+        var CROP_PALETTE = ['#5a7a3a','#a8c686','#6b9080','#c4a572','#8b9862','#b06a4f','#4a5a2f','#7a9a6a'];
+
+        // ── Helpers ────────────────────────────────────────
+        function esc(s) {
+            return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+        }
+        function parseDate(str) {
+            if (!str) return null;
+            var s = String(str).trim();
+            // YYYY-MM-DD
+            if (/^\d{4}-\d{2}-\d{2}/.test(s)) return new Date(s + 'T00:00:00');
+            // M/D/YYYY or MM/DD/YYYY
+            var m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+            if (m) return new Date(parseInt(m[3]), parseInt(m[1]) - 1, parseInt(m[2]));
+            // DD-Month-YYYY or DD Month YYYY (e.g. "26-April-2026")
+            var months = { jan:0, feb:1, mar:2, apr:3, april:3, may:4, jun:5, june:5, jul:6, july:6, aug:7, sep:8, sept:8, oct:9, nov:10, dec:11,
+                           january:0, february:1, march:2, august:7, september:8, october:9, november:10, december:11 };
+            m = s.match(/^(\d{1,2})[\s\-\/]([A-Za-z]+)[\s\-\/](\d{4})/);
+            if (m) {
+                var mi = months[m[2].toLowerCase()];
+                if (mi != null) return new Date(parseInt(m[3]), mi, parseInt(m[1]));
+            }
+            var d = new Date(s);
+            return isNaN(d.getTime()) ? null : d;
+        }
+        function fmtDate(d) {
+            if (!d) return '';
+            return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+        }
+        function monthKey(d) {
+            return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+        }
+        function monthLabel(key) {
+            var p = key.split('-');
+            var d = new Date(parseInt(p[0]), parseInt(p[1]) - 1, 1);
+            return d.toLocaleDateString('en-IN', { month: 'short', year: '2-digit' });
+        }
+        // Drive share URL → thumbnail URL the browser can render.
+        // Returns '' if the input isn't a recognizable Drive URL — so junk
+        // text in a Photo URL cell won't render a broken image tile.
+        function driveThumb(url) {
+            if (!url) return '';
+            var s = String(url);
+            var m = s.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+            if (m) return 'https://drive.google.com/thumbnail?id=' + m[1] + '&sz=w800';
+            m = s.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+            if (m) return 'https://drive.google.com/thumbnail?id=' + m[1] + '&sz=w800';
+            // Bare http(s) image URL also acceptable
+            if (/^https?:\/\/.+\.(jpe?g|png|webp|gif)(\?.*)?$/i.test(s)) return s;
+            return '';
+        }
+        // Soft fallback emoji per crop for cards without photos
+        function cropEmoji(crop) {
+            var k = String(crop).toLowerCase();
+            var map = {
+                tomato:'🍅', brinjal:'🍆', okra:'🌶️', 'green chilli':'🌶️', chilli:'🌶️',
+                carrot:'🥕', beetroot:'🍠', potato:'🥔', garlic:'🧄', onion:'🧅',
+                palak:'🥬', methi:'🌿', coriander:'🌿', mint:'🌿',
+                'green peas':'🫛', peas:'🫛', corn:'🌽', wheat:'🌾',
+                chana:'🫘', urad:'🫘', dal:'🫘', 'methi seeds':'🌱',
+                lemon:'🍋', mango:'🥭', guava:'🍐', pomegranate:'🍎',
+                mandarin:'🍊', orange:'🍊', papaya:'🥭', papita:'🥭',
+                jackfruit:'🍈', mulberry:'🫐', amla:'🍏'
+            };
+            for (var key in map) { if (k.indexOf(key) !== -1) return map[key]; }
+            return '🌾';
+        }
+
+        // ── Filtering ──────────────────────────────────────
+        function applyFilters(data) {
+            var now = new Date();
+            var cutoff = null;
+            if (currentPeriod === 'month') {
+                cutoff = new Date(now.getFullYear(), now.getMonth(), 1);
+            } else if (currentPeriod === '3months') {
+                cutoff = new Date(now.getFullYear(), now.getMonth() - 2, 1);
+            } else if (currentPeriod === 'year') {
+                cutoff = new Date(now.getFullYear(), 0, 1);
+            }
+            return data.filter(function (e) {
+                if (cutoff && (!e._date || e._date < cutoff)) return false;
+                if (currentCrop && e.crop !== currentCrop) return false;
+                return true;
+            });
+        }
+
+        // ── Tiles ──────────────────────────────────────────
+        function renderTiles(filtered) {
+            var totalKg = filtered.reduce(function (s, e) { return s + (e.weight || 0); }, 0);
+            var crops = {};
+            var dates = {};
+            filtered.forEach(function (e) {
+                crops[e.crop] = (crops[e.crop] || 0) + (e.weight || 0);
+                if (e.date) dates[e.date] = true;
+            });
+            var topCrop = Object.keys(crops).sort(function (a, b) { return crops[b] - crops[a]; })[0];
+            var topCropKg = topCrop ? crops[topCrop] : 0;
+
+            var tiles = document.getElementById('hv-tiles');
+            tiles.innerHTML = [
+                '<div class="hv-tile hv-tile-accent">',
+                    '<span class="hv-tile-icon">⚖️</span>',
+                    '<div class="hv-tile-label">Total Harvested</div>',
+                    '<div class="hv-tile-value">' + totalKg.toFixed(1) + '<span class="hv-tile-unit">kg</span></div>',
+                    '<div class="hv-tile-sub">Across ' + filtered.length + ' harvest entries</div>',
+                '</div>',
+                '<div class="hv-tile">',
+                    '<span class="hv-tile-icon">🌱</span>',
+                    '<div class="hv-tile-label">Crops Harvested</div>',
+                    '<div class="hv-tile-value">' + Object.keys(crops).length + '</div>',
+                    '<div class="hv-tile-sub">Different varieties</div>',
+                '</div>',
+                '<div class="hv-tile">',
+                    '<span class="hv-tile-icon">📅</span>',
+                    '<div class="hv-tile-label">Harvest Days</div>',
+                    '<div class="hv-tile-value">' + Object.keys(dates).length + '</div>',
+                    '<div class="hv-tile-sub">Days with harvest activity</div>',
+                '</div>',
+                '<div class="hv-tile">',
+                    '<span class="hv-tile-icon">🏆</span>',
+                    '<div class="hv-tile-label">Top Crop</div>',
+                    '<div class="hv-tile-value" style="font-size:1.7rem;">' + (topCrop ? esc(topCrop) : '—') + '</div>',
+                    '<div class="hv-tile-sub">' + (topCrop ? topCropKg.toFixed(1) + ' kg total' : 'No data') + '</div>',
+                '</div>'
+            ].join('');
+        }
+
+        // ── Charts ─────────────────────────────────────────
+        Chart.defaults.font.family = "'Work Sans', sans-serif";
+        Chart.defaults.color = COLORS.earthMd;
+        Chart.defaults.borderColor = 'rgba(139,152,98,0.18)';
+
+        function renderCropsChart(filtered) {
+            var crops = {};
+            filtered.forEach(function (e) { crops[e.crop] = (crops[e.crop] || 0) + (e.weight || 0); });
+            var sorted = Object.keys(crops)
+                .map(function (k) { return { name: k, kg: crops[k] }; })
+                .sort(function (a, b) { return b.kg - a.kg; })
+                .slice(0, 8);
+
+            if (charts.crops) charts.crops.destroy();
+            charts.crops = new Chart(document.getElementById('hv-chart-crops'), {
+                type: 'bar',
+                data: {
+                    labels: sorted.map(function (c) { return c.name; }),
+                    datasets: [{
+                        label: 'kg',
+                        data: sorted.map(function (c) { return c.kg; }),
+                        backgroundColor: sorted.map(function (_, i) { return CROP_PALETTE[i % CROP_PALETTE.length]; }),
+                        borderRadius: 6,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { callbacks: { label: function (ctx) { return ctx.parsed.x.toFixed(2) + ' kg'; } } }
+                    },
+                    scales: {
+                        x: { beginAtZero: true, ticks: { callback: function (v) { return v + ' kg'; } } },
+                        y: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        function renderTrendChart(filtered) {
+            var byMonth = {};
+            filtered.forEach(function (e) {
+                if (!e._date) return;
+                var k = monthKey(e._date);
+                byMonth[k] = (byMonth[k] || 0) + (e.weight || 0);
+            });
+            var keys = Object.keys(byMonth).sort();
+            if (charts.trend) charts.trend.destroy();
+            charts.trend = new Chart(document.getElementById('hv-chart-trend'), {
+                type: 'line',
+                data: {
+                    labels: keys.map(monthLabel),
+                    datasets: [{
+                        label: 'kg harvested',
+                        data: keys.map(function (k) { return byMonth[k]; }),
+                        borderColor: COLORS.leaf,
+                        backgroundColor: 'rgba(90,122,58,0.18)',
+                        fill: true,
+                        tension: 0.35,
+                        borderWidth: 2.5,
+                        pointBackgroundColor: COLORS.leaf,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { callbacks: { label: function (ctx) { return ctx.parsed.y.toFixed(1) + ' kg'; } } }
+                    },
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: { beginAtZero: true, ticks: { callback: function (v) { return v + ' kg'; } } }
+                    }
+                }
+            });
+        }
+
+        // ── Recent harvest grid ────────────────────────────
+        // Pure photo gallery: only entries with a photo, newest first, capped at 12.
+        function renderGrid(filtered) {
+            var grid = document.getElementById('hv-grid');
+            var withPhotos = filtered
+                .filter(function (e) { return !!driveThumb(e.photoUrl); })
+                .slice()
+                .sort(function (a, b) {
+                    return (b._date ? b._date.getTime() : 0) - (a._date ? a._date.getTime() : 0);
+                })
+                .slice(0, 12);
+
+            if (!withPhotos.length) {
+                grid.outerHTML = '<div class="hv-empty" id="hv-grid"><span class="hv-empty-icon">🌱</span><p>No harvest photos to show yet — add a Photo URL to a row in the sheet.</p></div>';
+                return;
+            }
+            grid.innerHTML = withPhotos.map(function (e, idx) {
+                var thumb = driveThumb(e.photoUrl);
+                return ''
+                    + '<article class="hv-card" data-idx="' + idx + '" tabindex="0" role="button" aria-label="View harvest details">'
+                    +   '<img src="' + esc(thumb) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display=\'none\';">'
+                    + '</article>';
+            }).join('');
+
+            // Click-to-open detail
+            Array.prototype.forEach.call(grid.querySelectorAll('.hv-card'), function (card) {
+                card.addEventListener('click', function () { openHarvestModal(withPhotos[parseInt(card.dataset.idx)]); });
+                card.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openHarvestModal(withPhotos[parseInt(card.dataset.idx)]); }
+                });
+            });
+        }
+
+        // ── Modal ──────────────────────────────────────────
+        window.openHarvestModal = function (entry) {
+            var overlay = document.getElementById('hv-modal-overlay');
+            var img = document.getElementById('hv-modal-img');
+            var body = document.getElementById('hv-modal-body');
+            var thumb = driveThumb(entry.photoUrl);
+            if (thumb) {
+                img.src = thumb;
+                img.alt = entry.crop + ' harvest';
+                img.style.display = '';
+            } else {
+                img.style.display = 'none';
+            }
+            var qClass = (entry.quality || '').toLowerCase();
+            body.innerHTML = ''
+                + '<div style="font-family:Crimson Pro,serif;font-size:1.8rem;font-weight:700;color:var(--earth-dark);margin-bottom:0.3rem;">' + esc(entry.crop) + '</div>'
+                + '<div style="color:var(--earth-medium);margin-bottom:0.8rem;">' + esc(fmtDate(entry._date)) + '</div>'
+                + '<div style="display:flex;gap:0.8rem;margin-bottom:1rem;">'
+                +   '<span style="background:var(--sand);padding:0.4rem 0.9rem;border-radius:999px;font-weight:600;color:var(--leaf);">' + (entry.weight || 0).toFixed(2) + ' kg</span>'
+                +   '<span class="hv-card-quality ' + qClass + '" style="position:static;">' + esc(entry.quality || '—') + '</span>'
+                + '</div>'
+                + (entry.notes ? '<p style="color:var(--earth-dark);line-height:1.6;">' + esc(entry.notes) + '</p>' : '');
+            overlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        };
+        window.closeHarvestModal = function (e) {
+            if (e && e.target && e.target.id !== 'hv-modal-overlay' && e.target.tagName !== 'BUTTON') return;
+            document.getElementById('hv-modal-overlay').classList.remove('open');
+            document.body.style.overflow = '';
+        };
+
+        // ── Crop dropdown population ──────────────────────
+        function populateCropSelect() {
+            var sel = document.getElementById('hv-crop-select');
+            var crops = {};
+            allData.forEach(function (e) { crops[e.crop] = true; });
+            var sorted = Object.keys(crops).sort();
+            sorted.forEach(function (c) {
+                var opt = document.createElement('option');
+                opt.value = c; opt.textContent = c;
+                sel.appendChild(opt);
+            });
+        }
+
+        // ── Render everything ──────────────────────────────
+        function renderAll() {
+            var filtered = applyFilters(allData);
+            renderTiles(filtered);
+            renderCropsChart(filtered);
+            renderTrendChart(filtered);
+            renderGrid(filtered);
+        }
+
+        // ── Wire up filters ────────────────────────────────
+        function wireFilters() {
+            var btns = document.querySelectorAll('#hv-period-filter .hv-filter-btn');
+            Array.prototype.forEach.call(btns, function (b) {
+                b.addEventListener('click', function () {
+                    Array.prototype.forEach.call(btns, function (x) { x.classList.remove('active'); });
+                    b.classList.add('active');
+                    currentPeriod = b.dataset.period;
+                    renderAll();
+                });
+            });
+            document.getElementById('hv-crop-select').addEventListener('change', function (e) {
+                currentCrop = e.target.value;
+                renderAll();
+            });
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') closeHarvestModal();
+            });
+        }
+
+        // ── Data ingestion (sample now, swap to live later) ──
+        function ingest(rawList) {
+            allData = rawList.map(function (r) {
+                return {
+                    date: r.date,
+                    crop: r.crop,
+                    weight: parseFloat(r.weight) || 0,
+                    quality: r.quality || '',
+                    photoUrl: r.photoUrl || r.photo || '',
+                    notes: r.notes || '',
+                    _date: parseDate(r.date)
+                };
+            });
+        }
+
+        function loadData() {
+            // Live source — Apps Script JSON
+            if (HARVEST_API) {
+                fetch(HARVEST_API + '?t=' + Date.now())
+                    .then(function (r) { return r.json(); })
+                    .then(function (json) { ingest(json); populateCropSelect(); renderAll(); })
+                    .catch(function () { ingest(SAMPLE_DATA); populateCropSelect(); renderAll(); });
+                return;
+            }
+            // Live source — Published CSV
+            if (HARVEST_CSV_URL) {
+                fetch(HARVEST_CSV_URL + '&t=' + Date.now())
+                    .then(function (r) { return r.text(); })
+                    .then(function (csv) {
+                        var rows = csv.trim().split(/\r?\n/).map(function (line) {
+                            // Simple CSV split — replace with PapaParse if your data has commas inside cells
+                            var cells = []; var cur = ''; var inq = false;
+                            for (var i = 0; i < line.length; i++) {
+                                var ch = line[i];
+                                if (ch === '"' && line[i+1] === '"') { cur += '"'; i++; }
+                                else if (ch === '"') inq = !inq;
+                                else if (ch === ',' && !inq) { cells.push(cur); cur = ''; }
+                                else cur += ch;
+                            }
+                            cells.push(cur);
+                            return cells;
+                        });
+                        var headers = rows.shift().map(function (h) { return h.trim().toLowerCase(); });
+                        var idx = function (name) { return headers.indexOf(name); };
+                        var iDate = idx('date'), iCrop = idx('crop'),
+                            iWt = headers.findIndex(function (h) { return h.indexOf('weight') === 0; }),
+                            iQ = headers.findIndex(function (h) { return h.indexOf('crop quality') === 0 || h === 'quality' || h.indexOf('grade') !== -1; }),
+                            iPh = headers.findIndex(function (h) { return h.indexOf('photo') !== -1; }),
+                            iN = idx('notes');
+                        var list = rows.filter(function (r) { return r[iDate]; }).map(function (r) {
+                            return { date: r[iDate], crop: r[iCrop], weight: r[iWt], quality: r[iQ], photoUrl: r[iPh], notes: r[iN] };
+                        });
+                        ingest(list); populateCropSelect(); renderAll();
+                    })
+                    .catch(function () { ingest(SAMPLE_DATA); populateCropSelect(); renderAll(); });
+                return;
+            }
+            // Default: baked-in sample data
+            ingest(SAMPLE_DATA);
+            populateCropSelect();
+            renderAll();
+        }
+
+        // ── Boot ───────────────────────────────────────────
+        document.addEventListener('DOMContentLoaded', function () {
+            wireFilters();
+            loadData();
+        });
+    })();
+    </script>
+</body>
+</html>
