@@ -43,6 +43,49 @@
             min-height: 100vh;
         }
 
+        /* ── Top bar with back link ──────────────────────────── */
+        .hv-topbar {
+            background: var(--earth-dark);
+            padding: 0.85rem 1.5rem;
+        }
+        .hv-topbar-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .hv-back {
+            color: var(--sand);
+            text-decoration: none;
+            font-size: 0.92rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.4rem 0.7rem;
+            margin-left: -0.7rem;
+            border-radius: 8px;
+            transition: background 0.18s ease;
+        }
+        .hv-back:hover { background: rgba(255,255,255,0.08); }
+        .hv-back-arrow {
+            font-size: 1.05rem;
+            transition: transform 0.18s ease;
+        }
+        .hv-back:hover .hv-back-arrow { transform: translateX(-3px); }
+        .hv-topbar-brand {
+            color: var(--sprout);
+            font-family: 'Crimson Pro', serif;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            text-decoration: none;
+        }
+        .hv-topbar-brand:hover { color: var(--sand); }
+
         /* ── Page header ─────────────────────────────────────── */
         .hv-header {
             background: var(--sand);
@@ -335,6 +378,16 @@
     </style>
 </head>
 <body>
+    <div class="hv-topbar">
+        <div class="hv-topbar-inner">
+            <a href="produce.html" class="hv-back" aria-label="Back to Fresh Produce">
+                <span class="hv-back-arrow" aria-hidden="true">←</span>
+                <span>Back to Fresh Produce</span>
+            </a>
+            <a href="index.html" class="hv-topbar-brand">Kota Natural Farm</a>
+        </div>
+    </div>
+
     <header class="hv-header">
         <h1>Harvest Meter</h1>
         <p>What we've picked from the food forest, fields, and beds — straight from the farm log.</p>
