@@ -191,19 +191,94 @@
             background: var(--earth-dark);
             color: var(--sand);
         }
-        .hv-crop-select {
+        .hv-crop-search-wrap {
+            position: relative;
+            min-width: 220px;
+        }
+        .hv-crop-search {
             border: none;
             background: var(--card);
-            padding: 0.7rem 1rem;
+            padding: 0.7rem 2.4rem 0.7rem 2.4rem;
             border-radius: 12px;
             font-family: inherit;
             font-size: 0.9rem;
             color: var(--earth-dark);
             box-shadow: var(--shadow-sm);
-            cursor: pointer;
-            min-width: 160px;
+            width: 100%;
         }
-        .hv-crop-select:focus { outline: 2px solid var(--sprout); outline-offset: 2px; }
+        .hv-crop-search:focus { outline: 2px solid var(--sprout); outline-offset: 2px; }
+        .hv-crop-search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--earth-medium);
+            pointer-events: none;
+            font-size: 0.95rem;
+        }
+        .hv-crop-clear {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--earth-medium);
+            font-size: 1.4rem;
+            line-height: 1;
+            cursor: pointer;
+            width: 26px; height: 26px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+        .hv-crop-clear.visible { display: flex; }
+        .hv-crop-clear:hover { background: var(--sand); color: var(--earth-dark); }
+        .hv-crop-suggestions {
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0; right: 0;
+            background: var(--card);
+            border-radius: 10px;
+            box-shadow: var(--shadow-md);
+            max-height: 260px;
+            overflow-y: auto;
+            z-index: 50;
+            display: none;
+            padding: 0.35rem 0;
+        }
+        .hv-crop-suggestions.open { display: block; }
+        .hv-crop-suggestion {
+            padding: 0.55rem 1rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: var(--earth-dark);
+            transition: background 0.12s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .hv-crop-suggestion:hover,
+        .hv-crop-suggestion.active {
+            background: var(--sand);
+        }
+        .hv-crop-suggestion-count {
+            font-size: 0.78rem;
+            color: var(--earth-medium);
+            font-weight: 500;
+        }
+        .hv-crop-suggestion-empty {
+            padding: 0.8rem 1rem;
+            color: var(--earth-medium);
+            font-size: 0.85rem;
+            font-style: italic;
+        }
+        .hv-crop-suggestion-match {
+            font-weight: 600;
+            color: var(--leaf);
+        }
 
         /* ── Hero metric tiles ─────────────────────────────── */
         .hv-tiles {
@@ -493,9 +568,14 @@
                 <button type="button" class="hv-filter-btn" data-period="year">This Year</button>
                 <button type="button" class="hv-filter-btn active" data-period="all">All Time</button>
             </div>
-            <select id="hv-crop-select" class="hv-crop-select" aria-label="Filter by crop">
-                <option value="">All Crops</option>
-            </select>
+            <div class="hv-crop-search-wrap">
+                <span class="hv-crop-search-icon" aria-hidden="true">🔍</span>
+                <input type="text" id="hv-crop-search" class="hv-crop-search"
+                       placeholder="Search crop..." autocomplete="off" spellcheck="false"
+                       aria-label="Filter by crop">
+                <button type="button" class="hv-crop-clear" id="hv-crop-clear" aria-label="Clear crop filter">×</button>
+                <div class="hv-crop-suggestions" id="hv-crop-suggestions" role="listbox"></div>
+            </div>
         </div>
 
         <!-- Hero metric tiles -->
@@ -854,10 +934,12 @@
         }
 
         // ── Recent harvest grid ────────────────────────────
-        // Pure photo gallery: only entries with a photo, newest first, capped at 12.
-        function renderGrid(filtered) {
+        // Pure photo gallery: always shows latest 12 photos from the full
+        // dataset, regardless of period/crop filters. Photos are generic
+        // harvesting snapshots, not tied to a specific crop view.
+        function renderGrid() {
             var grid = document.getElementById('hv-grid');
-            var withPhotos = filtered
+            var withPhotos = allData
                 .filter(function (e) { return !!driveThumb(e.photoUrl); })
                 .slice()
                 .sort(function (a, b) {
@@ -935,17 +1017,105 @@
             document.body.style.overflow = '';
         };
 
-        // ── Crop dropdown population ──────────────────────
-        function populateCropSelect() {
-            var sel = document.getElementById('hv-crop-select');
+        // ── Crop search (autocomplete) ────────────────────
+        var cropList = [];                  // sorted unique crop names
+        var cropEntryCount = {};            // for suggestion sub-text
+        var activeSuggestionIdx = -1;       // for keyboard nav
+
+        function buildCropList() {
             var crops = {};
-            allData.forEach(function (e) { crops[e.crop] = true; });
-            Object.keys(BASELINE).forEach(function (c) { crops[c] = true; });
-            var sorted = Object.keys(crops).sort();
-            sorted.forEach(function (c) {
-                var opt = document.createElement('option');
-                opt.value = c; opt.textContent = c;
-                sel.appendChild(opt);
+            allData.forEach(function (e) {
+                if (!e.crop) return;
+                crops[e.crop] = (crops[e.crop] || 0) + 1;
+            });
+            Object.keys(BASELINE).forEach(function (c) { crops[c] = crops[c] || 0; });
+            cropEntryCount = crops;
+            cropList = Object.keys(crops).sort(function (a, b) {
+                return a.toLowerCase().localeCompare(b.toLowerCase());
+            });
+        }
+
+        function highlightMatch(name, query) {
+            if (!query) return esc(name);
+            var idx = name.toLowerCase().indexOf(query.toLowerCase());
+            if (idx === -1) return esc(name);
+            return esc(name.slice(0, idx))
+                + '<span class="hv-crop-suggestion-match">' + esc(name.slice(idx, idx + query.length)) + '</span>'
+                + esc(name.slice(idx + query.length));
+        }
+
+        function renderSuggestions(query) {
+            var box = document.getElementById('hv-crop-suggestions');
+            if (!box) return;
+            var q = (query || '').trim().toLowerCase();
+            // Empty query → show full list (so users can browse by clicking the input)
+            var matches = q
+                ? cropList.filter(function (c) { return c.toLowerCase().indexOf(q) !== -1; })
+                : cropList.slice();
+
+            if (!matches.length) {
+                box.innerHTML = '<div class="hv-crop-suggestion-empty">No crop matches "' + esc(query) + '"</div>';
+                box.classList.add('open');
+                activeSuggestionIdx = -1;
+                return;
+            }
+
+            box.innerHTML = matches.map(function (c, i) {
+                var n = cropEntryCount[c] || 0;
+                var sub = n > 0 ? n + (n === 1 ? ' entry' : ' entries') : 'baseline only';
+                return '<div class="hv-crop-suggestion" data-crop="' + esc(c) + '" data-idx="' + i + '" role="option">'
+                    + '<span>' + highlightMatch(c, q) + '</span>'
+                    + '<span class="hv-crop-suggestion-count">' + esc(sub) + '</span>'
+                    + '</div>';
+            }).join('');
+            box.classList.add('open');
+            activeSuggestionIdx = -1;
+
+            // Click handlers
+            Array.prototype.forEach.call(box.querySelectorAll('.hv-crop-suggestion'), function (el) {
+                el.addEventListener('mousedown', function (ev) {
+                    // mousedown so it fires before the input's blur event closes the box
+                    ev.preventDefault();
+                    selectCrop(el.dataset.crop);
+                });
+            });
+        }
+
+        function closeSuggestions() {
+            var box = document.getElementById('hv-crop-suggestions');
+            if (box) box.classList.remove('open');
+            activeSuggestionIdx = -1;
+        }
+
+        function selectCrop(crop) {
+            var input = document.getElementById('hv-crop-search');
+            var clear = document.getElementById('hv-crop-clear');
+            if (input) input.value = crop;
+            if (clear) clear.classList.add('visible');
+            currentCrop = crop;
+            closeSuggestions();
+            renderAll();
+        }
+
+        function clearCrop() {
+            var input = document.getElementById('hv-crop-search');
+            var clear = document.getElementById('hv-crop-clear');
+            if (input) { input.value = ''; input.focus(); }
+            if (clear) clear.classList.remove('visible');
+            currentCrop = '';
+            renderSuggestions('');
+            renderAll();
+        }
+
+        function moveActiveSuggestion(direction) {
+            var box = document.getElementById('hv-crop-suggestions');
+            if (!box) return;
+            var items = box.querySelectorAll('.hv-crop-suggestion');
+            if (!items.length) return;
+            activeSuggestionIdx = (activeSuggestionIdx + direction + items.length) % items.length;
+            Array.prototype.forEach.call(items, function (el, i) {
+                el.classList.toggle('active', i === activeSuggestionIdx);
+                if (i === activeSuggestionIdx) el.scrollIntoView({ block: 'nearest' });
             });
         }
 
@@ -955,7 +1125,7 @@
             renderTiles(filtered);
             renderCropsChart(filtered);
             renderTrendChart(filtered);
-            renderGrid(filtered);
+            renderGrid();
         }
 
         // ── Wire up filters ────────────────────────────────
@@ -969,10 +1139,43 @@
                     renderAll();
                 });
             });
-            document.getElementById('hv-crop-select').addEventListener('change', function (e) {
-                currentCrop = e.target.value;
-                renderAll();
-            });
+            // Crop search wiring
+            var search = document.getElementById('hv-crop-search');
+            var clearBtn = document.getElementById('hv-crop-clear');
+            if (search) {
+                search.addEventListener('focus', function () { renderSuggestions(search.value); });
+                search.addEventListener('input', function () {
+                    if (clearBtn) clearBtn.classList.toggle('visible', !!search.value);
+                    renderSuggestions(search.value);
+                    // Auto-clear filter while user re-types until they pick again
+                    if (currentCrop && search.value !== currentCrop) {
+                        currentCrop = '';
+                        renderAll();
+                    }
+                });
+                search.addEventListener('keydown', function (e) {
+                    var box = document.getElementById('hv-crop-suggestions');
+                    var open = box && box.classList.contains('open');
+                    if (e.key === 'ArrowDown') {
+                        if (!open) renderSuggestions(search.value);
+                        moveActiveSuggestion(1); e.preventDefault();
+                    } else if (e.key === 'ArrowUp') {
+                        moveActiveSuggestion(-1); e.preventDefault();
+                    } else if (e.key === 'Enter') {
+                        var items = box ? box.querySelectorAll('.hv-crop-suggestion') : [];
+                        var pick = activeSuggestionIdx >= 0 ? items[activeSuggestionIdx] : items[0];
+                        if (pick) { e.preventDefault(); selectCrop(pick.dataset.crop); }
+                    } else if (e.key === 'Escape') {
+                        closeSuggestions();
+                    }
+                });
+                search.addEventListener('blur', function () {
+                    // small delay so suggestion mousedown can fire first
+                    setTimeout(closeSuggestions, 150);
+                });
+            }
+            if (clearBtn) clearBtn.addEventListener('click', clearCrop);
+
             document.addEventListener('keydown', function (e) {
                 if (e.key === 'Escape') closeHarvestModal();
             });
@@ -1007,8 +1210,8 @@
             if (HARVEST_API) {
                 fetch(HARVEST_API + '?t=' + Date.now())
                     .then(function (r) { return r.json(); })
-                    .then(function (json) { ingest(json); populateCropSelect(); renderAll(); })
-                    .catch(function () { ingest(SAMPLE_DATA); populateCropSelect(); renderAll(); });
+                    .then(function (json) { ingest(json); buildCropList(); renderAll(); })
+                    .catch(function () { ingest(SAMPLE_DATA); buildCropList(); renderAll(); });
                 return;
             }
             // Live source — Published CSV
@@ -1039,14 +1242,14 @@
                         var list = rows.filter(function (r) { return r[iDate]; }).map(function (r) {
                             return { date: r[iDate], crop: r[iCrop], weight: r[iWt], quality: r[iQ], photoUrl: r[iPh], notes: r[iN] };
                         });
-                        ingest(list); populateCropSelect(); renderAll();
+                        ingest(list); buildCropList(); renderAll();
                     })
-                    .catch(function () { ingest(SAMPLE_DATA); populateCropSelect(); renderAll(); });
+                    .catch(function () { ingest(SAMPLE_DATA); buildCropList(); renderAll(); });
                 return;
             }
             // Default: baked-in sample data
             ingest(SAMPLE_DATA);
-            populateCropSelect();
+            buildCropList();
             renderAll();
         }
 
