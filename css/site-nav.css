@@ -72,6 +72,12 @@ nav#navbar.scrolled {
     list-style: none;
     margin: 0;
     padding: 0;
+    /* Absolutely center the nav links so they sit dead-centre on every page,
+       regardless of whether a cart button is present on the right.
+       Mobile media query below resets this so the drawer behaves normally. */
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 #navbar .nav-links a {
@@ -184,6 +190,7 @@ nav#navbar.scrolled {
         top: 100%;
         left: 0;
         right: 0;
+        transform: none; /* reset desktop centering so mobile drawer spans full width */
         flex-direction: column;
         gap: 0;
         background: rgba(232, 220, 196, 0.98);
