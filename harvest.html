@@ -917,20 +917,15 @@
             var thumb = driveThumb(entry.photoUrl);
             if (thumb) {
                 img.src = thumb;
-                img.alt = entry.crop + ' harvest';
+                img.alt = '';
                 img.style.display = '';
             } else {
                 img.style.display = 'none';
             }
-            var qClass = (entry.quality || '').toLowerCase();
-            body.innerHTML = ''
-                + '<div style="font-family:Crimson Pro,serif;font-size:1.8rem;font-weight:700;color:var(--earth-dark);margin-bottom:0.3rem;">' + esc(entry.crop) + '</div>'
-                + '<div style="color:var(--earth-medium);margin-bottom:0.8rem;">' + esc(fmtDate(entry._date)) + '</div>'
-                + '<div style="display:flex;gap:0.8rem;margin-bottom:1rem;">'
-                +   '<span style="background:var(--sand);padding:0.4rem 0.9rem;border-radius:999px;font-weight:600;color:var(--leaf);">' + (entry.weight || 0).toFixed(2) + ' kg</span>'
-                +   '<span class="hv-card-quality ' + qClass + '" style="position:static;">' + esc(entry.quality || '—') + '</span>'
-                + '</div>'
-                + (entry.notes ? '<p style="color:var(--earth-dark);line-height:1.6;">' + esc(entry.notes) + '</p>' : '');
+            var month = entry._date ? entry._date.toLocaleDateString('en-IN', { month: 'long' }) : '';
+            body.innerHTML = month
+                ? '<div style="text-align:center;font-family:Crimson Pro,serif;font-size:1.5rem;font-weight:600;color:var(--earth-dark);letter-spacing:0.5px;">' + esc(month) + '</div>'
+                : '';
             overlay.classList.add('open');
             document.body.style.overflow = 'hidden';
         };
