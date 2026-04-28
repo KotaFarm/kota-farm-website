@@ -16,6 +16,13 @@
 
 const DIARY_ENTRIES = [
     {
+        photo: "diary/bamboo-for-trellis.jpeg",
+        date:  "April 26, 2026",
+        title: "Bamboo arrives for the climbers",
+        note:  "A cartload of bamboo just rolled in after dusk. These poles will become trellises for our climbing vegetables — Lauki (bottle gourd), Karela (bitter gourd), and other vines that need to grow upward. Hanging them keeps the fruit cleaner, lets air move through the patch, and lifts yield from the same square metre of ground.",
+        tag:   "farm"
+    },
+    {
         photo: "diary/34a0a9f3-407b-4281-93ad-292691c9fa25.jpg",
         date:  "April 15, 2026",
         title: "Fresh seedlings in the ground",
