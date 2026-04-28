@@ -86,27 +86,37 @@
         }
         .hv-topbar-brand:hover { color: var(--sand); }
 
-        /* ── Page header ─────────────────────────────────────── */
+        /* ── Page header (hero with farm photo) ──────────────── */
         .hv-header {
-            background: var(--sand);
-            padding: 3.5rem 1.5rem 2.5rem;
+            position: relative;
+            min-height: 360px;
+            padding: 5rem 1.5rem 4rem;
             text-align: center;
+            color: var(--sand);
+            background: linear-gradient(135deg, rgba(45,51,25,0.65) 0%, rgba(74,90,47,0.55) 100%),
+                        url('site-images/hero-background.jpeg') center/cover no-repeat;
             border-bottom: 1px solid rgba(139,152,98,0.25);
+            overflow: hidden;
+        }
+        @media (max-width: 600px) {
+            .hv-header { padding: 3.5rem 1.2rem 2.8rem; min-height: 280px; }
         }
         .hv-header h1 {
             font-family: 'Crimson Pro', serif;
-            font-size: clamp(2rem, 4.5vw, 3.2rem);
+            font-size: clamp(2.2rem, 5vw, 3.6rem);
             font-weight: 700;
-            color: var(--earth-dark);
-            margin-bottom: 0.4rem;
+            color: var(--sand);
+            margin-bottom: 0.5rem;
             letter-spacing: -0.5px;
+            text-shadow: 0 2px 18px rgba(0,0,0,0.35);
         }
         .hv-header p {
-            color: var(--earth-medium);
-            font-size: 1rem;
+            color: rgba(232,220,196,0.92);
+            font-size: 1.05rem;
             font-weight: 300;
-            max-width: 540px;
+            max-width: 580px;
             margin: 0 auto;
+            text-shadow: 0 1px 10px rgba(0,0,0,0.25);
         }
         .hv-live-dot {
             display: inline-block;
@@ -143,12 +153,74 @@
         }
         .hv-live-label {
             display: inline-block;
-            margin-top: 0.8rem;
+            margin-top: 1rem;
             font-size: 0.85rem;
-            color: var(--earth-medium);
+            color: var(--sand);
             text-transform: uppercase;
             letter-spacing: 1.5px;
             font-weight: 500;
+            opacity: 0.92;
+        }
+        .hv-share-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1.4rem;
+            padding: 0.7rem 1.3rem;
+            background: #25D366;
+            color: white;
+            border: none;
+            border-radius: 999px;
+            font-family: inherit;
+            font-size: 0.92rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 4px 16px rgba(37,211,102,0.35);
+            transition: transform 0.18s ease, box-shadow 0.18s ease;
+        }
+        .hv-share-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 22px rgba(37,211,102,0.45);
+        }
+        .hv-share-btn svg { width: 18px; height: 18px; fill: currentColor; }
+
+        /* ── Site footer (crisp, no image) ───────────────────── */
+        .hv-site-footer {
+            background: var(--earth-dark);
+            color: var(--sand);
+            padding: 2.4rem 1.5rem 2rem;
+            text-align: center;
+            margin-top: 3rem;
+        }
+        .hv-site-footer-name {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+        .hv-site-footer-tagline {
+            opacity: 0.7;
+            font-size: 0.88rem;
+            margin-bottom: 1.1rem;
+        }
+        .hv-site-footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+        .hv-site-footer-links a {
+            color: var(--sprout);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        .hv-site-footer-links a:hover { color: var(--sand); text-decoration: underline; }
+        .hv-site-footer-copyright {
+            opacity: 0.5;
+            font-size: 0.8rem;
         }
 
         /* ── Container ─────────────────────────────────────── */
@@ -556,6 +628,11 @@
         <h1>Harvest Meter</h1>
         <p>What we've picked from the food forest, fields, and beds — straight from the farm log.</p>
         <div class="hv-live-label"><span class="hv-live-dot"></span>Live</div>
+        <br>
+        <a href="#" class="hv-share-btn" id="hv-share-btn" target="_blank" rel="noopener noreferrer" aria-label="Share on WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.4-.1-.6.1-.2.3-.7.9-.8 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.4-2.3-1.4-.8-.7-1.4-1.6-1.6-1.9-.2-.3 0-.4.1-.6l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.8-2c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.3.3-1 1-1 2.4s1 2.8 1.2 3c.2.2 2 3 4.7 4.2 1.7.7 2.4.8 3.2.7.5-.1 1.7-.7 1.9-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.3zM12 2C6.5 2 2 6.5 2 12c0 1.7.5 3.4 1.3 4.8L2 22l5.4-1.4c1.4.7 3 1.1 4.6 1.1 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18c-1.5 0-2.9-.4-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3C4.4 14.9 4 13.5 4 12c0-4.4 3.6-8 8-8s8 3.6 8 8-3.6 8-8 8z"/></svg>
+            <span>Share on WhatsApp</span>
+        </a>
     </header>
 
     <main class="hv-container">
@@ -606,6 +683,20 @@
         </div>
 
     </main>
+
+    <!-- Site footer -->
+    <footer class="hv-site-footer">
+        <p class="hv-site-footer-name">Kota Natural Farm</p>
+        <p class="hv-site-footer-tagline">Growing regeneratively. Teaching sustainably.</p>
+        <div class="hv-site-footer-links">
+            <a href="index.html">Home</a>
+            <a href="produce.html">Fresh Produce</a>
+            <a href="gallery.html">Gallery</a>
+            <a href="visit.html">Visit</a>
+            <a href="https://wa.me/919460813090?text=Hi%20Kota%20Natural%20Farm" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+        </div>
+        <p class="hv-site-footer-copyright">&copy; 2026 Kota Natural Farm · Khedli Pandya, Kota, Rajasthan</p>
+    </footer>
 
     <!-- Modal for harvest detail -->
     <div class="hv-modal-overlay" id="hv-modal-overlay" onclick="closeHarvestModal(event)">
@@ -1126,6 +1217,25 @@
             renderCropsChart(filtered);
             renderTrendChart(filtered);
             renderGrid();
+            updateShareLink();
+        }
+
+        // ── WhatsApp share (text + URL) ────────────────────
+        function updateShareLink() {
+            var btn = document.getElementById('hv-share-btn');
+            if (!btn) return;
+            var crops = {};
+            allData.forEach(function (e) { crops[e.crop] = (crops[e.crop] || 0) + (e.weight || 0); });
+            Object.keys(BASELINE).forEach(function (c) { crops[c] = (crops[c] || 0) + BASELINE[c]; });
+            var totalKg = Object.keys(crops).reduce(function (s, k) { return s + crops[k]; }, 0);
+            var topCrop = Object.keys(crops).sort(function (a, b) { return crops[b] - crops[a]; })[0];
+            var msg = '🌱 Kota Natural Farm — Live Harvest\n\n'
+                    + '✓ ' + totalKg.toFixed(1) + ' kg harvested\n'
+                    + '✓ ' + Object.keys(crops).length + ' crops grown\n'
+                    + (topCrop ? '✓ Top crop: ' + topCrop + ' (' + crops[topCrop].toFixed(1) + ' kg)\n' : '')
+                    + '\nAll naturally grown — no chemicals, no synthetic fertiliser.\n\n'
+                    + 'See the live tracker: ' + window.location.href;
+            btn.href = 'https://wa.me/?text=' + encodeURIComponent(msg);
         }
 
         // ── Wire up filters ────────────────────────────────
