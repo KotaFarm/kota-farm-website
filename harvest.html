@@ -348,6 +348,22 @@
             object-fit: cover;
             display: block;
         }
+        .hv-card-month {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: var(--sand);
+            background: rgba(45,51,25,0.78);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            pointer-events: none;
+        }
         .hv-carousel-nav {
             position: absolute;
             top: 50%;
@@ -855,9 +871,11 @@
             }
             grid.innerHTML = withPhotos.map(function (e, idx) {
                 var thumb = driveThumb(e.photoUrl);
+                var month = e._date ? e._date.toLocaleDateString('en-IN', { month: 'long' }) : '';
                 return ''
                     + '<article class="hv-card" data-idx="' + idx + '" tabindex="0" role="button" aria-label="View harvest details">'
                     +   '<img src="' + esc(thumb) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display=\'none\';">'
+                    +   (month ? '<span class="hv-card-month">' + esc(month) + '</span>' : '')
                     + '</article>';
             }).join('');
 
