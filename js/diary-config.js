@@ -16,6 +16,13 @@
 
 const DIARY_ENTRIES = [
     {
+        photo: "diary/shade-net-storm-damage.jpeg",
+        date:  "April 29, 2026",
+        title: "Storm flattens the shade net",
+        note:  "A sudden storm tore through the farm and left the shade net nursery in pieces. The steel frame is bent at the joints, poles are snapped, and the green mesh is shredded along most of its length. The damage is beyond repair — the whole structure will have to come down and be rebuilt from scratch.",
+        tag:   "farm"
+    },
+    {
         photo: "diary/bamboo-for-trellis.jpeg",
         date:  "April 26, 2026",
         title: "Bamboo arrives for the climbers",
