@@ -1,60 +1,132 @@
 // ─────────────────────────────────────────────────────────────
 // Farm Diary — Kota Natural Farm
 // ─────────────────────────────────────────────────────────────
-// To add a new entry:
-//   1. Copy your photo into the /diary/ folder
-//   2. Add a new object at the TOP of this array (newest first)
-//   3. Only the first 2 entries show on the homepage
+// Diary entries now live in a Google Sheet (tab name: "Diary").
 //
-// Fields:
-//   photo   → filename inside the /diary/ folder
-//   date    → shown as-is, write it naturally ("April 15, 2026")
-//   title   → short headline
-//   note    → 1–3 sentences, in plain language
-//   tag     → one word: harvest / trees / soil / water / animals / farm
+// To add or edit entries:
+//   1. Open the Diary sheet
+//   2. Add / edit / reorder rows  (newest first is conventional)
+//   3. For photos: paste a Google Drive share link
+//      (right-click image → Share → Anyone with the link → Viewer)
+//   4. Changes go live within ~5 minutes
+//
+// Sheet columns (header row required, lowercase, in any order):
+//   date  | title | tag | photo | note
+//
+// One-time setup: paste the published CSV URL into DIARY_CSV_URL below.
+//   File → Share → Publish to web → Diary tab → CSV → Publish → copy URL
 // ─────────────────────────────────────────────────────────────
 
-const DIARY_ENTRIES = [
-    {
-        photo: "diary/tubewell-shade-construction-start.jpeg",
-        date:  "May 1, 2026",
-        title: "Rebuilding the tubewell shade — this time in concrete",
-        note:  "After the wildfire took down the bamboo tubewell hut earlier this season, we're rebuilding it permanently. Eight reinforced concrete pillars are now standing — the bones of a fire-resistant structure that will protect the pump, motor, and electrical fittings for the long haul. Stones for the walls are stacked alongside, ready to go up next. The bamboo version was cheap and fast; this one is built to outlast the next fire.",
-        tag:   "farm"
-    },
-    {
-        photo: "diary/shade-net-storm-damage.jpeg",
-        date:  "April 29, 2026",
-        title: "Storm flattens the shade net",
-        note:  "A sudden storm tore through the farm and left the shade net nursery in pieces. The steel frame is bent at the joints, poles are snapped, and the green mesh is shredded along most of its length. The damage is beyond repair — the whole structure will have to come down and be rebuilt from scratch.",
-        tag:   "farm"
-    },
-    {
-        photo: "diary/bamboo-for-trellis.jpeg",
-        date:  "April 26, 2026",
-        title: "Bamboo arrives for the climbers",
-        note:  "A cartload of bamboo just rolled in after dusk. These poles will become trellises for our climbing vegetables — Lauki (bottle gourd), Karela (bitter gourd), and other vines that need to grow upward. Hanging them keeps the fruit cleaner, lets air move through the patch, and lifts yield from the same square metre of ground.",
-        tag:   "farm"
-    },
-    {
-        photo: "diary/34a0a9f3-407b-4281-93ad-292691c9fa25.jpg",
-        date:  "April 15, 2026",
-        title: "Fresh seedlings in the ground",
-        note:  "Rows of seedlings just breaking through the soil — hand-sown, spaced carefully, grown under the shade net. This is the beginning of the next crop cycle.",
-        tag:   "harvest"
-    },
-    {
-        photo: "diary/88946053-8c1e-4977-bc55-7a55414941b4.webp",
-        date:  "April 15, 2026",
-        title: "First corn on the farm — ever",
-        note:  "These corn plants were sown by hand in March. This is our very first corn crop — the field is standing tall and first harvest is just weeks away.",
-        tag:   "harvest"
-    },
-    {
-        photo: "diary/4aeae269-e72e-4ac5-a5fa-8d06adc5f4d6.jpg",
-        date:  "April 15, 2026",
-        title: "Setting up to make our own organic fertilizer",
-        note:  "These drums will be used to prepare and store liquid organic fertilizer on-site — made from farm waste and FYM. No bought chemicals, everything made here.",
-        tag:   "soil"
+(function () {
+    'use strict';
+
+    // Published CSV URL for the Diary tab of the Kota Farm sheet.
+    // Republish (File → Share → Publish to web) if you ever rotate the link.
+    var DIARY_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQZb8u89bi2HsIKPs5YVB-Sd8aeX7MiOWhTySr-K7K0mr977JfSOUIC84XEGjs4nQUmfnaDoNIBIPTR/pub?gid=481797168&single=true&output=csv';
+
+    // Empty until fetch completes — render code shows a loading state.
+    window.DIARY_ENTRIES = [];
+
+    // ── Helpers ────────────────────────────────────────────
+    var MONTHS = ['January','February','March','April','May','June',
+                  'July','August','September','October','November','December'];
+
+    // "2026-05-01" → "May 1, 2026". Pass through anything that doesn't match ISO.
+    function formatDate(s) {
+        if (!s) return '';
+        var m = String(s).match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+        if (!m) return String(s);
+        return MONTHS[parseInt(m[2], 10) - 1] + ' ' + parseInt(m[3], 10) + ', ' + m[1];
     }
-];
+
+    // Drive share URL → embeddable thumbnail URL. Robust against surrounding
+    // text like "__https://...__" that some paste flows leave behind.
+    function imageUrl(cell, size) {
+        if (!cell) return '';
+        var s = String(cell).trim();
+        var m = s.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+        if (!m) m = s.match(/drive\.google\.com\/(?:open|uc)\?[^"\s]*id=([a-zA-Z0-9_-]+)/);
+        if (m) return 'https://drive.google.com/thumbnail?id=' + m[1] + '&sz=w' + (size || 1600);
+        return s; // already a URL or local path — pass through
+    }
+
+    // CSV parser — handles quoted fields with embedded commas and "" escapes.
+    // Multi-line cells (newline inside quotes) are also supported.
+    function parseCsv(text) {
+        var rows = [];
+        var cur = '', cells = [], inq = false;
+        var t = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+        for (var i = 0; i < t.length; i++) {
+            var ch = t[i];
+            if (ch === '"' && t[i + 1] === '"') { cur += '"'; i++; continue; }
+            if (ch === '"') { inq = !inq; continue; }
+            if (ch === ',' && !inq) { cells.push(cur); cur = ''; continue; }
+            if (ch === '\n' && !inq) { cells.push(cur); rows.push(cells); cells = []; cur = ''; continue; }
+            cur += ch;
+        }
+        if (cur.length || cells.length) { cells.push(cur); rows.push(cells); }
+        return rows.filter(function (r) {
+            return r.length && r.some(function (c) { return c && c.trim(); });
+        });
+    }
+
+    function rowsToEntries(rows) {
+        if (!rows.length) return [];
+        var headers = rows.shift().map(function (h) { return String(h).trim().toLowerCase(); });
+        var col = function (name) { return headers.indexOf(name); };
+        var iDate  = col('date');
+        var iTitle = col('title');
+        var iTag   = col('tag');
+        var iPhoto = col('photo');
+        var iNote  = col('note');
+
+        return rows
+            .filter(function (r) { return iDate >= 0 && r[iDate] && r[iDate].trim(); })
+            .map(function (r) {
+                var rawDate = (r[iDate] || '').trim();
+                return {
+                    date:     formatDate(rawDate),
+                    _dateIso: rawDate,
+                    title:    iTitle >= 0 ? (r[iTitle] || '').trim() : '',
+                    tag:      iTag   >= 0 ? ((r[iTag] || 'farm').trim() || 'farm') : 'farm',
+                    photo:    imageUrl(iPhoto >= 0 ? r[iPhoto] : ''),
+                    note:     iNote  >= 0 ? (r[iNote] || '').trim() : ''
+                };
+            })
+            .sort(function (a, b) {
+                // Newest first; ISO dates sort lexically so this works as expected.
+                return (b._dateIso || '').localeCompare(a._dateIso || '');
+            });
+    }
+
+    function notify() {
+        var ev;
+        try { ev = new CustomEvent('diary:loaded'); }
+        catch (e) {
+            ev = document.createEvent('Event');
+            ev.initEvent('diary:loaded', true, true);
+        }
+        window.dispatchEvent(ev);
+    }
+
+    // ── Load ───────────────────────────────────────────────
+    if (!DIARY_CSV_URL) {
+        // Not configured yet — render code will show "no entries" state.
+        // Fire the event anyway so listeners stop waiting.
+        setTimeout(notify, 0);
+        return;
+    }
+
+    fetch(DIARY_CSV_URL)
+        .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+        .then(function (csv) {
+            var entries = rowsToEntries(parseCsv(csv));
+            window.DIARY_ENTRIES = entries;
+        })
+        .catch(function (err) {
+            // Network failure — leave DIARY_ENTRIES empty; renderers will show
+            // an empty/loading message. Logged for debugging only.
+            if (window.console) console.warn('Diary CSV fetch failed:', err && err.message);
+        })
+        .then(notify); // fire whether success or failure
+})();

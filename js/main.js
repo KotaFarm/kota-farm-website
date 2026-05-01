@@ -826,13 +826,13 @@ function closeCartDrawer() {
 updateCartUI();
 
 // ============================================================
-//  FARM DIARY — reads DIARY_ENTRIES from diary-config.js
-//  Shows the 2 most recent entries as cards on the homepage.
-//  To update: edit diary-config.js (add new entry at the top).
+//  FARM DIARY — reads DIARY_ENTRIES (loaded async from a Google
+//  Sheet by diary-config.js). Renders the 2 most recent entries
+//  on the homepage. Re-renders when 'diary:loaded' fires.
 // ============================================================
-(function buildDiary() {
+(function () {
     var grid = document.getElementById('diary-grid');
-    if (!grid || typeof DIARY_ENTRIES === 'undefined') return;
+    if (!grid) return;
 
     var tagColors = {
         harvest: { bg: '#dde8cc', text: '#3a5a20' },
@@ -843,24 +843,36 @@ updateCartUI();
         farm:    { bg: '#e8e4d8', text: '#4a4530' }
     };
 
-    var entries = DIARY_ENTRIES.slice(0, 2);
+    function render() {
+        if (typeof DIARY_ENTRIES === 'undefined') return;
+        grid.innerHTML = '';
 
-    entries.forEach(function(entry) {
-        var colors = tagColors[entry.tag] || tagColors['farm'];
-        var card = document.createElement('div');
-        card.className = 'diary-card';
-        card.innerHTML =
-            '<div class="diary-img-wrap">' +
-                '<img src="' + entry.photo + '" alt="' + escapeHtml(entry.title) + '" loading="lazy" onerror="this.parentElement.style.background=\'#e8dcc4\';this.style.display=\'none\'">' +
-            '</div>' +
-            '<div class="diary-body">' +
-                '<div class="diary-meta">' +
-                    '<span class="diary-tag" style="background:' + colors.bg + ';color:' + colors.text + '">' + escapeHtml(entry.tag) + '</span>' +
-                    '<span class="diary-date">' + escapeHtml(entry.date) + '</span>' +
+        if (!DIARY_ENTRIES.length) {
+            // Render nothing while waiting; section remains unobtrusive.
+            return;
+        }
+
+        var entries = DIARY_ENTRIES.slice(0, 2);
+        entries.forEach(function (entry) {
+            var colors = tagColors[entry.tag] || tagColors['farm'];
+            var card = document.createElement('div');
+            card.className = 'diary-card';
+            card.innerHTML =
+                '<div class="diary-img-wrap">' +
+                    '<img src="' + entry.photo + '" alt="' + escapeHtml(entry.title) + '" loading="lazy" onerror="this.parentElement.style.background=\'#e8dcc4\';this.style.display=\'none\'">' +
                 '</div>' +
-                '<h3 class="diary-title">' + escapeHtml(entry.title) + '</h3>' +
-                '<p class="diary-note">' + escapeHtml(entry.note) + '</p>' +
-            '</div>';
-        grid.appendChild(card);
-    });
+                '<div class="diary-body">' +
+                    '<div class="diary-meta">' +
+                        '<span class="diary-tag" style="background:' + colors.bg + ';color:' + colors.text + '">' + escapeHtml(entry.tag) + '</span>' +
+                        '<span class="diary-date">' + escapeHtml(entry.date) + '</span>' +
+                    '</div>' +
+                    '<h3 class="diary-title">' + escapeHtml(entry.title) + '</h3>' +
+                    '<p class="diary-note">' + escapeHtml(entry.note) + '</p>' +
+                '</div>';
+            grid.appendChild(card);
+        });
+    }
+
+    render(); // initial paint (likely empty until fetch completes)
+    window.addEventListener('diary:loaded', render);
 })();

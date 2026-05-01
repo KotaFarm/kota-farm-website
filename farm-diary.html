@@ -152,31 +152,45 @@
     <p>© 2026 Kota Natural Farm · Khedli Pandya, Kota, Rajasthan</p>
 </footer>
 
-<script src="diary-config.js?v=20260501"></script>
+<script src="diary-config.js?v=20260501b"></script>
 <script>
-(function() {
+(function () {
     var grid = document.getElementById('fd-archive-grid');
-    if (!grid || typeof DIARY_ENTRIES === 'undefined' || DIARY_ENTRIES.length === 0) {
-        grid.innerHTML = '<p class="fd-empty">Farm updates coming soon.</p>';
-        return;
-    }
-    DIARY_ENTRIES.forEach(function(entry) {
-        var card = document.createElement('div');
-        card.className = 'fd-archive-card';
-        card.innerHTML =
-            '<div class="fd-archive-img">' +
-                '<img src="' + entry.photo + '" alt="' + entry.title + '" loading="lazy">' +
-            '</div>' +
-            '<div class="fd-archive-body">' +
-                '<div class="fd-archive-meta">' +
-                    '<span class="fd-archive-tag">' + entry.tag + '</span>' +
-                    '<span class="fd-archive-date">' + entry.date + '</span>' +
+    if (!grid) return;
+
+    // Initial loading state — replaced once data arrives or fetch fails.
+    grid.innerHTML = '<p class="fd-empty">Loading farm updates&hellip;</p>';
+
+    function render() {
+        if (typeof DIARY_ENTRIES === 'undefined') return;
+        if (!DIARY_ENTRIES.length) {
+            grid.innerHTML = '<p class="fd-empty">Farm updates coming soon.</p>';
+            return;
+        }
+        grid.innerHTML = '';
+        DIARY_ENTRIES.forEach(function (entry) {
+            var card = document.createElement('div');
+            card.className = 'fd-archive-card';
+            card.innerHTML =
+                '<div class="fd-archive-img">' +
+                    '<img src="' + entry.photo + '" alt="' + entry.title + '" loading="lazy">' +
                 '</div>' +
-                '<div class="fd-archive-title">' + entry.title + '</div>' +
-                '<div class="fd-archive-note">' + entry.note + '</div>' +
-            '</div>';
-        grid.appendChild(card);
-    });
+                '<div class="fd-archive-body">' +
+                    '<div class="fd-archive-meta">' +
+                        '<span class="fd-archive-tag">' + entry.tag + '</span>' +
+                        '<span class="fd-archive-date">' + entry.date + '</span>' +
+                    '</div>' +
+                    '<div class="fd-archive-title">' + entry.title + '</div>' +
+                    '<div class="fd-archive-note">' + entry.note + '</div>' +
+                '</div>';
+            grid.appendChild(card);
+        });
+    }
+
+    // If diary-config.js already populated entries before our listener was
+    // attached (cached case), render now.
+    if (typeof DIARY_ENTRIES !== 'undefined' && DIARY_ENTRIES.length) render();
+    window.addEventListener('diary:loaded', render);
 })();
 </script>
 </body>
