@@ -967,6 +967,10 @@ body.scroll-locked {
     font-weight: 500;
     text-align: center;
 }
+/* Error state — same element, swapped colour. Set by JS on validation/network failure. */
+.notify-strip-success.notify-strip-error {
+    color: #a23838;
+}
 
 @media (max-width: 480px) {
     .notify-strip {

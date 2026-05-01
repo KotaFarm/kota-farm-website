@@ -586,27 +586,77 @@
         showSubscribedState();
     }
 
+    // Maps server-side error codes to user-friendly messages.
+    var ERROR_MESSAGES = {
+        email_required:      'Please enter your email.',
+        email_too_long:      'That email address is too long.',
+        invalid_email:       'That email looks invalid — please check.',
+        disposable_email:    'Please use your real email address.',
+        rate_limited:        'Too many attempts from this device. Try again later.',
+        too_many_attempts:   "You've already submitted this — give it a minute.",
+        upstream_error:      'Something went wrong on our side. Please try again.',
+        upstream_unreachable:'Connection issue — please try again.',
+        server_misconfigured:'Site is being updated — please try again shortly.',
+        invalid_json:        'Something went wrong. Please refresh and try again.',
+        method_not_allowed:  'Something went wrong. Please refresh and try again.'
+    };
+
+    function showNotifyError(code) {
+        if (!notifySuccess) return;
+        var msg = ERROR_MESSAGES[code] || 'Something went wrong. Please try again.';
+        notifySuccess.style.display = '';
+        notifySuccess.classList.add('notify-strip-error');
+        notifySuccess.textContent = '⚠ ' + msg;
+        // Auto-clear after a few seconds so the form stays usable.
+        setTimeout(function () {
+            if (!notifySuccess) return;
+            notifySuccess.classList.remove('notify-strip-error');
+            // Only hide if we're still showing this error (not a later success).
+            if (notifySuccess.textContent.indexOf('⚠') === 0) {
+                notifySuccess.style.display = 'none';
+                notifySuccess.textContent = '';
+            }
+        }, 4500);
+    }
+
     if (notifyForm) {
         notifyForm.addEventListener('submit', function (e) {
             e.preventDefault();
             var email = notifyEmail.value.trim();
-            if (!email) return;
+            if (!email) {
+                showNotifyError('email_required');
+                return;
+            }
 
             var btn = notifyForm.querySelector('.notify-strip-btn');
+            var originalLabel = btn.textContent;
             btn.disabled = true;
-            btn.textContent = '✓';
+            btn.textContent = '…';
 
-            setTimeout(function () {
-                localStorage.setItem(NOTIFY_KEY, 'true');
-                showSubscribedState();
-            }, 600);
-
-            fetch(FARM_API, {
+            fetch('/api/subscribe', {
                 method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'text/plain' },
-                body: JSON.stringify({ email: email })
-            }).catch(function () {});
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email, source: 'produce-page' })
+            })
+            .then(function (res) {
+                return res.json().then(function (data) { return { status: res.status, data: data }; });
+            })
+            .then(function (result) {
+                if (result.data && result.data.ok) {
+                    // Real, server-confirmed success.
+                    localStorage.setItem(NOTIFY_KEY, 'true');
+                    showSubscribedState();
+                } else {
+                    btn.disabled = false;
+                    btn.textContent = originalLabel;
+                    showNotifyError((result.data && result.data.error) || 'upstream_error');
+                }
+            })
+            .catch(function () {
+                btn.disabled = false;
+                btn.textContent = originalLabel;
+                showNotifyError('upstream_unreachable');
+            });
         });
     }
 
