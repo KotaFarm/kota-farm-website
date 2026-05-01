@@ -16,6 +16,13 @@
 
 const DIARY_ENTRIES = [
     {
+        photo: "diary/tubewell-shade-construction-start.jpeg",
+        date:  "May 1, 2026",
+        title: "Rebuilding the tubewell shade — this time in concrete",
+        note:  "After the wildfire took down the bamboo tubewell hut earlier this season, we're rebuilding it permanently. Eight reinforced concrete pillars are now standing — the bones of a fire-resistant structure that will protect the pump, motor, and electrical fittings for the long haul. Stones for the walls are stacked alongside, ready to go up next. The bamboo version was cheap and fast; this one is built to outlast the next fire.",
+        tag:   "farm"
+    },
+    {
         photo: "diary/shade-net-storm-damage.jpeg",
         date:  "April 29, 2026",
         title: "Storm flattens the shade net",
