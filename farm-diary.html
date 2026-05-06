@@ -14,20 +14,20 @@
     <script src="js/vercel-analytics.js" defer></script>
     <script defer src="/_vercel/insights/script.js"></script>
     <style>
-        .fd-archive-header {
+        .fd-header {
             background: var(--sand);
             padding: 4rem 2rem 3rem;
             text-align: center;
             border-bottom: 1px solid rgba(139,152,98,0.25);
         }
-        .fd-archive-header h1 {
+        .fd-header h1 {
             font-family: 'Crimson Pro', serif;
             font-size: clamp(2.2rem, 5vw, 3.5rem);
             font-weight: 700;
             color: var(--earth-dark);
             margin-bottom: 0.5rem;
         }
-        .fd-archive-header p {
+        .fd-header p {
             color: var(--earth-medium);
             font-size: 1rem;
             font-weight: 300;
@@ -35,84 +35,192 @@
             margin: 0 auto;
         }
 
-        .fd-archive-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
-            gap: 1.5rem;
-            max-width: 1100px;
-            margin: 3rem auto;
-            padding: 0 1.5rem;
+        /* Timeline container */
+        .fd-timeline {
+            max-width: 780px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
         }
 
-        .fd-archive-card {
-            background: white;
-            border-radius: 14px;
-            overflow: hidden;
-            box-shadow: 0 3px 16px rgba(45,51,25,0.08);
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        /* Month header */
+        .fd-month {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--earth-dark);
+            margin: 2.5rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--sprout);
+            display: inline-block;
         }
-        .fd-archive-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 28px rgba(45,51,25,0.14);
+        .fd-month:first-child {
+            margin-top: 0;
         }
-        .fd-archive-img {
-            aspect-ratio: 4 / 3;
-            overflow: hidden;
-        }
-        .fd-archive-img img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-            transition: transform 0.4s ease;
-        }
-        .fd-archive-card:hover .fd-archive-img img {
-            transform: scale(1.05);
-        }
-        .fd-archive-body {
-            padding: 1.1rem 1.25rem 1.4rem;
-        }
-        .fd-archive-meta {
+
+        /* Single entry row (compact) */
+        .fd-row {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 0.5rem;
+            gap: 0.75rem;
+            padding: 0.6rem 0.75rem;
+            margin: 0.35rem 0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            border-left: 3px solid var(--earth-light);
         }
-        .fd-archive-tag {
+        .fd-row:hover {
+            background: rgba(168, 198, 134, 0.1);
+        }
+        .fd-row[data-expanded="true"] {
+            background: rgba(168, 198, 134, 0.08);
+            border-left-color: var(--sprout);
+        }
+        .fd-row-thumb {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+        .fd-row-body {
+            flex: 1;
+            min-width: 0;
+        }
+        .fd-row-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--earth-dark);
+            line-height: 1.3;
+        }
+        .fd-row-meta {
+            font-size: 0.78rem;
+            color: var(--earth-light);
+            margin-top: 0.15rem;
+        }
+        .fd-row-tag {
             display: inline-block;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.06em;
             color: var(--water);
             background: rgba(107,144,128,0.12);
-            padding: 0.2rem 0.55rem;
-            border-radius: 10px;
+            padding: 0.15rem 0.45rem;
+            border-radius: 8px;
+            margin-right: 0.4rem;
         }
-        .fd-archive-date {
-            font-size: 0.78rem;
+        .fd-row-chevron {
+            flex-shrink: 0;
+            width: 20px;
+            height: 20px;
             color: var(--earth-light);
+            transition: transform 0.25s ease;
         }
-        .fd-archive-title {
-            font-family: 'Crimson Pro', serif;
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--earth-dark);
-            margin-bottom: 0.45rem;
-            line-height: 1.3;
-        }
-        .fd-archive-note {
-            font-size: 0.88rem;
-            color: var(--earth-medium);
-            line-height: 1.65;
+        .fd-row[data-expanded="true"] .fd-row-chevron {
+            transform: rotate(90deg);
         }
 
+        /* Expanded detail panel */
+        .fd-detail {
+            display: none;
+            margin: 0 0 0.5rem 0.75rem;
+            padding: 1rem;
+            border-left: 3px solid var(--sprout);
+            border-radius: 0 10px 10px 0;
+            background: white;
+            box-shadow: 0 2px 12px rgba(45,51,25,0.06);
+        }
+        .fd-detail.open {
+            display: block;
+        }
+        .fd-detail-img {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+            display: block;
+            margin-bottom: 0.75rem;
+        }
+        .fd-detail-note {
+            font-size: 0.9rem;
+            color: var(--earth-medium);
+            line-height: 1.7;
+        }
+
+        /* Cluster row — grouped entries */
+        .fd-cluster {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.6rem 0.75rem;
+            margin: 0.35rem 0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            border-left: 3px solid var(--water);
+        }
+        .fd-cluster:hover {
+            background: rgba(107,144,128,0.08);
+        }
+        .fd-cluster[data-expanded="true"] {
+            border-left-color: var(--sprout);
+            background: rgba(168, 198, 134, 0.06);
+        }
+        .fd-cluster-badge {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: var(--water);
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .fd-cluster-body {
+            flex: 1;
+            min-width: 0;
+        }
+        .fd-cluster-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--earth-dark);
+        }
+        .fd-cluster-summary {
+            font-size: 0.78rem;
+            color: var(--earth-light);
+            margin-top: 0.15rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Cluster expanded children */
+        .fd-cluster-children {
+            display: none;
+            margin-left: 0.75rem;
+            padding-left: 0;
+        }
+        .fd-cluster-children.open {
+            display: block;
+        }
+
+        /* Empty state */
         .fd-empty {
             text-align: center;
             padding: 5rem 2rem;
             color: var(--earth-light);
             font-size: 1rem;
             font-weight: 300;
+        }
+
+        @media (max-width: 600px) {
+            .fd-timeline { padding: 1.5rem 1rem 3rem; }
+            .fd-row-thumb { width: 40px; height: 40px; }
+            .fd-detail-img { max-height: 280px; }
         }
     </style>
 </head>
@@ -139,56 +247,191 @@
 </nav>
 <script src="js/site-nav.js" defer></script>
 
-<div class="fd-archive-header">
+<div class="fd-header">
     <h1>Farm Diary</h1>
     <p>A running record of life on the farm — what's growing, what's changing, what we're learning.</p>
 </div>
 
-<div class="fd-archive-grid" id="fd-archive-grid">
-    <!-- Built by JS from diary-config.js -->
+<div class="fd-timeline" id="fd-timeline">
+    <p class="fd-empty">Loading farm updates&hellip;</p>
 </div>
 
 <footer class="practice-footer">
-    <p>© 2026 Kota Natural Farm · Khedli Pandya, Kota, Rajasthan</p>
+    <p>&copy; 2026 Kota Natural Farm &middot; Khedli Pandya, Kota, Rajasthan</p>
 </footer>
 
-<script src="diary-config.js?v=20260501b"></script>
+<script src="diary-config.js?v=20260506"></script>
 <script>
 (function () {
-    var grid = document.getElementById('fd-archive-grid');
-    if (!grid) return;
+    var timeline = document.getElementById('fd-timeline');
+    if (!timeline) return;
 
-    // Initial loading state — replaced once data arrives or fetch fails.
-    grid.innerHTML = '<p class="fd-empty">Loading farm updates&hellip;</p>';
+    var MONTHS = ['January','February','March','April','May','June',
+                  'July','August','September','October','November','December'];
+
+    var CHEVRON_SVG = '<svg class="fd-row-chevron" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><polyline points="7,4 13,10 7,16"/></svg>';
+
+    function daysBetween(a, b) {
+        var d1 = new Date(a), d2 = new Date(b);
+        return Math.abs(Math.round((d1 - d2) / 86400000));
+    }
+
+    function monthKey(iso) {
+        var m = String(iso).match(/^(\d{4})-(\d{1,2})/);
+        return m ? m[1] + '-' + m[2] : 'unknown';
+    }
+
+    function monthLabel(iso) {
+        var m = String(iso).match(/^(\d{4})-(\d{1,2})/);
+        if (!m) return 'Updates';
+        return MONTHS[parseInt(m[2], 10) - 1] + ' ' + m[1];
+    }
+
+    function dayLabel(iso) {
+        var m = String(iso).match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+        if (!m) return '';
+        return MONTHS[parseInt(m[2], 10) - 1] + ' ' + parseInt(m[3], 10);
+    }
+
+    function groupByMonth(entries) {
+        var months = [];
+        var map = {};
+        entries.forEach(function (e) {
+            var k = monthKey(e._dateIso);
+            if (!map[k]) {
+                map[k] = { key: k, label: monthLabel(e._dateIso), entries: [] };
+                months.push(map[k]);
+            }
+            map[k].entries.push(e);
+        });
+        return months;
+    }
+
+    function clusterEntries(entries) {
+        var items = [];
+        var used = {};
+        for (var i = 0; i < entries.length; i++) {
+            if (used[i]) continue;
+            var cluster = [entries[i]];
+            used[i] = true;
+            for (var j = i + 1; j < entries.length; j++) {
+                if (used[j]) continue;
+                if (entries[j].tag === entries[i].tag &&
+                    daysBetween(entries[i]._dateIso, entries[j]._dateIso) <= 7) {
+                    cluster.push(entries[j]);
+                    used[j] = true;
+                }
+            }
+            if (cluster.length >= 2) {
+                items.push({ type: 'cluster', tag: entries[i].tag, entries: cluster });
+            } else {
+                items.push({ type: 'single', entry: entries[i] });
+            }
+        }
+        return items;
+    }
+
+    function toggleRow(row) {
+        var detail = row.nextElementSibling;
+        if (!detail || !detail.classList.contains('fd-detail')) return;
+        var open = detail.classList.contains('open');
+        detail.classList.toggle('open');
+        row.setAttribute('data-expanded', open ? 'false' : 'true');
+    }
+
+    function toggleCluster(clusterEl) {
+        var children = clusterEl.nextElementSibling;
+        if (!children || !children.classList.contains('fd-cluster-children')) return;
+        var open = children.classList.contains('open');
+        children.classList.toggle('open');
+        clusterEl.setAttribute('data-expanded', open ? 'false' : 'true');
+    }
+
+    function buildSingleRow(entry) {
+        var frag = document.createDocumentFragment();
+
+        var row = document.createElement('div');
+        row.className = 'fd-row';
+        row.setAttribute('data-expanded', 'false');
+        row.innerHTML =
+            (entry.photo ? '<img class="fd-row-thumb" src="' + entry.photo + '" alt="" loading="lazy">' : '') +
+            '<div class="fd-row-body">' +
+                '<div class="fd-row-title">' + entry.title + '</div>' +
+                '<div class="fd-row-meta">' +
+                    '<span class="fd-row-tag">' + entry.tag + '</span>' +
+                    dayLabel(entry._dateIso) +
+                '</div>' +
+            '</div>' +
+            CHEVRON_SVG;
+        row.addEventListener('click', function () { toggleRow(row); });
+        frag.appendChild(row);
+
+        var detail = document.createElement('div');
+        detail.className = 'fd-detail';
+        detail.innerHTML =
+            (entry.photo ? '<img class="fd-detail-img" src="' + entry.photo + '" alt="' + entry.title + '" loading="lazy">' : '') +
+            (entry.note ? '<div class="fd-detail-note">' + entry.note + '</div>' : '');
+        frag.appendChild(detail);
+
+        return frag;
+    }
+
+    function buildCluster(cluster) {
+        var frag = document.createDocumentFragment();
+
+        var titles = cluster.entries.map(function (e) { return e.title; });
+        var summary = titles.join(' → ');
+
+        var row = document.createElement('div');
+        row.className = 'fd-cluster';
+        row.setAttribute('data-expanded', 'false');
+        row.innerHTML =
+            '<div class="fd-cluster-badge">' + cluster.entries.length + '</div>' +
+            '<div class="fd-cluster-body">' +
+                '<div class="fd-cluster-title">' + cluster.tag + ' updates</div>' +
+                '<div class="fd-cluster-summary">' + summary + '</div>' +
+            '</div>' +
+            CHEVRON_SVG;
+        row.addEventListener('click', function () { toggleCluster(row); });
+        frag.appendChild(row);
+
+        var children = document.createElement('div');
+        children.className = 'fd-cluster-children';
+        cluster.entries.forEach(function (entry) {
+            children.appendChild(buildSingleRow(entry));
+        });
+        frag.appendChild(children);
+
+        return frag;
+    }
 
     function render() {
         if (typeof DIARY_ENTRIES === 'undefined') return;
         if (!DIARY_ENTRIES.length) {
-            grid.innerHTML = '<p class="fd-empty">Farm updates coming soon.</p>';
+            timeline.innerHTML = '<p class="fd-empty">Farm updates coming soon.</p>';
             return;
         }
-        grid.innerHTML = '';
-        DIARY_ENTRIES.forEach(function (entry) {
-            var card = document.createElement('div');
-            card.className = 'fd-archive-card';
-            card.innerHTML =
-                '<div class="fd-archive-img">' +
-                    '<img src="' + entry.photo + '" alt="' + entry.title + '" loading="lazy">' +
-                '</div>' +
-                '<div class="fd-archive-body">' +
-                    '<div class="fd-archive-meta">' +
-                        '<span class="fd-archive-tag">' + entry.tag + '</span>' +
-                        '<span class="fd-archive-date">' + entry.date + '</span>' +
-                    '</div>' +
-                    '<div class="fd-archive-title">' + entry.title + '</div>' +
-                    '<div class="fd-archive-note">' + entry.note + '</div>' +
-                '</div>';
-            grid.appendChild(card);
+
+        timeline.innerHTML = '';
+        var months = groupByMonth(DIARY_ENTRIES);
+
+        months.forEach(function (month) {
+            var heading = document.createElement('div');
+            heading.className = 'fd-month';
+            heading.textContent = month.label;
+            timeline.appendChild(heading);
+
+            var items = clusterEntries(month.entries);
+            items.forEach(function (item) {
+                if (item.type === 'cluster') {
+                    timeline.appendChild(buildCluster(item));
+                } else {
+                    timeline.appendChild(buildSingleRow(item.entry));
+                }
+            });
         });
     }
 
-    // If diary-config.js already populated entries before our listener was
-    // attached (cached case), render now.
     if (typeof DIARY_ENTRIES !== 'undefined' && DIARY_ENTRIES.length) render();
     window.addEventListener('diary:loaded', render);
 })();

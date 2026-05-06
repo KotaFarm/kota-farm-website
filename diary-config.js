@@ -124,9 +124,17 @@
             window.DIARY_ENTRIES = entries;
         })
         .catch(function (err) {
-            // Network failure — leave DIARY_ENTRIES empty; renderers will show
-            // an empty/loading message. Logged for debugging only.
-            if (window.console) console.warn('Diary CSV fetch failed:', err && err.message);
+            // Network failure (e.g. file:// CORS) — use sample data for local testing.
+            if (window.console) console.warn('Diary CSV fetch failed, using sample data:', err && err.message);
+            window.DIARY_ENTRIES = [
+                { date: 'May 6, 2026', _dateIso: '2026-05-06', title: 'Irrigation system back online', tag: 'infra', photo: 'diary/tubewell-fire-rebuild.jpeg', note: 'After the fire destroyed the tubewell setup, staff rebuilt the entire drip irrigation connection from scratch. Filter, pressure gauge, zone valves, and the tubewell suction line — all reconnected and tested. The system is back up and running.' },
+                { date: 'May 1, 2026', _dateIso: '2026-05-01', title: 'Fire at the Tubewell — and the Rebuild', tag: 'infra', photo: 'diary/tubewell-fire-rebuild.jpeg', note: 'A fire burned down the tubewell and drip irrigation setup. Staff worked endlessly to rebuild the irrigation connections — concrete pillars going up, stones and pipes being relaid.' },
+                { date: 'April 30, 2026', _dateIso: '2026-04-30', title: 'Shade net damaged in storm', tag: 'infra', photo: 'diary/shade-net-storm-damage.jpeg', note: 'A strong windstorm collapsed the shade net nursery structure. The green mesh and supporting frame buckled under the wind pressure.' },
+                { date: 'April 27, 2026', _dateIso: '2026-04-27', title: 'Bamboo arrives for trellis', tag: 'infra', photo: 'diary/bamboo-for-trellis.jpeg', note: 'Bamboo poles delivered for building trellises. These will support climbing vegetables and creeper plants.' },
+                { date: 'April 21, 2026', _dateIso: '2026-04-21', title: 'First corn on the farm', tag: 'milestone', photo: 'diary/first-corn-on-the-farm.webp', note: 'Harvested our first corn cobs — a small but significant milestone for the farm.' },
+                { date: 'March 26, 2026', _dateIso: '2026-03-26', title: 'Seedlings in the ground', tag: 'planting', photo: 'diary/seedlings-in-the-ground.jpg', note: 'First batch of seedlings transplanted into prepared beds. The growing season begins.' },
+                { date: 'March 26, 2026', _dateIso: '2026-03-26', title: 'Organic fertilizer drums ready', tag: 'planting', photo: 'diary/organic-fertilizer-drums.jpg', note: 'Organic fertilizer prepared in blue drums — ready for application across the planting zones.' }
+            ];
         })
         .then(notify); // fire whether success or failure
 })();
