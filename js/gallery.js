@@ -139,6 +139,7 @@
                 var group = document.createElement('div');
                 group.className = 'gallery-category-group';
                 group.setAttribute('data-category', cat.id);
+                group.id = 'cat-' + cat.id;  // enables deep-linking like gallery.html#cat-living-land
 
                 var title = document.createElement('h3');
                 title.className = 'gallery-category-title fade-in';

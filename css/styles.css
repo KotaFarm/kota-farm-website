@@ -249,6 +249,108 @@ h1, h2, h3, h4 {
     color: var(--sand);
 }
 
+/* ─────────────────────────────────────────────────────────
+   "Life Returns" — biodiversity strip on the homepage,
+   sits directly under the hero. Shows wildlife / bird
+   sightings as small cards. Add or remove cards in
+   index.html as new species are documented.
+   ───────────────────────────────────────────────────────── */
+.living-land-strip {
+    background: linear-gradient(180deg, var(--sand) 0%, #f3ead4 100%);
+    padding-top: var(--spacing-lg);
+    padding-bottom: var(--spacing-lg);
+    border-top: 1px solid rgba(45, 51, 25, 0.06);
+    border-bottom: 1px solid rgba(45, 51, 25, 0.06);
+}
+.living-land-intro {
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto var(--spacing-lg);
+    color: var(--earth-dark);
+    font-size: 1.1rem;
+    line-height: 1.7;
+}
+.living-land-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin: 0 auto;
+    max-width: 1000px;
+}
+.living-land-card {
+    /* Reset native button styles since the card is a <button> for accessibility */
+    appearance: none;
+    -webkit-appearance: none;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    width: 100%;
+    display: block;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(45, 51, 25, 0.12);
+    background: #fff;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.living-land-card:hover,
+.living-land-card:focus-visible {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(45, 51, 25, 0.18);
+    outline: none;
+}
+.living-land-card:focus-visible {
+    box-shadow: 0 8px 24px rgba(45, 51, 25, 0.18), 0 0 0 3px var(--sprout);
+}
+.living-land-card img {
+    width: 100%;
+    height: 320px;
+    object-fit: cover;
+    display: block;
+    background: var(--earth-light);
+}
+.living-land-caption {
+    display: block;
+    padding: 1rem 1.2rem 1.2rem;
+    font-family: 'Work Sans', sans-serif;
+}
+.living-land-caption strong {
+    display: block;
+    font-size: 1.15rem;
+    color: var(--earth-dark);
+    font-family: 'Crimson Pro', serif;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+.living-land-tagline {
+    display: block;
+    color: var(--earth-medium);
+    font-size: 0.92rem;
+    line-height: 1.5;
+    margin-bottom: 0.6rem;
+}
+.living-land-cue {
+    display: inline-block;
+    font-size: 0.78rem;
+    color: var(--earth-medium);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    opacity: 0.7;
+    transition: opacity 0.2s ease, color 0.2s ease;
+}
+.living-land-card:hover .living-land-cue,
+.living-land-card:focus-visible .living-land-cue {
+    opacity: 1;
+    color: var(--earth-dark);
+}
+@media (max-width: 600px) {
+    .living-land-card img { height: 240px; }
+    .living-land-intro { font-size: 1rem; }
+}
+
 /* Inline SVG icon — replaces emoji iconography site-wide.
    Earth-dark stroke, rounded joins, consistent 1.5rem size. */
 .icon {

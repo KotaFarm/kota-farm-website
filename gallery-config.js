@@ -13,15 +13,17 @@
 //    "Nurture"       — growing crops, food forest, polyculture beds
 //    "Harvest"       — the abundance that comes from working with nature
 //    "Tend"          — pruning, seasonal care, returning to the cycle
+//    "Living Land"   — birds, insects, wildlife the regenerative practices invite back
 // ============================================================
 
 const galleryCategories = [
-  { id: "the-land",  label: "🌍 The Land",  phase: "foundation" },
-  { id: "prepare",   label: "🌱 Prepare",   phase: "cycle" },
-  { id: "plant",     label: "🪴 Plant",     phase: "cycle" },
-  { id: "nurture",   label: "🌿 Nurture",   phase: "cycle" },
-  { id: "harvest",   label: "🌾 Harvest",   phase: "cycle" },
-  { id: "tend",      label: "✂️ Tend",      phase: "cycle" }
+  { id: "the-land",     label: "🌍 The Land",     phase: "foundation" },
+  { id: "prepare",      label: "🌱 Prepare",      phase: "cycle" },
+  { id: "plant",        label: "🪴 Plant",        phase: "cycle" },
+  { id: "nurture",      label: "🌿 Nurture",      phase: "cycle" },
+  { id: "harvest",      label: "🌾 Harvest",      phase: "cycle" },
+  { id: "tend",         label: "✂️ Tend",         phase: "cycle" },
+  { id: "living-land",  label: "🦋 Living Land",  phase: "result" }
 ];
 
 const galleryItems = [
@@ -161,5 +163,19 @@ const galleryItems = [
     "file": "tend/moringa-pruned.webp",
     "caption": "Moringa after winter pruning — ready for spring regrowth",
     "category": "tend"
+  },
+
+  // ── 🦋 Living Land ──────────────────────────────────────────
+  // Birds, insects, and wild visitors that the farm now welcomes —
+  // proof that the regenerative practices are working.
+  {
+    "file": "living-land/lapwing-family.webp",
+    "caption": "Red-wattled Lapwing with three chicks — nesting in the open fields. Lapwings only raise young where the land feels safe and chemical-free.",
+    "category": "living-land"
+  },
+  {
+    "file": "living-land/tailorbird-nest.webp",
+    "caption": "A Common Tailorbird stitched two leaves together with plant fibre and spider silk to make this nest — chicks tucked safely inside.",
+    "category": "living-land"
   }
 ];

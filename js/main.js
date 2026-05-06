@@ -495,8 +495,12 @@ function openLightbox(src) {
     var closeBtn = document.getElementById('lightbox-close');
     lightboxPreviousFocus = document.activeElement;
 
-    lightboxIndex = lightboxImages.findIndex(function(item) { return item.src === src; });
-    if (lightboxIndex === -1) lightboxIndex = 0;
+    lightboxIndex = lightboxImages.findIndex(function(item) { return item.src === src || item.src.indexOf(src) !== -1; });
+    if (lightboxIndex === -1) {
+        // src isn't in any page collection (e.g. info posters opened directly) — show as a single standalone image
+        lightboxImages = [{ src: src, caption: '' }];
+        lightboxIndex = 0;
+    }
 
     // Create caption element if not exists
     if (!document.getElementById('lightbox-caption')) {
