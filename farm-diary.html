@@ -208,6 +208,81 @@
             display: block;
         }
 
+        /* Collapsed month card (past months) */
+        .fd-month-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            margin: 1.5rem 0 0.5rem;
+            border-radius: 12px;
+            background: white;
+            box-shadow: 0 2px 12px rgba(45,51,25,0.07);
+            cursor: pointer;
+            transition: background 0.2s ease, box-shadow 0.2s ease;
+            border-left: 4px solid var(--earth-light);
+        }
+        .fd-month-card:first-child { margin-top: 0; }
+        .fd-month-card:hover {
+            background: rgba(168, 198, 134, 0.06);
+            box-shadow: 0 4px 18px rgba(45,51,25,0.1);
+        }
+        .fd-month-card[data-expanded="true"] {
+            border-left-color: var(--sprout);
+            margin-bottom: 0.75rem;
+        }
+        .fd-month-card-count {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: var(--sand);
+            color: var(--earth-dark);
+            font-size: 1.2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .fd-month-card-body { flex: 1; min-width: 0; }
+        .fd-month-card-title {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--earth-dark);
+        }
+        .fd-month-card-summary {
+            font-size: 0.82rem;
+            color: var(--earth-medium);
+            margin-top: 0.2rem;
+            line-height: 1.5;
+        }
+        .fd-month-card-tags {
+            display: flex;
+            gap: 0.35rem;
+            flex-wrap: wrap;
+            margin-top: 0.4rem;
+        }
+        .fd-month-card-chevron {
+            flex-shrink: 0;
+            width: 22px;
+            height: 22px;
+            color: var(--earth-light);
+            transition: transform 0.3s ease;
+        }
+        .fd-month-card[data-expanded="true"] .fd-month-card-chevron {
+            transform: rotate(90deg);
+        }
+
+        /* Month content (hidden for past months) */
+        .fd-month-content {
+            display: none;
+            padding-left: 0.5rem;
+        }
+        .fd-month-content.open {
+            display: block;
+        }
+
         /* Empty state */
         .fd-empty {
             text-align: center;
@@ -221,6 +296,7 @@
             .fd-timeline { padding: 1.5rem 1rem 3rem; }
             .fd-row-thumb { width: 40px; height: 40px; }
             .fd-detail-img { max-height: 280px; }
+            .fd-month-card { padding: 0.75rem 1rem; gap: 0.75rem; }
         }
     </style>
 </head>
@@ -405,6 +481,56 @@
         return frag;
     }
 
+    function isCurrentMonth(key) {
+        var now = new Date();
+        var cur = now.getFullYear() + '-' + (now.getMonth() + 1);
+        return key === cur;
+    }
+
+    function autoSummary(entries) {
+        var summaryEntry = null;
+        var regular = [];
+        entries.forEach(function (e) {
+            if (e.tag === 'summary') { summaryEntry = e; }
+            else { regular.push(e); }
+        });
+        if (summaryEntry && summaryEntry.note) return summaryEntry.note;
+
+        var tagCounts = {};
+        regular.forEach(function (e) {
+            tagCounts[e.tag] = (tagCounts[e.tag] || 0) + 1;
+        });
+        var parts = [];
+        for (var t in tagCounts) {
+            parts.push(tagCounts[t] + ' ' + t);
+        }
+        return regular.length + ' update' + (regular.length !== 1 ? 's' : '') + ' — ' + parts.join(', ');
+    }
+
+    function buildMonthContent(month) {
+        var content = document.createElement('div');
+        content.className = 'fd-month-content';
+
+        var regular = month.entries.filter(function (e) { return e.tag !== 'summary'; });
+        var items = clusterEntries(regular);
+        items.forEach(function (item) {
+            if (item.type === 'cluster') {
+                content.appendChild(buildCluster(item));
+            } else {
+                content.appendChild(buildSingleRow(item.entry));
+            }
+        });
+        return content;
+    }
+
+    function toggleMonthCard(card) {
+        var content = card.nextElementSibling;
+        if (!content || !content.classList.contains('fd-month-content')) return;
+        var open = content.classList.contains('open');
+        content.classList.toggle('open');
+        card.setAttribute('data-expanded', open ? 'false' : 'true');
+    }
+
     function render() {
         if (typeof DIARY_ENTRIES === 'undefined') return;
         if (!DIARY_ENTRIES.length) {
@@ -416,19 +542,50 @@
         var months = groupByMonth(DIARY_ENTRIES);
 
         months.forEach(function (month) {
-            var heading = document.createElement('div');
-            heading.className = 'fd-month';
-            heading.textContent = month.label;
-            timeline.appendChild(heading);
+            var current = isCurrentMonth(month.key);
+            var regular = month.entries.filter(function (e) { return e.tag !== 'summary'; });
 
-            var items = clusterEntries(month.entries);
-            items.forEach(function (item) {
-                if (item.type === 'cluster') {
-                    timeline.appendChild(buildCluster(item));
-                } else {
-                    timeline.appendChild(buildSingleRow(item.entry));
+            if (current) {
+                var heading = document.createElement('div');
+                heading.className = 'fd-month';
+                heading.textContent = month.label;
+                timeline.appendChild(heading);
+
+                var items = clusterEntries(regular);
+                items.forEach(function (item) {
+                    if (item.type === 'cluster') {
+                        timeline.appendChild(buildCluster(item));
+                    } else {
+                        timeline.appendChild(buildSingleRow(item.entry));
+                    }
+                });
+            } else {
+                var summary = autoSummary(month.entries);
+
+                var tagSet = {};
+                regular.forEach(function (e) { tagSet[e.tag] = true; });
+                var tagHtml = '';
+                for (var t in tagSet) {
+                    tagHtml += '<span class="fd-row-tag">' + t + '</span>';
                 }
-            });
+
+                var card = document.createElement('div');
+                card.className = 'fd-month-card';
+                card.setAttribute('data-expanded', 'false');
+                card.innerHTML =
+                    '<div class="fd-month-card-count">' + regular.length + '</div>' +
+                    '<div class="fd-month-card-body">' +
+                        '<div class="fd-month-card-title">' + month.label + '</div>' +
+                        '<div class="fd-month-card-summary">' + summary + '</div>' +
+                        '<div class="fd-month-card-tags">' + tagHtml + '</div>' +
+                    '</div>' +
+                    '<svg class="fd-month-card-chevron" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><polyline points="7,4 13,10 7,16"/></svg>';
+                card.addEventListener('click', function () { toggleMonthCard(card); });
+                timeline.appendChild(card);
+
+                var content = buildMonthContent(month);
+                timeline.appendChild(content);
+            }
         });
     }
 
