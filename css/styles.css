@@ -305,9 +305,16 @@ h1, h2, h3, h4 {
 .living-land-card:focus-visible {
     box-shadow: 0 8px 24px rgba(45, 51, 25, 0.18), 0 0 0 3px var(--sprout);
 }
+.living-land-card .living-land-img-wrap {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: rgba(45, 51, 25, 0.06);
+    display: block;
+}
 .living-land-card img {
     width: 100%;
-    height: 320px;
+    height: 100%;
     object-fit: cover;
     display: block;
     background: var(--earth-light);
@@ -347,8 +354,9 @@ h1, h2, h3, h4 {
     color: var(--earth-dark);
 }
 @media (max-width: 600px) {
-    .living-land-card img { height: 240px; }
     .living-land-intro { font-size: 1rem; }
+    /* On phones each card is full width — keep the image proportional, not stretched */
+    .living-land-card .living-land-img-wrap { aspect-ratio: 16 / 10; }
 }
 
 /* Inline SVG icon — replaces emoji iconography site-wide.
