@@ -177,5 +177,10 @@ const galleryItems = [
     "file": "living-land/tailorbird-nest.webp",
     "caption": "A Common Tailorbird stitched two leaves together with plant fibre and spider silk to make this nest — chicks tucked safely inside.",
     "category": "living-land"
+  },
+  {
+    "file": "living-land/collared-dove.webp",
+    "caption": "Eurasian Collared Dove (फ़ाख्ता / fakhta) perched in a young tree — a gentle, peaceful presence whose soft 'coo-COO-coo' is part of the farm's daily soundscape.",
+    "category": "living-land"
   }
 ];
