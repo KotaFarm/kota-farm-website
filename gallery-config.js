@@ -182,5 +182,15 @@ const galleryItems = [
     "file": "living-land/collared-dove.webp",
     "caption": "Eurasian Collared Dove (फ़ाख्ता / fakhta) perched in a young tree — a gentle, peaceful presence whose soft 'coo-COO-coo' is part of the farm's daily soundscape.",
     "category": "living-land"
+  },
+  {
+    "file": "living-land/house-sparrow.jpeg",
+    "caption": "House Sparrow (गौरैया / gauraiya) foraging near the irrigation pipes — a familiar farmyard companion and sign of a healthy, chemical-free environment.",
+    "category": "living-land"
+  },
+  {
+    "file": "living-land/cattle-egret.jpeg",
+    "caption": "Cattle Egret (बगुला / bagula) in breeding plumage near the drip lines — these farm-friendly waders follow the irrigation activity and keep pest insects in check.",
+    "category": "living-land"
   }
 ];
