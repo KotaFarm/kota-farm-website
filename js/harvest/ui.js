@@ -12,7 +12,7 @@
         allData: [],
         currentPeriod: 'all',
         currentCrop: '',
-        charts: { crops: null, trend: null },
+        charts: { crops: null, recent: null, trend: null },
         // Crop-search internals
         cropList: [],
         cropEntryCount: {},
@@ -306,6 +306,7 @@
         var filtered = applyFilters(Harvest.state.allData);
         renderTiles(filtered);
         Harvest.charts.renderCrops(filtered);
+        Harvest.charts.renderRecent(filtered);
         Harvest.charts.renderTrend(filtered);
         renderGrid();
         updateShareLink();

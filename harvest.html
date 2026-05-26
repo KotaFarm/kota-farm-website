@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/harvest.css?v=20260430">
+    <link rel="stylesheet" href="css/harvest.css?v=20260525b">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script src="js/vercel-analytics.js" defer></script>
     <script defer src="/_vercel/insights/script.js"></script>
@@ -70,6 +70,14 @@
             </div>
         </div>
 
+        <!-- Last 5 crops harvested chart -->
+        <div class="hv-chart-card" style="margin-bottom: 2rem;">
+            <h3>Last 5 Crops Harvested</h3>
+            <div class="hv-chart-wrap tall">
+                <canvas id="hv-chart-recent"></canvas>
+            </div>
+        </div>
+
         <!-- Trend chart -->
         <div class="hv-chart-card hv-trend">
             <h3>Harvest Over Time</h3>
@@ -115,11 +123,11 @@
          Order matters: config → utils → data + charts (need utils + state)
          → ui (defines state, render, wire) → main (boots once everything is loaded).
          Bump ?v=YYYYMMDD on each edit to bust browser caches. -->
-    <script src="js/harvest/config.js?v=20260430"></script>
-    <script src="js/harvest/utils.js?v=20260430"></script>
-    <script src="js/harvest/ui.js?v=20260430"></script>
-    <script src="js/harvest/charts.js?v=20260430"></script>
-    <script src="js/harvest/data.js?v=20260430"></script>
-    <script src="js/harvest/main.js?v=20260430"></script>
+    <script src="js/harvest/config.js?v=20260525b"></script>
+    <script src="js/harvest/utils.js?v=20260525b"></script>
+    <script src="js/harvest/ui.js?v=20260525b"></script>
+    <script src="js/harvest/charts.js?v=20260525b"></script>
+    <script src="js/harvest/data.js?v=20260525b"></script>
+    <script src="js/harvest/main.js?v=20260525b"></script>
 </body>
 </html>

@@ -57,6 +57,65 @@
         });
     }
 
+    // Last 5 most recent crops harvested — horizontal bar chart, one bar
+    // per individual entry. Label shows "Crop · DD MMM"; value is entry kg.
+    // Most recent entry is at the top.
+    function renderRecent(filtered) {
+        var sorted = filtered
+            .filter(function (e) { return !!e._date; })
+            .slice()
+            .sort(function (a, b) { return b._date.getTime() - a._date.getTime(); })
+            .slice(0, 5);
+
+        var shortDate = function (d) {
+            return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+        };
+
+        var charts = Harvest.state.charts;
+        if (charts.recent) charts.recent.destroy();
+        charts.recent = new Chart(document.getElementById('hv-chart-recent'), {
+            type: 'bar',
+            data: {
+                labels: sorted.map(function (e) {
+                    return (e.crop || '—') + ' · ' + shortDate(e._date);
+                }),
+                datasets: [{
+                    label: 'kg',
+                    data: sorted.map(function (e) { return e.weight || 0; }),
+                    backgroundColor: sorted.map(function (_, i) { return PALETTE[i % PALETTE.length]; }),
+                    borderRadius: 6,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            title: function (items) {
+                                var e = sorted[items[0].dataIndex];
+                                return e.crop + ' — ' + Harvest.utils.fmtDate(e._date);
+                            },
+                            label: function (ctx) {
+                                var e = sorted[ctx.dataIndex];
+                                var line = ctx.parsed.x.toFixed(2) + ' kg';
+                                if (e.quality) line += ' · ' + e.quality + ' quality';
+                                return line;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: { beginAtZero: true, ticks: { callback: function (v) { return v + ' kg'; } } },
+                    y: { grid: { display: false } }
+                }
+            }
+        });
+    }
+
     // Harvest Over Time — line chart by month.
     function renderTrend(filtered) {
         var monthKey = Harvest.utils.monthKey;
@@ -106,6 +165,7 @@
 
     Harvest.charts = {
         renderCrops: renderCrops,
+        renderRecent: renderRecent,
         renderTrend: renderTrend
     };
 
