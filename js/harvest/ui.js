@@ -292,7 +292,7 @@
         Object.keys(Harvest.BASELINE).forEach(function (c) { crops[c] = (crops[c] || 0) + Harvest.BASELINE[c]; });
         var totalKg = Object.keys(crops).reduce(function (s, k) { return s + crops[k]; }, 0);
         var topCrop = Object.keys(crops).sort(function (a, b) { return crops[b] - crops[a]; })[0];
-        var msg = '🌱 Kota Natural Farm — Live Harvest\n\n'
+        var msg = '🌱 Kovana Natural Farm — Live Harvest\n\n'
                 + '✓ ' + totalKg.toFixed(1) + ' kg harvested\n'
                 + '✓ ' + Object.keys(crops).length + ' crops grown\n'
                 + (topCrop ? '✓ Top crop: ' + topCrop + ' (' + crops[topCrop].toFixed(1) + ' kg)\n' : '')

@@ -736,7 +736,7 @@ function clearCart() {
 function buildWhatsAppMessage() {
     var cart = getCart();
     if (!cart.length) return '';
-    var lines = ['🛒 *Order from Kota Natural Farm website:*', ''];
+    var lines = ['🛒 *Order from Kovana Natural Farm website:*', ''];
     cart.forEach(function(item) {
         lines.push('• ' + item.name + ' (' + item.nameHi + ') — ' + item.qty + ' ' + item.unit);
     });

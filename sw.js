@@ -1,5 +1,5 @@
 // ============================================================
-//  Service Worker — Kota Natural Farm
+//  Service Worker — Kovana Natural Farm
 //  Strategy: Cache shell eagerly, images/assets on first visit.
 //  Serves cached content when offline; updates cache in background.
 //
@@ -10,7 +10,7 @@
 //    - A change to SHELL_URLS below
 // ============================================================
 
-var CACHE_NAME = 'kota-farm-v5';
+var CACHE_NAME = 'kovana-farm-v1';
 
 // App shell — cached on install for instant repeat loads.
 //

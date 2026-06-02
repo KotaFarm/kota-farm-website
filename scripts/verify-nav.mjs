@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // ──────────────────────────────────────────────────────────────────────────
-//  Verify the site nav — Kota Natural Farm
+//  Verify the site nav — Kovana Natural Farm
 //
 //  For every page that should have the shared nav:
 //    1. Loads it in JSDOM.
@@ -131,7 +131,7 @@ console.log('\n[Visit the Farm card]');
 console.log('\n[visit.html content]');
 {
     const html = await fs.readFile(path.join(ROOT, 'visit.html'), 'utf8');
-    if (!/Visit Kota Natural Farm/.test(html)) fails.push('[visit.html] hero heading missing');
+    if (!/Visit Kovana Natural Farm/.test(html)) fails.push('[visit.html] hero heading missing');
     else ok('visit.html has hero heading');
     if (!/wa\.me\/918340684878/.test(html)) fails.push('[visit.html] WhatsApp CTA missing');
     else ok('visit.html has WhatsApp CTA');

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // ──────────────────────────────────────────────────────────────────────────
-//  Swap image refs to .webp — Kota Natural Farm
+//  Swap image refs to .webp — Kovana Natural Farm
 //
 //  What this does:
 //    1. Walks every .html and *-config.js file in the repo.

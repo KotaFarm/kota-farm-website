@@ -1,4 +1,4 @@
-// Vegetables available from Kota Natural Farm
+// Vegetables available from Kovana Natural Farm
 // Edit this file to add/remove vegetables or update availability
 // Use "images" array for multiple photos; single "image" string also works
 // "unit" is used in the cart (kg, bunch, piece, etc.)
@@ -27,7 +27,7 @@ const vegetablesList = [
       "producingStates": "Uttar Pradesh, Bihar, West Bengal, Odisha, Maharashtra",
       "exportMarkets": "UAE, Bangladesh, Nepal, United Kingdom, Malaysia",
       "position": "India is the world's 2nd largest cauliflower producer (after China), contributing ~35% of global output",
-      "bestSeason": "October to February (Rabi crop) — peak quality and availability at Kota Farm during this window",
+      "bestSeason": "October to February (Rabi crop) — peak quality and availability at Kovana Natural Farm during this window",
       "organicAdvantage": "Conventionally grown cauliflower ranks among the most pesticide-retentive vegetables. Organically grown heads are free from synthetic residues and richer in natural antioxidants.",
       "source": "APEDA 2024–25 · FAO World Vegetable Production Statistics"
     }
@@ -56,7 +56,7 @@ const vegetablesList = [
       "producingStates": "West Bengal, Odisha, Karnataka, Bihar, Maharashtra, Andhra Pradesh",
       "exportMarkets": "United Kingdom, UAE, Malaysia, USA, Canada (primarily Indian diaspora markets)",
       "position": "India is the world's 2nd largest brinjal producer after China, producing over 13 million tonnes annually",
-      "bestSeason": "Year-round availability — summer and monsoon months bring peak yield at Kota Farm",
+      "bestSeason": "Year-round availability — summer and monsoon months bring peak yield at Kovana Natural Farm",
       "organicAdvantage": "Brinjal is a known pesticide-accumulator in conventional farming. Organically grown brinjal retains the natural nasunin antioxidant in its skin without chemical contamination.",
       "source": "APEDA 2024–25 · FAO World Vegetable Production Statistics"
     }
@@ -85,7 +85,7 @@ const vegetablesList = [
       "producingStates": "Andhra Pradesh, Madhya Pradesh, Karnataka, Gujarat, Odisha",
       "exportMarkets": "Bangladesh, Nepal, UAE, Oman, Sri Lanka, Malaysia",
       "position": "India is the world's 2nd largest tomato producer, contributing ~11% of global output. Tomatoes are among India's top 5 vegetable exports by value.",
-      "bestSeason": "November to February (Rabi crop) — peak sweetness and firmness from Kota Farm shade-net growing",
+      "bestSeason": "November to February (Rabi crop) — peak sweetness and firmness from Kovana Natural Farm shade-net growing",
       "organicAdvantage": "Organically grown tomatoes show significantly higher lycopene and Vitamin C content compared to conventionally farmed ones — a direct result of slower, natural ripening in healthy soil.",
       "source": "APEDA 2024–25 · FAO World Vegetable Production Statistics"
     }
@@ -143,7 +143,7 @@ const vegetablesList = [
       "producingStates": "Odisha, West Bengal, Uttar Pradesh, Andhra Pradesh, Kerala, Tamil Nadu",
       "exportMarkets": "United Kingdom, UAE, USA, Canada, Malaysia (Indian and South Asian diaspora markets)",
       "position": "India is one of Asia's top bitter gourd producers. Exports are niche but growing, driven by diaspora demand in the UK, USA and Gulf countries.",
-      "bestSeason": "June to September (Kharif / monsoon season) — warm, humid conditions at Kota Farm bring the best yield",
+      "bestSeason": "June to September (Kharif / monsoon season) — warm, humid conditions at Kovana Natural Farm bring the best yield",
       "organicAdvantage": "Bitter gourd's thin, bumpy skin makes it highly susceptible to pesticide absorption. Organically grown karela is especially valued in Ayurvedic use where the whole fruit — including skin — is consumed.",
       "source": "APEDA 2024–25 · Indiastat Bitter Gourd Production Data"
     }
@@ -172,7 +172,7 @@ const vegetablesList = [
       "producingStates": "West Bengal, Odisha, Uttar Pradesh, Karnataka, Tamil Nadu, Bihar",
       "exportMarkets": "UAE, United Kingdom, Malaysia (diaspora markets) — primarily domestic consumption crop",
       "position": "Ridge gourd is mainly a domestic crop. India is a leading producer in Asia but exports remain limited. It is a summer staple across Indian households.",
-      "bestSeason": "June to September (Kharif / monsoon season) — trellis-grown at Kota Farm for best yield and tenderness",
+      "bestSeason": "June to September (Kharif / monsoon season) — trellis-grown at Kovana Natural Farm for best yield and tenderness",
       "organicAdvantage": "Ridge gourd's delicate skin absorbs pesticides easily. Organically grown turai retains its natural cooling properties without chemical residues — especially important as it is commonly given to children and the elderly.",
       "source": "APEDA 2024–25 · FAO World Vegetable Production Statistics"
     }
@@ -201,7 +201,7 @@ const vegetablesList = [
       "producingStates": "Uttar Pradesh, West Bengal, Bihar, Gujarat, Punjab",
       "exportMarkets": "Bangladesh, Nepal, Malaysia, UAE, Sri Lanka, Bhutan",
       "position": "India is the world's 3rd largest potato producer with ~55 million tonnes annually. Potatoes are among India's top 5 vegetable exports, contributing significantly to the APEDA basket.",
-      "bestSeason": "October to March (Rabi crop) — Kota Farm's cool winter soil produces firm, high-dry-matter potatoes ideal for cooking",
+      "bestSeason": "October to March (Rabi crop) — Kovana Natural Farm's cool winter soil produces firm, high-dry-matter potatoes ideal for cooking",
       "organicAdvantage": "Potatoes are typically grown with heavy chemical fertilisers. Organically grown potatoes from mineral-rich soil have a superior taste, thinner skin, and a higher proportion of nutrients — particularly Vitamin C and potassium.",
       "source": "APEDA 2024–25 · FAO World Potato Production Statistics"
     }
@@ -230,7 +230,7 @@ const vegetablesList = [
       "producingStates": "Rajasthan, Madhya Pradesh, Maharashtra, Uttar Pradesh, Karnataka",
       "exportMarkets": "USA, UAE, United Kingdom, Bhutan, Singapore (fresh and processed)",
       "position": "India is the world's largest chickpea producer, accounting for ~70% of global output. Fresh green chickpea (hara chana) is a seasonal winter speciality with growing export demand.",
-      "bestSeason": "January to February (late Rabi) — harvested before drying for the fresh green form. A short but prized window at Kota Farm.",
+      "bestSeason": "January to February (late Rabi) — harvested before drying for the fresh green form. A short but prized window at Kovana Natural Farm.",
       "organicAdvantage": "Green chickpeas grown organically in legume-rich soil fix their own nitrogen, producing a more nutrient-dense and flavourful crop without synthetic fertilisers — better protein and deeper flavour.",
       "source": "APEDA 2024–25 · FAO Chickpea Production Statistics"
     }
@@ -259,7 +259,7 @@ const vegetablesList = [
       "producingStates": "Uttar Pradesh, Punjab, Rajasthan, Haryana, Karnataka",
       "exportMarkets": "UAE, United Kingdom, Malaysia, Qatar, Bangladesh",
       "position": "Net exporter — produces ~1.4 million tonnes annually, ranking among Asia's top 5 carrot producers",
-      "bestSeason": "October to February (Rabi crop) — peak flavour and availability at Kota Farm during this window",
+      "bestSeason": "October to February (Rabi crop) — peak flavour and availability at Kovana Natural Farm during this window",
       "organicAdvantage": "Chemically farmed carrots lose nutrients to synthetic fertiliser runoff. Organic soil retains minerals and promotes natural beta-carotene development — more flavour, more nutrition.",
       "source": "APEDA 2024–25 · Ministry of Agriculture Horticultural Statistics"
     }
@@ -270,7 +270,7 @@ const vegetablesList = [
     "images": ["gallery/fresh-produce/WhatsApp Image 2026-04-09 at 02.14.50.webp", "gallery/fresh-produce/WhatsApp Image 2026-04-11 at 22.50.25.webp"],
     "season": "Summer / Monsoon",
     "unit": "piece",
-    "desc": "Sweet, tender corn grown naturally at Kota Farm. Harvested at peak ripeness for maximum sweetness — perfect for roasting, boiling, or eating fresh off the cob.",
+    "desc": "Sweet, tender corn grown naturally at Kovana Natural Farm. Harvested at peak ripeness for maximum sweetness — perfect for roasting, boiling, or eating fresh off the cob.",
     "available": false,
     "nutrition": {
       "goodFor": ["⚡ Energy", "👁 Eyesight", "🫁 Digestion", "💪 Muscle health"],
@@ -288,7 +288,7 @@ const vegetablesList = [
       "producingStates": "Madhya Pradesh, Karnataka, Rajasthan, Bihar, Andhra Pradesh, Uttar Pradesh",
       "exportMarkets": "Bangladesh, Nepal, Vietnam, Malaysia, UAE — both fresh and processed corn",
       "position": "India is the 7th largest maize producer globally with ~35 million tonnes annually. Sweet corn for fresh consumption is a growing segment, especially in urban and export markets.",
-      "bestSeason": "June to September (Kharif / monsoon season) — monsoon warmth at Kota Farm brings naturally sweet, juicy cobs",
+      "bestSeason": "June to September (Kharif / monsoon season) — monsoon warmth at Kovana Natural Farm brings naturally sweet, juicy cobs",
       "organicAdvantage": "Corn is a heavy feeder crop that accumulates synthetic fertiliser residues in conventional farming. Organically grown corn from compost-rich soil develops more natural sugars and a cleaner flavour profile.",
       "source": "APEDA 2024–25 · FAO World Maize Production Statistics"
     }
@@ -317,7 +317,7 @@ const vegetablesList = [
       "producingStates": "Uttar Pradesh, Bihar, Haryana, Punjab, Maharashtra, West Bengal",
       "exportMarkets": "UAE, United Kingdom, Oman, Malaysia, Qatar (Indian diaspora and Gulf markets)",
       "position": "India produces approximately 500,000 tonnes of beetroot annually. Exports are primarily fresh and as beetroot powder, with growing demand in the Middle East and UK.",
-      "bestSeason": "November to February (Rabi crop) — cool winter soil at Kota Farm develops the sweetest, most deeply coloured roots",
+      "bestSeason": "November to February (Rabi crop) — cool winter soil at Kovana Natural Farm develops the sweetest, most deeply coloured roots",
       "organicAdvantage": "Beetroot draws minerals deeply from the soil — making soil quality critical. Organically grown beetroot from mineral-rich earth has higher betalain content, deeper colour, and more natural sweetness than chemically forced crops.",
       "source": "APEDA 2024–25 · Ministry of Agriculture Horticultural Statistics"
     }

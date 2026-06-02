@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────
-// Farm Diary — Kota Natural Farm
+// Farm Diary — Kovana Natural Farm
 // ─────────────────────────────────────────────────────────────
 // Diary entries now live in a Google Sheet (tab name: "Diary").
 //
@@ -20,7 +20,7 @@
 (function () {
     'use strict';
 
-    // Published CSV URL for the Diary tab of the Kota Farm sheet.
+    // Published CSV URL for the Diary tab of the Kovana Natural Farm sheet.
     // Republish (File → Share → Publish to web) if you ever rotate the link.
     var DIARY_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQZb8u89bi2HsIKPs5YVB-Sd8aeX7MiOWhTySr-K7K0mr977JfSOUIC84XEGjs4nQUmfnaDoNIBIPTR/pub?gid=481797168&single=true&output=csv';
 
