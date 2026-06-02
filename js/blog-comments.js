@@ -1,5 +1,5 @@
 /* ─────────────────────────────────────────────────────────────
- * Blog comments & reactions — Kota Natural Farm
+ * Blog comments & reactions — Kovana Natural Farm
  * ─────────────────────────────────────────────────────────────
  * Powered by Hyvor Talk (website ID 15328 · dashboard: talk.hyvor.com)
  *

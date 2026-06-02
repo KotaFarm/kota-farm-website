@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // ──────────────────────────────────────────────────────────────────────────
-//  Verify performance pass — Kota Natural Farm
+//  Verify performance pass — Kovana Natural Farm
 //
 //  Sanity-checks the performance changes end-to-end:
 //    1. vercel.json parses and has every rule we rely on.

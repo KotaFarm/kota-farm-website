@@ -1,5 +1,5 @@
 // ──────────────────────────────────────────────────────────────
-//  Site nav — Kota Natural Farm
+//  Site nav — Kovana Natural Farm
 //
 //  Powers the mobile hamburger toggle for the shared <nav id="navbar">
 //  used on every page of the site. Included on sub-pages that don't

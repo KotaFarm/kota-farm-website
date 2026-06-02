@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────
-// Blog — Kota Natural Farm
+// Blog — Kovana Natural Farm
 // ─────────────────────────────────────────────────────────────
 //
 // Comments & reactions are powered by Hyvor Talk

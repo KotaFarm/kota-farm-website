@@ -1,7 +1,7 @@
 # Memory
 
 ## Me
-Gagan Mani. Runs **Kota Natural Farm** — a permaculture and regenerative agriculture farm at Khedli Pandya, near Jhalipura, Kota, Rajasthan. Building the farm website. Email: gaganmani90@gmail.com
+Gagan Mani. Runs **Kovana Natural Farm** — a permaculture and regenerative agriculture farm at Khedli Pandya, near Jhalipura, Kota, Rajasthan. Building the farm website. Email: gaganmani90@gmail.com
 
 ## People
 | Who | Role |
@@ -14,7 +14,7 @@ Gagan Mani. Runs **Kota Natural Farm** — a permaculture and regenerative agric
 ## Terms
 | Term | Meaning |
 |------|---------|
-| Kota Natural Farm | The farm (formerly "Kota Organic Farm") |
+| Kovana Natural Farm | The farm (formerly "Kota Organic Farm") |
 | Khedli Pandya | Village where the farm is located |
 | Jhalipura | Nearby town, used as a landmark |
 | permaculture | Permanent agriculture — the farm's core philosophy |

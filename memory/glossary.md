@@ -1,11 +1,11 @@
 # Glossary
 
-Workplace shorthand, acronyms, and internal language for Kota Natural Farm.
+Workplace shorthand, acronyms, and internal language for Kovana Natural Farm.
 
 ## Farm Terms
 | Term | Meaning | Context |
 |------|---------|---------|
-| Kota Natural Farm | The farm's official name | Formerly "Kota Organic Farm" |
+| Kovana Natural Farm | The farm's official name | Formerly "Kota Organic Farm" |
 | permaculture | Permanent agriculture — design philosophy mimicking natural ecosystems | Core farm philosophy |
 | food forest | Multi-layered planting: trees, shrubs, ground cover | Active system on the farm |
 | shade net | Green mesh nursery/greenhouse structure | Visible in farm photos |

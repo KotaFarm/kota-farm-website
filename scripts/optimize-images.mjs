@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // ──────────────────────────────────────────────────────────────────────────
-//  Image optimiser — Kota Natural Farm
+//  Image optimiser — Kovana Natural Farm
 //
 //  What this does:
 //    1. Walks the whole repo looking for .jpg / .jpeg / .png images.
