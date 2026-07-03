@@ -1,0 +1,9 @@
+# Not part of the deployed site
+docs/
+memory/
+scripts/
+CLAUDE.md
+README.md
+
+# Photo staging area — uncurated uploads, not referenced by any page
+gallery/unsorted/

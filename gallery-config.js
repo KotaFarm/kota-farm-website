@@ -1,6 +1,6 @@
 // ============================================================
 //  GALLERY CONFIGURATION
-//  To add a new photo or video, see HOW-TO-ADD-PHOTOS.txt
+//  To add a new photo or video, see docs/HOW-TO-ADD-PHOTOS.txt
 //
 //  Each item has: file, caption, and category.
 //  Categories follow the permaculture cycle — the natural rhythm
