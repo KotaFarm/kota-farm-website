@@ -15,6 +15,7 @@
     var LS_FARM  = 'farmapp_farm';
 
     var state = {
+        session: null,          // Supabase session (Google login)
         farms: [],
         farmId: localStorage.getItem(LS_FARM) || '',
         crops: [],
@@ -23,13 +24,22 @@
         savedToday: []          // entries confirmed by the server today
     };
 
+    // Supabase client — login only; all data goes through our own API.
+    var sb = (window.supabase && FarmApp.config.SUPABASE_URL && FarmApp.config.SUPABASE_KEY)
+        ? window.supabase.createClient(FarmApp.config.SUPABASE_URL, FarmApp.config.SUPABASE_KEY)
+        : null;
+
     // ── Helpers ─────────────────────────────────────────
     function $(id) { return document.getElementById(id); }
 
     function apiBase() {
         return (localStorage.getItem(LS_API) || FarmApp.config.API_BASE).replace(/\/+$/, '');
     }
-    function token() { return localStorage.getItem(LS_TOKEN) || ''; }
+    // Google session token wins; dev token (Settings) is the local fallback.
+    function token() {
+        if (state.session && state.session.access_token) return state.session.access_token;
+        return localStorage.getItem(LS_TOKEN) || '';
+    }
 
     function todayStr() {
         var d = new Date();
@@ -121,6 +131,78 @@
         }
     }
 
+    // ── Auth (Google via Supabase) ──────────────────────
+    function initAuth() {
+        if (!sb) { refreshAuthUI(); return; }
+
+        $('googleBtn').addEventListener('click', function () {
+            sb.auth.signInWithOAuth({
+                provider: 'google',
+                options: { redirectTo: window.location.origin + window.location.pathname }
+            });
+        });
+
+        $('logoutBtn').addEventListener('click', function () {
+            sb.auth.signOut();      // onAuthStateChange handles the UI
+        });
+
+        sb.auth.onAuthStateChange(function (event, session) {
+            var wasSignedIn = !!state.session;
+            state.session = session;
+            refreshAuthUI();
+            if (session && !wasSignedIn) onSignedIn();
+        });
+
+        sb.auth.getSession().then(function (r) {
+            state.session = (r.data && r.data.session) || null;
+            refreshAuthUI();
+            if (state.session) onSignedIn();
+        });
+    }
+
+    /** First call after login: records the login and activates the invite
+     *  (the API creates farm memberships from the email allowlist). */
+    function onSignedIn() {
+        api('/v1/auth/login-event', { method: 'POST', body: '{}', farmId: '' })
+            .then(function () {
+                loadFarms();
+                loadCrops();
+                loadToday();
+                syncQueue();
+            })
+            .catch(function (err) {
+                var msg = $('loginMsg');
+                if (err.status === 403) {
+                    msg.textContent = '⚠️ This Google account is not invited. Ask the admin to add you.';
+                } else {
+                    msg.textContent = '⚠️ Could not reach the farm server (' + err.message + ')';
+                }
+                msg.className = 'msg err';
+                sb.auth.signOut();
+            });
+    }
+
+    function refreshAuthUI() {
+        var signedIn = !!state.session;
+        var email = signedIn ? (state.session.user && state.session.user.email) || '' : '';
+        var devToken = !!localStorage.getItem(LS_TOKEN);
+        // With Supabase configured: gate the app behind login (dev token also passes).
+        var unlocked = signedIn || !sb || devToken;
+
+        $('loginCard').classList.toggle('hidden', unlocked);
+        $('entryForm').classList.toggle('hidden', !unlocked);
+        $('userEmail').textContent = email;
+        $('logoutBtn').classList.toggle('hidden', !signedIn);
+
+        // Farm UI only appears when unlocked AND farms have loaded
+        if (!unlocked) {
+            $('farmSelect').classList.add('hidden');
+            $('farmLabel').classList.add('hidden');
+        } else if (state.farms.length) {
+            renderFarmSelect();
+        }
+    }
+
     // ── Farms (root-level switcher) ─────────────────────
     function loadFarms() {
         if (!token()) return;
@@ -142,7 +224,17 @@
 
     function renderFarmSelect() {
         var sel = $('farmSelect');
+        var label = $('farmLabel');
         sel.innerHTML = '';
+
+        // One farm: show its name as plain text — no dropdown needed.
+        if (state.farms.length === 1) {
+            label.textContent = state.farms[0].name;
+            label.classList.remove('hidden');
+            sel.classList.add('hidden');
+            return;
+        }
+
         state.farms.forEach(function (f) {
             var opt = document.createElement('option');
             opt.value = f.id;
@@ -150,6 +242,8 @@
             if (f.id === state.farmId) opt.selected = true;
             sel.appendChild(opt);
         });
+        label.classList.add('hidden');
+        sel.classList.remove('hidden');
     }
 
     function onFarmChange() {
@@ -336,17 +430,23 @@
         renderQuality();
         initSettings();
         $('farmSelect').addEventListener('change', onFarmChange);
-        loadFarms();
-        loadCrops();
-        loadToday();
+        initAuth();
+
+        // Without Supabase configured (or with a dev token), load data now;
+        // with Google login, onSignedIn() loads after the session arrives.
+        if (!sb || localStorage.getItem(LS_TOKEN)) {
+            loadFarms();
+            loadCrops();
+            loadToday();
+        }
         updateBanner();
         syncQueue();
 
         window.addEventListener('online',  function () { updateBanner(); syncQueue(); });
         window.addEventListener('offline', updateBanner);
 
-        // If no token yet, open settings so the first step is obvious
-        if (!token()) $('settingsPanel').classList.remove('hidden');
+        // No login configured and no token: open settings so the first step is obvious
+        if (!sb && !token()) $('settingsPanel').classList.remove('hidden');
     });
 
 })();
