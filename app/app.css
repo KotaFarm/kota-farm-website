@@ -1,0 +1,174 @@
+/* ──────────────────────────────────────────────────────────────
+   Farm App — phone-first styles (brand colors from main site)
+   ────────────────────────────────────────────────────────────── */
+
+:root {
+    --earth-dark: #2d3319;
+    --earth-medium: #4a5a2f;
+    --earth-light: #8b9862;
+    --sand: #e8dcc4;
+    --clay: #c4a572;
+    --sprout: #a8c686;
+    --water: #6b9080;
+    --leaf: #5a7a3a;
+    --danger: #b0413e;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: #f6f3ea;
+    color: var(--earth-dark);
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 0 12px 40px;
+}
+
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 4px 12px;
+}
+.app-header h1 { font-size: 1.5rem; color: var(--leaf); }
+.subtitle { font-size: 0.8rem; color: var(--earth-light); }
+
+/* Root-level farm switcher */
+.farm-select {
+    margin-top: 4px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--earth-medium);
+    background: #fffdf8;
+    border: 2px solid var(--sand);
+    border-radius: 8px;
+    padding: 6px 8px;
+    max-width: 240px;
+}
+
+.icon-btn {
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+}
+
+.card {
+    background: #fff;
+    border: 1px solid var(--sand);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 4px rgba(45, 51, 25, 0.08);
+}
+.card h2 { font-size: 1.05rem; color: var(--earth-medium); margin-bottom: 10px; }
+
+label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin: 14px 0 6px;
+    color: var(--earth-medium);
+}
+label:first-child { margin-top: 0; }
+
+input, textarea {
+    width: 100%;
+    font-size: 1.15rem;
+    padding: 12px;
+    border: 2px solid var(--sand);
+    border-radius: 10px;
+    background: #fffdf8;
+}
+input:focus, textarea:focus { outline: 2px solid var(--sprout); border-color: var(--sprout); }
+
+/* Crop grid — big tap targets */
+.crop-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+.crop-btn {
+    border: 2px solid var(--sand);
+    border-radius: 12px;
+    background: #fffdf8;
+    padding: 10px 4px;
+    text-align: center;
+    cursor: pointer;
+    min-height: 64px;
+}
+.crop-btn .name { display: block; font-size: 1rem; font-weight: 700; }
+.crop-btn.selected {
+    background: var(--sprout);
+    border-color: var(--leaf);
+    color: var(--earth-dark);
+}
+
+/* Quality buttons */
+.quality-row { display: flex; gap: 8px; }
+.q-btn {
+    flex: 1;
+    padding: 14px 4px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    border: 2px solid var(--sand);
+    border-radius: 12px;
+    background: #fffdf8;
+    cursor: pointer;
+}
+.q-btn.selected { background: var(--sprout); border-color: var(--leaf); }
+
+/* Buttons */
+.btn {
+    width: 100%;
+    padding: 14px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    margin-top: 16px;
+}
+.btn.primary { background: var(--leaf); color: #fff; }
+.btn.primary:active { background: var(--earth-medium); }
+.btn.big { font-size: 1.3rem; padding: 18px; }
+.btn:disabled { opacity: 0.5; }
+
+/* Messages + banner */
+.msg { margin-top: 10px; font-size: 0.95rem; min-height: 1.2em; }
+.msg.ok { color: var(--leaf); font-weight: 600; }
+.msg.err { color: var(--danger); font-weight: 600; }
+.muted { color: var(--earth-light); }
+
+.net-banner {
+    background: var(--clay);
+    color: var(--earth-dark);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+/* Today's list */
+.today-list { list-style: none; }
+.today-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 4px;
+    border-bottom: 1px solid var(--sand);
+    font-size: 1rem;
+}
+.today-list li:last-child { border-bottom: none; }
+.today-list .qty { font-weight: 700; color: var(--leaf); }
+.today-list .pending-tag {
+    font-size: 0.75rem;
+    background: var(--clay);
+    border-radius: 6px;
+    padding: 2px 6px;
+    margin-left: 6px;
+}
+
+.hidden { display: none; }
