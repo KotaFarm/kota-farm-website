@@ -23,7 +23,7 @@ body {
     color: var(--earth-dark);
     max-width: 480px;
     margin: 0 auto;
-    padding: 0 12px 40px;
+    padding: 0 12px 84px;   /* room for the bottom tab bar */
 }
 
 .app-header {
@@ -230,6 +230,54 @@ input:focus, textarea:focus { outline: 2px solid var(--sprout); border-color: va
     border-radius: 6px;
     padding: 2px 6px;
     margin-left: 6px;
+}
+
+/* ── Bottom tab bar ── */
+.tab-bar {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    background: #fff;
+    border-top: 1px solid var(--sand);
+    box-shadow: 0 -2px 12px rgba(45, 51, 25, 0.08);
+    padding-bottom: env(safe-area-inset-bottom);
+    z-index: 10;
+}
+.tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 9px 4px 8px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--earth-light);
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+.tab-icon { font-size: 1.3rem; line-height: 1; }
+.tab.active { color: var(--leaf); }
+.tab.active .tab-icon { transform: scale(1.08); }
+
+/* ── Module views & placeholders ── */
+.view-title { font-size: 1.05rem; color: var(--earth-medium); margin-bottom: 10px; }
+.placeholder-card { text-align: center; padding: 36px 20px; }
+.placeholder-icon { font-size: 2.4rem; margin-bottom: 8px; }
+.placeholder-card .muted { margin: 6px 0 14px; }
+.soon-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--earth-medium);
+    background: var(--sand);
+    border-radius: 12px;
+    padding: 4px 12px;
 }
 
 .hidden { display: none; }

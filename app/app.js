@@ -185,12 +185,12 @@
     function refreshAuthUI() {
         var signedIn = !!state.session;
         var email = signedIn ? (state.session.user && state.session.user.email) || '' : '';
-        var devToken = !!localStorage.getItem(LS_TOKEN);
+        var devToken = isDevHost() && !!localStorage.getItem(LS_TOKEN);
         // With Supabase configured: gate the app behind login (dev token also passes).
         var unlocked = signedIn || !sb || devToken;
 
         $('loginCard').classList.toggle('hidden', unlocked);
-        $('entryForm').classList.toggle('hidden', !unlocked);
+        $('appMain').classList.toggle('hidden', !unlocked);
         $('userEmail').textContent = email;
         $('logoutBtn').classList.toggle('hidden', !signedIn);
 
@@ -403,8 +403,18 @@
         });
     }
 
-    // ── Settings ────────────────────────────────────────
+    // ── Settings (developer-only) ───────────────────────
+    // The ⚙️ panel (API URL + dev token) is a development tool. It only
+    // appears when the app runs on localhost — Ajay never sees it.
+    function isDevHost() {
+        return location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+    }
+
     function initSettings() {
+        if (!isDevHost()) {
+            $('settingsBtn').classList.add('hidden');
+            return;
+        }
         $('apiBase').value = localStorage.getItem(LS_API) || FarmApp.config.API_BASE;
         $('apiToken').value = token();
 
@@ -424,17 +434,31 @@
         });
     }
 
+    // ── Bottom navigation ───────────────────────────────
+    function initNav() {
+        var tabs = document.querySelectorAll('.tab');
+        tabs.forEach(function (tab) {
+            tab.addEventListener('click', function () {
+                tabs.forEach(function (t) { t.classList.remove('active'); });
+                tab.classList.add('active');
+                document.querySelectorAll('.view').forEach(function (v) { v.classList.add('hidden'); });
+                $('view-' + tab.dataset.view).classList.remove('hidden');
+            });
+        });
+    }
+
     // ── Init ────────────────────────────────────────────
     document.addEventListener('DOMContentLoaded', function () {
         $('harvestDate').value = todayStr();
         renderQuality();
         initSettings();
+        initNav();
         $('farmSelect').addEventListener('change', onFarmChange);
         initAuth();
 
-        // Without Supabase configured (or with a dev token), load data now;
-        // with Google login, onSignedIn() loads after the session arrives.
-        if (!sb || localStorage.getItem(LS_TOKEN)) {
+        // Without Supabase configured (or with a local dev token), load data
+        // now; with Google login, onSignedIn() loads after the session arrives.
+        if (!sb || (isDevHost() && localStorage.getItem(LS_TOKEN))) {
             loadFarms();
             loadCrops();
             loadToday();

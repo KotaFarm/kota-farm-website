@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <meta name="theme-color" content="#5a7a3a">
-    <title>Kovana Farm — Harvest Entry</title>
+    <title>Farm Manager — Kovana</title>
     <link rel="stylesheet" href="app.css">
 </head>
 <body>
 
     <header class="app-header">
         <div>
-            <h1>🌾 Harvest Entry</h1>
+            <h1>🌾 Farm Manager</h1>
             <span id="farmLabel" class="subtitle hidden"></span>
             <select id="farmSelect" class="farm-select hidden" aria-label="Farm"></select>
         </div>
@@ -22,11 +22,25 @@
         </div>
     </header>
 
+    <!-- Offline / pending banner -->
+    <div id="netBanner" class="net-banner hidden"></div>
+
+    <!-- Settings panel (developer only, localhost) -->
+    <section id="settingsPanel" class="card settings hidden">
+        <h2>Developer settings</h2>
+        <label for="apiBase">API URL</label>
+        <input type="url" id="apiBase" placeholder="http://localhost:3000">
+        <label for="apiToken">Dev token</label>
+        <textarea id="apiToken" rows="3" placeholder="Paste dev token here"></textarea>
+        <button id="saveSettings" class="btn primary" type="button">Save</button>
+        <p id="settingsMsg" class="msg"></p>
+    </section>
+
     <!-- Login (shown when not signed in) -->
     <section id="loginCard" class="card login-card hidden">
         <div class="login-emblem">🌾</div>
-        <h2 class="login-title">Kovana Farm Manager</h2>
-        <p class="login-sub">Harvest records · Kovana &amp; Miyawaki</p>
+        <h2 class="login-title">Farm Manager</h2>
+        <p class="login-sub">Kovana Natural Farm — records, in one place</p>
 
         <button id="googleBtn" class="google-btn" type="button">
             <svg class="google-logo" viewBox="0 0 48 48" width="20" height="20" aria-hidden="true">
@@ -42,51 +56,76 @@
         <p class="login-note">Access is by invitation. Sign in with the Google account your farm admin added.</p>
     </section>
 
-    <!-- Offline / pending banner -->
-    <div id="netBanner" class="net-banner hidden"></div>
+    <!-- Signed-in app -->
+    <div id="appMain" class="hidden">
 
-    <!-- Settings panel (hidden by default) -->
-    <section id="settingsPanel" class="card settings hidden">
-        <h2>Settings</h2>
-        <label for="apiBase">API URL</label>
-        <input type="url" id="apiBase" placeholder="http://localhost:3000">
-        <label for="apiToken">Token</label>
-        <textarea id="apiToken" rows="3" placeholder="Paste token here"></textarea>
-        <button id="saveSettings" class="btn primary" type="button">Save</button>
-        <p id="settingsMsg" class="msg"></p>
-    </section>
+        <!-- ── Harvest ── -->
+        <section id="view-harvest" class="view">
+            <main id="entryForm" class="card">
+                <h2 class="view-title">New harvest</h2>
 
-    <!-- Entry form -->
-    <main id="entryForm" class="card">
+                <label for="harvestDate">Date</label>
+                <input type="date" id="harvestDate">
 
-        <label for="harvestDate">Date</label>
-        <input type="date" id="harvestDate">
+                <label>Crop</label>
+                <div id="cropGrid" class="crop-grid">
+                    <p class="msg" id="cropMsg">Loading crops…</p>
+                </div>
 
-        <label>Choose crop</label>
-        <div id="cropGrid" class="crop-grid">
-            <p class="msg" id="cropMsg">Loading crops…</p>
-        </div>
+                <label for="weightKg">Weight (kg)</label>
+                <input type="number" id="weightKg" inputmode="decimal" step="0.05" min="0.01" placeholder="0.0">
 
-        <label for="weightKg">Weight (kg)</label>
-        <input type="number" id="weightKg" inputmode="decimal" step="0.05" min="0.01" placeholder="0.0">
+                <label>Quality</label>
+                <div id="qualityRow" class="quality-row"></div>
 
-        <label>Quality</label>
-        <div id="qualityRow" class="quality-row"></div>
+                <label for="notes">Notes (optional)</label>
+                <textarea id="notes" rows="2" placeholder="e.g. Small round variety, fresh"></textarea>
 
-        <label for="notes">Notes (optional)</label>
-        <textarea id="notes" rows="2" placeholder="e.g. Small round variety, fresh"></textarea>
+                <button id="saveBtn" class="btn primary big" type="button">Save harvest</button>
+                <p id="saveMsg" class="msg"></p>
+            </main>
 
-        <button id="saveBtn" class="btn primary big" type="button">✅ SAVE</button>
-        <p id="saveMsg" class="msg"></p>
-    </main>
+            <section class="card">
+                <h2>Today's entries</h2>
+                <ul id="todayList" class="today-list">
+                    <li class="muted">No entries yet</li>
+                </ul>
+            </section>
+        </section>
 
-    <!-- Today's entries -->
-    <section class="card">
-        <h2>Today's entries</h2>
-        <ul id="todayList" class="today-list">
-            <li class="muted">No entries yet</li>
-        </ul>
-    </section>
+        <!-- ── Expenses (coming soon) ── -->
+        <section id="view-expenses" class="view hidden">
+            <div class="card placeholder-card">
+                <div class="placeholder-icon">💰</div>
+                <h2>Expenses</h2>
+                <p class="muted">Record seeds, labour, fuel and other farm costs.</p>
+                <span class="soon-badge">Coming soon</span>
+            </div>
+        </section>
+
+        <!-- ── Plants (coming soon) ── -->
+        <section id="view-plants" class="view hidden">
+            <div class="card placeholder-card">
+                <div class="placeholder-icon">🌱</div>
+                <h2>Plants</h2>
+                <p class="muted">Track what was planted, where, and when.</p>
+                <span class="soon-badge">Coming soon</span>
+            </div>
+        </section>
+
+        <!-- Bottom navigation -->
+        <nav class="tab-bar" aria-label="Sections">
+            <button class="tab active" data-view="harvest" type="button">
+                <span class="tab-icon">🧺</span><span>Harvest</span>
+            </button>
+            <button class="tab" data-view="expenses" type="button">
+                <span class="tab-icon">💰</span><span>Expenses</span>
+            </button>
+            <button class="tab" data-view="plants" type="button">
+                <span class="tab-icon">🌱</span><span>Plants</span>
+            </button>
+        </nav>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script src="config.js"></script>
