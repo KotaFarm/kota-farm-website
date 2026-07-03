@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="theme-color" content="#5a7a3a">
+    <title>Kovana Farm — Harvest Entry</title>
+    <link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+    <header class="app-header">
+        <div>
+            <h1>🌾 Harvest Entry</h1>
+            <select id="farmSelect" class="farm-select" aria-label="Farm">
+                <option value="">Loading farms…</option>
+            </select>
+        </div>
+        <button id="settingsBtn" class="icon-btn" type="button" aria-label="Settings">⚙️</button>
+    </header>
+
+    <!-- Offline / pending banner -->
+    <div id="netBanner" class="net-banner hidden"></div>
+
+    <!-- Settings panel (hidden by default) -->
+    <section id="settingsPanel" class="card settings hidden">
+        <h2>Settings</h2>
+        <label for="apiBase">API URL</label>
+        <input type="url" id="apiBase" placeholder="http://localhost:3000">
+        <label for="apiToken">Token</label>
+        <textarea id="apiToken" rows="3" placeholder="Paste token here"></textarea>
+        <button id="saveSettings" class="btn primary" type="button">Save</button>
+        <p id="settingsMsg" class="msg"></p>
+    </section>
+
+    <!-- Entry form -->
+    <main id="entryForm" class="card">
+
+        <label for="harvestDate">Date</label>
+        <input type="date" id="harvestDate">
+
+        <label>Choose crop</label>
+        <div id="cropGrid" class="crop-grid">
+            <p class="msg" id="cropMsg">Loading crops…</p>
+        </div>
+
+        <label for="weightKg">Weight (kg)</label>
+        <input type="number" id="weightKg" inputmode="decimal" step="0.05" min="0.01" placeholder="0.0">
+
+        <label>Quality</label>
+        <div id="qualityRow" class="quality-row"></div>
+
+        <label for="notes">Notes (optional)</label>
+        <textarea id="notes" rows="2" placeholder="e.g. Small round variety, fresh"></textarea>
+
+        <button id="saveBtn" class="btn primary big" type="button">✅ SAVE</button>
+        <p id="saveMsg" class="msg"></p>
+    </main>
+
+    <!-- Today's entries -->
+    <section class="card">
+        <h2>Today's entries</h2>
+        <ul id="todayList" class="today-list">
+            <li class="muted">No entries yet</li>
+        </ul>
+    </section>
+
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
