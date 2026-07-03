@@ -10,7 +10,12 @@ FarmApp.config = {
     API_BASE: 'http://localhost:3000',
 
     // Farm slug used for public endpoints
-    FARM_SLUG: 'kovana'
+    FARM_SLUG: 'kovana',
+
+    // Supabase project (login only — data lives in your own database).
+    // Both values are public-safe: the key is the "publishable" key.
+    SUPABASE_URL: 'https://emnbeytcylwuuesscrxv.supabase.co',
+    SUPABASE_KEY: 'sb_publishable_ptGAQ0Jp3J-w49-9buZ5XQ_OsmR_30C'
 };
 
 // Quality grades: API value → button label
