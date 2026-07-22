@@ -93,6 +93,37 @@
             </section>
         </section>
 
+        <!-- ── Activities (farm diary) ── -->
+        <section id="view-activities" class="view hidden">
+            <main class="card">
+                <h2 class="view-title">New activity</h2>
+
+                <label for="activityDate">Date</label>
+                <input type="date" id="activityDate">
+
+                <label for="activityDesc">What was done?</label>
+                <textarea id="activityDesc" rows="3" placeholder="e.g. Mulched the guava beds, repaired drip line in zone 2"></textarea>
+
+                <label>Photo (optional)</label>
+                <input type="file" id="activityPhoto" accept="image/*" capture="environment" class="hidden">
+                <button id="photoBtn" class="btn outline" type="button">📷 Take / choose photo</button>
+                <div id="photoPreviewWrap" class="photo-preview hidden">
+                    <img id="photoPreview" alt="Selected photo">
+                    <button id="photoRemove" class="photo-remove" type="button" aria-label="Remove photo">✕</button>
+                </div>
+
+                <button id="saveActivityBtn" class="btn primary big" type="button">Save activity</button>
+                <p id="activityMsg" class="msg"></p>
+            </main>
+
+            <section class="card">
+                <h2>Recent activities</h2>
+                <ul id="activityList" class="activity-list">
+                    <li class="muted">No activities yet</li>
+                </ul>
+            </section>
+        </section>
+
         <!-- ── Expenses (coming soon) ── -->
         <section id="view-expenses" class="view hidden">
             <div class="card placeholder-card">
@@ -117,6 +148,9 @@
         <nav class="tab-bar" aria-label="Sections">
             <button class="tab active" data-view="harvest" type="button">
                 <span class="tab-icon">🧺</span><span>Harvest</span>
+            </button>
+            <button class="tab" data-view="activities" type="button">
+                <span class="tab-icon">📝</span><span>Activities</span>
             </button>
             <button class="tab" data-view="expenses" type="button">
                 <span class="tab-icon">💰</span><span>Expenses</span>
