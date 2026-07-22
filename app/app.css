@@ -232,6 +232,53 @@ input:focus, textarea:focus { outline: 2px solid var(--sprout); border-color: va
     margin-left: 6px;
 }
 
+/* ── Activities ── */
+.btn.outline {
+    background: #fffdf8;
+    color: var(--earth-medium);
+    border: 2px solid var(--sand);
+    box-shadow: none;
+}
+.btn.outline:active { background: var(--sand); }
+
+.photo-preview { position: relative; margin-top: 12px; }
+.photo-preview img {
+    width: 100%;
+    max-height: 220px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 2px solid var(--sand);
+}
+.photo-remove {
+    position: absolute;
+    top: 8px; right: 8px;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(45, 51, 25, 0.75);
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.activity-list { list-style: none; }
+.activity-list li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 12px 4px;
+    border-bottom: 1px solid var(--sand);
+    font-size: 0.95rem;
+}
+.activity-list li:last-child { border-bottom: none; }
+.activity-thumb {
+    width: 56px; height: 56px;
+    object-fit: cover;
+    border-radius: 10px;
+    flex-shrink: 0;
+}
+.activity-date { font-size: 0.75rem; font-weight: 700; color: var(--earth-light); margin-bottom: 2px; }
+
 /* ── Bottom tab bar ── */
 .tab-bar {
     position: fixed;

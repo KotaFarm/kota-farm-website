@@ -168,6 +168,7 @@
                 loadFarms();
                 loadCrops();
                 loadToday();
+                loadActivities();
                 syncQueue();
             })
             .catch(function (err) {
@@ -253,6 +254,7 @@
         state.selectedCrop = null;
         loadCrops();
         loadToday();
+        loadActivities();
     }
 
     // ── Crops ───────────────────────────────────────────
@@ -434,6 +436,108 @@
         });
     }
 
+    // ── Activities (farm diary, optional photo) ─────────
+    var selectedPhotoFile = null;
+
+    function initActivities() {
+        $('activityDate').value = todayStr();
+
+        $('photoBtn').addEventListener('click', function () { $('activityPhoto').click(); });
+
+        $('activityPhoto').addEventListener('change', function () {
+            var file = this.files && this.files[0];
+            if (!file) return;
+            selectedPhotoFile = file;
+            $('photoPreview').src = URL.createObjectURL(file);
+            $('photoPreviewWrap').classList.remove('hidden');
+            $('photoBtn').classList.add('hidden');
+        });
+
+        $('photoRemove').addEventListener('click', function () {
+            selectedPhotoFile = null;
+            $('activityPhoto').value = '';
+            $('photoPreviewWrap').classList.add('hidden');
+            $('photoBtn').classList.remove('hidden');
+        });
+
+        $('saveActivityBtn').addEventListener('click', saveActivity);
+    }
+
+    /** Upload the photo to Supabase Storage; resolves to a public URL (or null). */
+    function uploadActivityPhoto(file) {
+        if (!file || !sb) return Promise.resolve(null);
+        var ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+        var path = 'activities/' + todayStr() + '-' + Date.now() + '.' + ext;
+        return sb.storage.from('farm-photos').upload(path, file, { upsert: false })
+            .then(function (r) {
+                if (r.error) throw new Error(r.error.message);
+                return sb.storage.from('farm-photos').getPublicUrl(path).data.publicUrl;
+            });
+    }
+
+    function saveActivity() {
+        var msg = $('activityMsg');
+        msg.className = 'msg';
+
+        var desc = $('activityDesc').value.trim();
+        if (!desc) { msg.textContent = '⚠️ Describe what was done'; msg.className = 'msg err'; return; }
+
+        $('saveActivityBtn').disabled = true;
+        msg.textContent = selectedPhotoFile ? 'Uploading photo…' : 'Saving…';
+
+        uploadActivityPhoto(selectedPhotoFile)
+            .then(function (photoUrl) {
+                var entry = {
+                    activityDate: $('activityDate').value || todayStr(),
+                    description: desc
+                };
+                if (photoUrl) entry.photos = [{ url: photoUrl, source: 'SUPABASE' }];
+                return api('/v1/activities', { method: 'POST', body: JSON.stringify(entry) });
+            })
+            .then(function () {
+                msg.textContent = '✅ Saved!';
+                msg.className = 'msg ok';
+                $('activityDesc').value = '';
+                $('photoRemove').click();
+                loadActivities();
+            })
+            .catch(function (err) {
+                msg.textContent = '⚠️ ' + (err.message || 'Could not save') +
+                    (navigator.onLine ? '' : ' — photo entries need network');
+                msg.className = 'msg err';
+            })
+            .then(function () { $('saveActivityBtn').disabled = false; });
+    }
+
+    function loadActivities() {
+        if (!token()) return;
+        api('/v1/activities?limit=20')
+            .then(function (data) {
+                var list = $('activityList');
+                var items = asArray(data);
+                list.innerHTML = '';
+                if (!items.length) {
+                    list.innerHTML = '<li class="muted">No activities yet</li>';
+                    return;
+                }
+                items.forEach(function (a) {
+                    var li = document.createElement('li');
+                    var date = String(a.activityDate || '').slice(0, 10);
+                    var thumb = (a.photos && a.photos[0])
+                        ? '<img class="activity-thumb" src="' + a.photos[0].url + '" alt="" loading="lazy">'
+                        : '';
+                    li.innerHTML = thumb + '<div><div class="activity-date">' + date + '</div>' +
+                        '<div>' + escapeHtml(a.description) + '</div></div>';
+                    list.appendChild(li);
+                });
+            })
+            .catch(function () { /* list stays as-is */ });
+    }
+
+    function escapeHtml(s) {
+        return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
     // ── Bottom navigation ───────────────────────────────
     function initNav() {
         var tabs = document.querySelectorAll('.tab');
@@ -453,6 +557,7 @@
         renderQuality();
         initSettings();
         initNav();
+        initActivities();
         $('farmSelect').addEventListener('change', onFarmChange);
         initAuth();
 
@@ -462,6 +567,7 @@
             loadFarms();
             loadCrops();
             loadToday();
+            loadActivities();
         }
         updateBanner();
         syncQueue();
