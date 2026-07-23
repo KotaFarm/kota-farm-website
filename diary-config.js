@@ -20,9 +20,9 @@
 (function () {
     'use strict';
 
-    // Published CSV URL for the Diary tab of the Kovana Natural Farm sheet.
-    // Republish (File → Share → Publish to web) if you ever rotate the link.
-    var DIARY_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQZb8u89bi2HsIKPs5YVB-Sd8aeX7MiOWhTySr-K7K0mr977JfSOUIC84XEGjs4nQUmfnaDoNIBIPTR/pub?gid=481797168&single=true&output=csv';
+    // URL comes from data-config.js (loaded before this script).
+    // To change the data source, edit data-config.js — one file for all URLs.
+    var DIARY_CSV_URL = (window.DATA_SOURCES && window.DATA_SOURCES.diary) || '';
 
     // Empty until fetch completes — render code shows a loading state.
     window.DIARY_ENTRIES = [];
