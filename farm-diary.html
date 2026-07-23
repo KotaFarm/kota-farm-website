@@ -292,6 +292,185 @@
         .fd-tile-noimg[data-tag="harvest"]::after { content: '\1F33E'; }
         .fd-tile-noimg[data-tag="farm"]::after { content: '\1F333'; }
 
+        /* Tabs */
+        .fd-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 0;
+            background: var(--sand);
+            border-bottom: 1px solid rgba(139,152,98,0.25);
+        }
+        .fd-tab {
+            padding: 0.75rem 1.5rem;
+            font-family: 'Work Sans', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--earth-light);
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            transition: color 0.2s, border-color 0.2s;
+        }
+        .fd-tab:hover { color: var(--earth-dark); }
+        .fd-tab.active {
+            color: var(--earth-dark);
+            border-bottom-color: var(--sprout);
+        }
+        .fd-view { display: none; }
+        .fd-view.active { display: block; }
+
+        /* Plant inventory table */
+        .fd-plants {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 1.5rem 1.5rem 4rem;
+        }
+        .fd-plants-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.6rem;
+            margin-bottom: 1.5rem;
+        }
+        .fd-stat {
+            background: white;
+            border-radius: 10px;
+            padding: 0.5rem 0.75rem;
+            box-shadow: 0 2px 10px rgba(45,51,25,0.07);
+            text-align: center;
+        }
+        .fd-stat-num {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--earth-dark);
+            line-height: 1.2;
+        }
+        .fd-stat-label {
+            font-size: 0.7rem;
+            color: var(--earth-light);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .fd-plants-search {
+            width: 100%;
+            padding: 0.6rem 1rem;
+            border: 1px solid rgba(139,152,98,0.3);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-family: 'Work Sans', sans-serif;
+            background: white;
+            margin-bottom: 1rem;
+            outline: none;
+        }
+        .fd-plants-search:focus {
+            border-color: var(--sprout);
+            box-shadow: 0 0 0 3px rgba(168,198,134,0.2);
+        }
+        .fd-plants-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+        }
+        .fd-plants-table thead th {
+            text-align: left;
+            padding: 0.6rem 0.75rem;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--earth-light);
+            border-bottom: 2px solid var(--sprout);
+            cursor: pointer;
+            user-select: none;
+        }
+        .fd-plants-table thead th:hover { color: var(--earth-dark); }
+        .fd-plants-table thead th .sort-arrow { font-size: 0.65rem; margin-left: 4px; }
+        .fd-plants-table tbody td {
+            padding: 0.55rem 0.75rem;
+            border-bottom: 1px solid rgba(139,152,98,0.12);
+            color: var(--earth-dark);
+        }
+        .fd-plants-table tbody tr:hover { background: rgba(168,198,134,0.08); }
+        .fd-plants-table .qty { font-weight: 600; text-align: center; }
+        .fd-plants-table .date-col { color: var(--earth-light); font-size: 0.82rem; }
+
+        /* Pagination */
+        .fd-pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 1rem 0 0.5rem;
+        }
+        .fd-pagination button {
+            background: white;
+            border: 1px solid rgba(139,152,98,0.25);
+            border-radius: 6px;
+            padding: 0.35rem 0.7rem;
+            font-size: 0.82rem;
+            font-family: 'Work Sans', sans-serif;
+            color: var(--earth-dark);
+            cursor: pointer;
+        }
+        .fd-pagination button:hover { background: rgba(168,198,134,0.12); }
+        .fd-pagination button.active {
+            background: var(--sprout);
+            color: white;
+            border-color: var(--sprout);
+        }
+        .fd-pagination button:disabled {
+            opacity: 0.4;
+            cursor: default;
+        }
+        .fd-page-info {
+            font-size: 0.75rem;
+            color: var(--earth-light);
+            margin: 0 0.5rem;
+        }
+
+        /* Diversity dashboard */
+        .fd-diversity-section {
+            background: white;
+            border-radius: 10px;
+            padding: 1rem 1.25rem;
+            box-shadow: 0 2px 10px rgba(45,51,25,0.07);
+            margin-bottom: 1rem;
+        }
+        .fd-diversity-title {
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--earth-light);
+            margin-bottom: 0.75rem;
+        }
+        .fd-bar-group { margin-bottom: 0.6rem; }
+        .fd-bar-group:last-child { margin-bottom: 0; }
+        .fd-bar-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.82rem;
+            color: var(--earth-dark);
+            margin-bottom: 0.25rem;
+        }
+        .fd-bar-label span:last-child {
+            font-size: 0.75rem;
+            color: var(--earth-light);
+        }
+        .fd-bar-track {
+            height: 10px;
+            background: rgba(139,152,98,0.12);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .fd-bar-fill {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 0.6s ease;
+        }
+
         /* Empty state */
         .fd-empty {
             text-align: center;
@@ -311,6 +490,13 @@
             .fd-modal-img { max-height: 260px; }
             .fd-modal-body { padding: 1rem 1.25rem 1.25rem; }
             .fd-month-card { padding: 0.75rem 1rem; gap: 0.75rem; }
+            .fd-plants { padding: 1rem 1rem 3rem; }
+            .fd-plants-table { font-size: 0.82rem; }
+            .fd-plants-table thead th, .fd-plants-table tbody td { padding: 0.45rem 0.5rem; }
+            .fd-plants-stats { grid-template-columns: repeat(2, 1fr); gap: 0.4rem; }
+            .fd-stat { padding: 0.4rem 0.5rem; }
+            .fd-stat-num { font-size: 1.2rem; }
+            .fd-diversity-section { padding: 0.75rem 1rem; }
         }
     </style>
 </head>
@@ -342,8 +528,35 @@
     <p>A running record of life on the farm — what's growing, what's changing, what we're learning.</p>
 </div>
 
-<div class="fd-timeline" id="fd-timeline">
-    <p class="fd-empty">Loading farm updates&hellip;</p>
+<div class="fd-tabs">
+    <button class="fd-tab active" data-view="updates" type="button">Updates</button>
+    <button class="fd-tab" data-view="plants" type="button">Plant Inventory</button>
+</div>
+
+<div class="fd-view active" id="fd-view-updates">
+    <div class="fd-timeline" id="fd-timeline">
+        <p class="fd-empty">Loading farm updates&hellip;</p>
+    </div>
+</div>
+
+<div class="fd-view" id="fd-view-plants">
+    <div class="fd-plants">
+        <div id="plants-stats"></div>
+        <input type="text" class="fd-plants-search" id="plants-search" placeholder="Search plants...">
+        <table class="fd-plants-table">
+            <thead>
+                <tr>
+                    <th data-sort="name">Plant Name <span class="sort-arrow"></span></th>
+                    <th data-sort="date">Date Planted <span class="sort-arrow"></span></th>
+                    <th data-sort="qty">Qty <span class="sort-arrow"></span></th>
+                </tr>
+            </thead>
+            <tbody id="plants-tbody">
+                <tr><td colspan="3" class="fd-empty" style="padding:3rem 1rem;">Loading plant inventory&hellip;</td></tr>
+            </tbody>
+        </table>
+        <div class="fd-pagination" id="plants-pagination"></div>
+    </div>
 </div>
 
 <!-- Detail modal -->
@@ -358,6 +571,7 @@
     <p>&copy; 2026 Kovana Natural Farm &middot; Khedli Pandya, Kota, Rajasthan</p>
 </footer>
 
+<script src="data-config.js"></script>
 <script src="diary-config.js?v=20260506"></script>
 <script>
 (function () {
@@ -548,6 +762,316 @@
 
     if (typeof DIARY_ENTRIES !== 'undefined' && DIARY_ENTRIES.length) render();
     window.addEventListener('diary:loaded', render);
+})();
+</script>
+
+<!-- Tab switching -->
+<script>
+(function () {
+    var tabs = document.querySelectorAll('.fd-tab');
+
+    function switchTab(viewName) {
+        tabs.forEach(function (t) { t.classList.remove('active'); });
+        document.querySelectorAll('.fd-view').forEach(function (v) { v.classList.remove('active'); });
+        var target = document.getElementById('fd-view-' + viewName);
+        if (!target) return;
+        target.classList.add('active');
+        tabs.forEach(function (t) {
+            if (t.getAttribute('data-view') === viewName) t.classList.add('active');
+        });
+    }
+
+    tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+            var view = tab.getAttribute('data-view');
+            switchTab(view);
+            history.replaceState(null, '', '#' + view);
+        });
+    });
+
+    // On load, check hash
+    var hash = location.hash.replace('#', '');
+    if (hash === 'plants' || hash === 'updates') switchTab(hash);
+})();
+</script>
+
+<!-- Plant inventory from Google Sheet -->
+<script>
+(function () {
+    'use strict';
+
+    // URL comes from data-config.js — one file for all data source URLs.
+    var PLANTS_CSV_URL = (window.DATA_SOURCES && window.DATA_SOURCES.plants) || '';
+
+    var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+    function parseCsv(text) {
+        var rows = [], cur = '', cells = [], inq = false;
+        var t = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+        for (var i = 0; i < t.length; i++) {
+            var ch = t[i];
+            if (ch === '"' && t[i + 1] === '"') { cur += '"'; i++; continue; }
+            if (ch === '"') { inq = !inq; continue; }
+            if (ch === ',' && !inq) { cells.push(cur); cur = ''; continue; }
+            if (ch === '\n' && !inq) { cells.push(cur); rows.push(cells); cells = []; cur = ''; continue; }
+            cur += ch;
+        }
+        if (cur.length || cells.length) { cells.push(cur); rows.push(cells); }
+        return rows.filter(function (r) { return r.length && r.some(function (c) { return c && c.trim(); }); });
+    }
+
+    function normalizeDate(s) {
+        if (!s) return '';
+        var str = String(s).trim();
+        // ISO: 2025-04-05
+        var m = str.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+        if (m) return m[0];
+        // "5-Apr-2025" or "14-Aug-2024"
+        m = str.match(/^(\d{1,2})-([A-Za-z]+)-(\d{4})/);
+        if (m) {
+            var mi = MONTHS.indexOf(m[2].slice(0,3));
+            if (mi >= 0) return m[3] + '-' + String(mi + 1).padStart(2, '0') + '-' + m[1].padStart(2, '0');
+        }
+        // "27-04-2025" (DD-MM-YYYY)
+        m = str.match(/^(\d{1,2})-(\d{1,2})-(\d{4})$/);
+        if (m) return m[3] + '-' + m[2].padStart(2, '0') + '-' + m[1].padStart(2, '0');
+        return str;
+    }
+
+    function formatDate(iso) {
+        if (!iso) return '';
+        var m = String(iso).match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+        if (!m) return iso;
+        var monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        return monthNames[parseInt(m[2], 10) - 1] + ' ' + parseInt(m[3], 10) + ', ' + m[1];
+    }
+
+    function rowsToPlants(rows) {
+        if (!rows.length) return [];
+        // Find the actual header row (contains "plant name")
+        var headerIdx = -1;
+        for (var h = 0; h < Math.min(rows.length, 10); h++) {
+            var joined = rows[h].join(',').toLowerCase();
+            if (joined.indexOf('plant name') >= 0) { headerIdx = h; break; }
+        }
+        if (headerIdx < 0) return [];
+        rows = rows.slice(headerIdx);
+        var headers = rows.shift().map(function (h) { return String(h).trim().toLowerCase(); });
+        var col = function (name) {
+            for (var i = 0; i < headers.length; i++) {
+                if (headers[i].indexOf(name) >= 0) return i;
+            }
+            return -1;
+        };
+        var iName = col('plant name');
+        var iQty = col('total planted');
+        var iDate = col('date planted');
+        var iCat = col('category');
+        var iHeight = col('height category');
+        var iStanding = col('currently standing');
+
+        return rows
+            .filter(function (r) { return iName >= 0 && r[iName] && r[iName].trim(); })
+            .map(function (r) {
+                var rawDate = iDate >= 0 ? normalizeDate(r[iDate]) : '';
+                return {
+                    name: (r[iName] || '').trim(),
+                    qty: parseInt(r[iQty] || '0', 10) || 0,
+                    standing: iStanding >= 0 ? (parseInt(r[iStanding] || '0', 10) || 0) : 0,
+                    category: iCat >= 0 ? (r[iCat] || '').trim() : '',
+                    height: iHeight >= 0 ? (r[iHeight] || '').trim() : '',
+                    dateIso: rawDate,
+                    dateDisplay: formatDate(rawDate)
+                };
+            });
+    }
+
+    var allPlants = [];
+    var sortCol = 'name';
+    var sortAsc = true;
+    var currentPage = 1;
+    var PAGE_SIZE = 10;
+    var tbody = document.getElementById('plants-tbody');
+    var statsEl = document.getElementById('plants-stats');
+    var searchEl = document.getElementById('plants-search');
+    var paginationEl = document.getElementById('plants-pagination');
+
+
+    var CAT_COLORS = {
+        'Fruit': '#639922', 'Timber': '#854F0B', 'Fruit / Multipurpose': '#97C459',
+        'Ornamental': '#D4537E', 'Non-Fruit': '#1D9E75', 'Forestry': '#378ADD',
+        'Medicinal': '#7F77DD', 'Herb': '#AFA9EC'
+    };
+    var HEIGHT_COLORS = { 'High': '#27500A', 'Medium': '#639922', 'Low': '#C0DD97' };
+
+    function buildBar(label, count, total, color) {
+        var pct = total ? Math.round(count / total * 100) : 0;
+        var width = total ? Math.max(pct, 1) : 0;
+        return '<div class="fd-bar-group">' +
+            '<div class="fd-bar-label"><span>' + label + '</span><span>' + count + ' (' + pct + '%)</span></div>' +
+            '<div class="fd-bar-track"><div class="fd-bar-fill" style="width:' + width + '%;background:' + color + '"></div></div>' +
+            '</div>';
+    }
+
+    function renderStats(plants) {
+        var totalPlanted = 0, totalStanding = 0, species = plants.length;
+        var cats = {}, heights = {};
+        plants.forEach(function (p) {
+            totalPlanted += p.qty;
+            totalStanding += p.standing;
+            if (p.category) cats[p.category] = (cats[p.category] || 0) + p.qty;
+            if (p.height) heights[p.height] = (heights[p.height] || 0) + p.qty;
+        });
+
+        var survived = totalPlanted ? Math.round(totalStanding / totalPlanted * 100 * 10) / 10 : 0;
+        var lost = totalPlanted - totalStanding;
+
+        // Stat cards
+        var html = '<div class="fd-plants-stats">' +
+            '<div class="fd-stat"><div class="fd-stat-num">' + totalPlanted + '</div><div class="fd-stat-label">Planted</div></div>' +
+            '<div class="fd-stat"><div class="fd-stat-num">' + totalStanding + '</div><div class="fd-stat-label">Standing</div></div>' +
+            '<div class="fd-stat"><div class="fd-stat-num">' + species + '</div><div class="fd-stat-label">Species</div></div>' +
+            '<div class="fd-stat"><div class="fd-stat-num">' + survived + '%</div><div class="fd-stat-label">Survival</div></div>' +
+            '</div>';
+
+        // Category bars
+        var catEntries = [];
+        for (var c in cats) { if (cats[c] > 0) catEntries.push({ label: c, count: cats[c] }); }
+        catEntries.sort(function (a, b) { return b.count - a.count; });
+
+        if (catEntries.length) {
+            html += '<div class="fd-diversity-section"><div class="fd-diversity-title">By category</div>';
+            catEntries.forEach(function (e) {
+                html += buildBar(e.label, e.count, totalPlanted, CAT_COLORS[e.label] || '#888780');
+            });
+            html += '</div>';
+        }
+
+        // Height bars
+        var heightOrder = ['High', 'Medium', 'Low'];
+        var hasHeights = heightOrder.some(function (h) { return heights[h]; });
+        if (hasHeights) {
+            html += '<div class="fd-diversity-section"><div class="fd-diversity-title">Canopy layers</div>';
+            heightOrder.forEach(function (h) {
+                if (heights[h]) {
+                    var totalH = (heights['High'] || 0) + (heights['Medium'] || 0) + (heights['Low'] || 0);
+                    html += buildBar(h === 'High' ? 'High canopy' : h === 'Medium' ? 'Mid layer' : 'Ground / low', heights[h], totalH, HEIGHT_COLORS[h]);
+                }
+            });
+            html += '</div>';
+        }
+
+        statsEl.innerHTML = html;
+    }
+
+    function renderTable(plants) {
+        if (!plants.length) {
+            tbody.innerHTML = '<tr><td colspan="3" class="fd-empty" style="padding:3rem 1rem;">No plants found.</td></tr>';
+            paginationEl.innerHTML = '';
+            return;
+        }
+        var totalPages = Math.ceil(plants.length / PAGE_SIZE);
+        if (currentPage > totalPages) currentPage = totalPages;
+        var start = (currentPage - 1) * PAGE_SIZE;
+        var page = plants.slice(start, start + PAGE_SIZE);
+
+        tbody.innerHTML = '';
+        page.forEach(function (p) {
+            var tr = document.createElement('tr');
+            tr.innerHTML =
+                '<td>' + p.name + '</td>' +
+                '<td class="date-col">' + p.dateDisplay + '</td>' +
+                '<td class="qty">' + p.qty + '</td>';
+            tbody.appendChild(tr);
+        });
+
+        // Pagination controls
+        if (totalPages <= 1) { paginationEl.innerHTML = ''; return; }
+        var html = '<button class="fd-page-prev">&laquo; Prev</button>';
+        html += '<span class="fd-page-info">' + currentPage + ' / ' + totalPages + ' (' + plants.length + ' plants)</span>';
+        html += '<button class="fd-page-next">Next &raquo;</button>';
+        paginationEl.innerHTML = html;
+
+        var prevBtn = paginationEl.querySelector('.fd-page-prev');
+        var nextBtn = paginationEl.querySelector('.fd-page-next');
+        prevBtn.disabled = currentPage <= 1;
+        nextBtn.disabled = currentPage >= totalPages;
+        prevBtn.addEventListener('click', function () { if (currentPage > 1) { currentPage--; refresh(); } });
+        nextBtn.addEventListener('click', function () { if (currentPage < totalPages) { currentPage++; refresh(); } });
+    }
+
+    function sortPlants(plants) {
+        var sorted = plants.slice();
+        sorted.sort(function (a, b) {
+            var va, vb;
+            if (sortCol === 'name') { va = a.name.toLowerCase(); vb = b.name.toLowerCase(); }
+            else if (sortCol === 'date') { va = a.dateIso; vb = b.dateIso; }
+            else { va = a.qty; vb = b.qty; }
+            if (va < vb) return sortAsc ? -1 : 1;
+            if (va > vb) return sortAsc ? 1 : -1;
+            return 0;
+        });
+        return sorted;
+    }
+
+    function updateArrows() {
+        document.querySelectorAll('.fd-plants-table thead th').forEach(function (th) {
+            var arrow = th.querySelector('.sort-arrow');
+            if (th.getAttribute('data-sort') === sortCol) {
+                arrow.textContent = sortAsc ? ' ▲' : ' ▼';
+            } else {
+                arrow.textContent = '';
+            }
+        });
+    }
+
+    function refresh() {
+        var q = searchEl.value.trim().toLowerCase();
+        var filtered = q ? allPlants.filter(function (p) { return p.name.toLowerCase().indexOf(q) >= 0; }) : allPlants;
+        renderTable(sortPlants(filtered));
+    }
+
+    // Sort headers
+    document.querySelectorAll('.fd-plants-table thead th').forEach(function (th) {
+        th.addEventListener('click', function () {
+            var col = th.getAttribute('data-sort');
+            if (sortCol === col) { sortAsc = !sortAsc; }
+            else { sortCol = col; sortAsc = true; }
+            currentPage = 1;
+            updateArrows();
+            refresh();
+        });
+    });
+
+    // Search — reset to page 1
+    searchEl.addEventListener('input', function () { currentPage = 1; refresh(); });
+
+    // Fetch
+    var samplePlants = [
+        { name: 'Yellow Bamboo', qty: 1, standing: 1, category: 'Non-Fruit', height: 'High', dateIso: '2025-04-05', dateDisplay: 'Apr 5, 2025' },
+        { name: 'Neem', qty: 5, standing: 5, category: 'Non-Fruit', height: 'High', dateIso: '2025-04-05', dateDisplay: 'Apr 5, 2025' },
+        { name: 'Grafted Amla', qty: 8, standing: 8, category: 'Fruit', height: 'Medium', dateIso: '2025-04-05', dateDisplay: 'Apr 5, 2025' },
+        { name: 'Mahogany', qty: 153, standing: 140, category: 'Timber', height: 'High', dateIso: '2024-08-14', dateDisplay: 'Aug 14, 2024' },
+        { name: 'Guava', qty: 44, standing: 38, category: 'Fruit', height: 'Medium', dateIso: '2025-04-05', dateDisplay: 'Apr 5, 2025' },
+        { name: 'Moringa', qty: 19, standing: 15, category: 'Medicinal', height: 'High', dateIso: '2025-04-05', dateDisplay: 'Apr 5, 2025' },
+        { name: 'Lemon', qty: 17, standing: 16, category: 'Fruit', height: 'Low', dateIso: '2024-08-15', dateDisplay: 'Aug 15, 2024' },
+        { name: 'Pomegranate', qty: 18, standing: 11, category: 'Fruit', height: 'Low', dateIso: '2024-08-16', dateDisplay: 'Aug 16, 2024' }
+    ];
+
+    fetch(PLANTS_CSV_URL)
+        .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+        .then(function (csv) {
+            allPlants = rowsToPlants(parseCsv(csv));
+        })
+        .catch(function (err) {
+            if (window.console) console.warn('Plants CSV fetch failed, using sample data:', err && err.message);
+            allPlants = samplePlants;
+        })
+        .then(function () {
+            renderStats(allPlants);
+            updateArrows();
+            refresh();
+        });
 })();
 </script>
 </body>
