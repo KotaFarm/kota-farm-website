@@ -5,3 +5,9 @@
 node_modules/
 package-lock.json
 package.json
+
+# Environment secrets
+.env.local
+.env*.local
+.vercel
+.env*
