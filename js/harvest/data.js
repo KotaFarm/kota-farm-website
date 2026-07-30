@@ -57,12 +57,15 @@
             iCrop = idx('crop'),
             iWt = headers.findIndex(function (h) { return h.indexOf('weight') === 0; }),
             iQ  = headers.findIndex(function (h) { return h.indexOf('crop quality') === 0 || h === 'quality' || h.indexOf('grade') !== -1; }),
+            iThumb = headers.findIndex(function (h) { return h.indexOf('thumbnail') !== -1; }),
             iPh = headers.findIndex(function (h) { return h.indexOf('photo') !== -1; }),
             iN  = idx('notes');
         return rows.filter(function (r) { return r[iDate]; }).map(function (r) {
+            // Prefer thumbnail column; fall back to photo column
+            var photo = (iThumb >= 0 && r[iThumb] && r[iThumb].trim()) ? r[iThumb] : (iPh >= 0 ? r[iPh] : '');
             return {
                 date: r[iDate], crop: r[iCrop], weight: r[iWt],
-                quality: r[iQ], photoUrl: r[iPh], notes: r[iN]
+                quality: r[iQ], photoUrl: photo, notes: r[iN]
             };
         });
     }
