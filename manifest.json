@@ -1,0 +1,26 @@
+{
+    "name": "Kovana Natural Farm",
+    "short_name": "Kovana Farm",
+    "description": "Permaculture & regenerative agriculture near Kota, Rajasthan. Fresh produce, farm diary, and harvest data.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#f5f0e8",
+    "theme_color": "#2d3319",
+    "icons": [
+        {
+            "src": "/icon.svg",
+            "type": "image/svg+xml",
+            "sizes": "any"
+        },
+        {
+            "src": "/icon-192.png",
+            "type": "image/png",
+            "sizes": "192x192"
+        },
+        {
+            "src": "/icon-512.png",
+            "type": "image/png",
+            "sizes": "512x512"
+        }
+    ]
+}
