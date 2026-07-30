@@ -57,7 +57,7 @@ body.scroll-locked {
     font-weight: 600;
     text-decoration: none;
     border-radius: 10px;
-    z-index: 10001;
+    z-index: 9998;
     transition: top 0.2s ease;
 }
 .skip-link:focus {
@@ -74,7 +74,7 @@ body.scroll-locked {
     width: 0%;
     height: 3px;
     background: var(--sprout);
-    z-index: 10001;
+    z-index: 9998;
     transform-origin: left;
     transition: width 0.08s ease-out;
 }
