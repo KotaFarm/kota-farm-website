@@ -4,46 +4,8 @@
     // escapeHtml() provided by js/common.js
     var escapeHtml = window.escapeHtml;
 
-    // ── Gallery item builder ────────────────────────────
-    function createGalleryItem(item) {
-        var div = document.createElement('div');
-        div.className = 'gallery-item fade-in';
-
-        var isVideo = item.file.match(/\.(mp4|webm|mov)$/i);
-
-        if (isVideo) {
-            div.innerHTML =
-                '<video controls loop muted preload="none" loading="lazy">' +
-                '<source src="gallery/' + item.file + '" type="video/' + item.file.split('.').pop() + '">' +
-                'Your browser does not support video playback.' +
-                '</video>' +
-                '<div class="gallery-caption"><p>' + escapeHtml(item.caption) + '</p></div>';
-        } else {
-            var src = 'gallery/' + item.file;
-            var caption = item.caption;
-            var img = document.createElement('img');
-            img.className = 'loading';
-            img.alt = caption;
-            img.loading = 'lazy';
-            img.decoding = 'async';
-            img.style.cursor = 'pointer';
-            img.setAttribute('tabindex', '0');
-            img.setAttribute('role', 'button');
-            img.setAttribute('aria-label', 'View full size: ' + caption);
-            img.addEventListener('load', function () { img.classList.remove('loading'); img.classList.add('loaded'); });
-            img.src = src;
-            img.addEventListener('click', function () { openLightbox(img.src); });
-            img.addEventListener('keydown', function (e) {
-                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLightbox(img.src); }
-            });
-            div.appendChild(img);
-            var capDiv = document.createElement('div');
-            capDiv.className = 'gallery-caption';
-            capDiv.innerHTML = '<p>' + escapeHtml(caption) + '</p>';
-            div.appendChild(capDiv);
-        }
-        return div;
-    }
+    // createGalleryItem() provided by js/common.js
+    var createGalleryItem = window.createGalleryItem;
 
     // ── Fade-in observer ────────────────────────────────
     var observer = new IntersectionObserver(function (entries) {

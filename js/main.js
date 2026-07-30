@@ -1,53 +1,14 @@
 // ============================================================
-//  GALLERY LOADER (grouped by category with filter tabs)
-//  Reads galleryItems + galleryCategories from gallery-config.js
-//  and builds the gallery automatically, organised by theme.
-//  To add new photos/videos: put them in the "gallery" folder
-//  and add one line to gallery-config.js. That's it!
+//  MAIN.JS — Homepage loaders (gallery preview, plants, produce,
+//  scroll effects, nav, accessibility, diary). Wrapped in an IIFE
+//  to prevent leaking variables to global scope.
 // ============================================================
-function createGalleryItem(item) {
-    const div = document.createElement('div');
-    div.className = 'gallery-item fade-in';
+(function () {
+'use strict';
 
-    const isVideo = item.file.match(/\.(mp4|webm|mov)$/i);
-
-    if (isVideo) {
-        div.innerHTML =
-            '<video controls loop muted preload="none" loading="lazy">' +
-            '<source src="gallery/' + item.file + '" type="video/' + item.file.split('.').pop() + '">' +
-            'Your browser does not support video playback.' +
-            '</video>' +
-            '<div class="gallery-caption"><p>' + escapeHtml(item.caption) + '</p></div>';
-    } else {
-        var src = 'gallery/' + item.file;
-        var caption = item.caption;
-        var img = document.createElement('img');
-        img.className = 'loading';
-        img.alt = caption;
-        img.loading = 'lazy';
-        img.decoding = 'async';
-        img.style.cursor = 'pointer';
-        img.setAttribute('tabindex', '0');
-        img.setAttribute('role', 'button');
-        img.setAttribute('aria-label', 'View full size: ' + caption);
-        img.addEventListener('load', function() { img.classList.remove('loading'); img.classList.add('loaded'); });
-        img.src = src;
-        img.addEventListener('click', function() { openLightbox(img.src); });
-        img.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                openLightbox(img.src);
-            }
-        });
-        div.appendChild(img);
-        var capDiv = document.createElement('div');
-        capDiv.className = 'gallery-caption';
-        capDiv.innerHTML = '<p>' + escapeHtml(caption) + '</p>';
-        div.appendChild(capDiv);
-    }
-
-    return div;
-}
+// Shared helpers from js/common.js
+var escapeHtml = window.escapeHtml;
+var createGalleryItem = window.createGalleryItem;
 
 function loadGallery() {
     var preview = document.getElementById('gallery-preview');
@@ -176,7 +137,6 @@ function loadPlants() {
         el.classList.add('observed');
     });
 }
-// escapeHtml() provided by js/common.js
 
 // Fresh Produce — vegetable cards for customers
 var FARM_API = 'https://script.google.com/macros/s/AKfycbxo11Ng9wAQb7Q9djhdyhDEiBoAL2NG-j5hGbQWyGbsk-oA3aQUP9lwA6DNa80WXtiyHQ/exec';
@@ -541,7 +501,7 @@ document.addEventListener('DOMContentLoaded', function() {
             card.className = 'diary-card';
             card.innerHTML =
                 '<div class="diary-img-wrap">' +
-                    '<img src="' + entry.photo + '" alt="' + escapeHtml(entry.title) + '" loading="lazy" onerror="this.parentElement.style.background=\'#e8dcc4\';this.style.display=\'none\'">' +
+                    '<img src="' + escapeHtml(entry.photo) + '" alt="' + escapeHtml(entry.title) + '" loading="lazy" onerror="this.parentElement.style.background=\'#e8dcc4\';this.style.display=\'none\'">' +
                 '</div>' +
                 '<div class="diary-body">' +
                     '<div class="diary-meta">' +
@@ -557,4 +517,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     render(); // initial paint (likely empty until fetch completes)
     window.addEventListener('diary:loaded', render);
+})();
+
 })();
