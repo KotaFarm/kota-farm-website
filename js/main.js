@@ -138,8 +138,10 @@ function loadPlants() {
     });
 }
 
-// Fresh Produce — vegetable cards for customers
-var FARM_API = 'https://script.google.com/macros/s/AKfycbxo11Ng9wAQb7Q9djhdyhDEiBoAL2NG-j5hGbQWyGbsk-oA3aQUP9lwA6DNa80WXtiyHQ/exec';
+// Fresh Produce — vegetable cards for customers.
+// Availability comes via the serverless proxy — the Apps Script URL
+// lives in the FARM_API_URL env var, never in public JS.
+var FARM_API = '/api/availability';
 
 function renderProducePreview() {
     var grid = document.getElementById('produce-grid');
@@ -202,9 +204,10 @@ function loadProduce() {
         });
     }
 
-    fetch(FARM_API + '?t=' + Date.now())
+    fetch(FARM_API)
         .then(function(res) { return res.json(); })
         .then(function(data) {
+            if (!Array.isArray(data)) throw new Error('bad availability payload');
             try { sessionStorage.setItem(AVAIL_CACHE_KEY, JSON.stringify(data)); } catch (e) {}
             data.forEach(function(entry) {
                 var match = vegetablesList.find(function(v) { return v.name === entry.name; });

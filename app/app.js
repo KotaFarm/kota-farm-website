@@ -271,7 +271,7 @@
             var btn = document.createElement('button');
             btn.type = 'button';
             btn.className = 'crop-btn';
-            btn.innerHTML = '<span class="name">' + name + '</span>';
+            btn.innerHTML = '<span class="name">' + escapeHtml(name) + '</span>';
             btn.addEventListener('click', function () {
                 state.selectedCrop = name;
                 grid.querySelectorAll('.crop-btn').forEach(function (b) { b.classList.remove('selected'); });
@@ -382,9 +382,9 @@
         }
         all.forEach(function (item) {
             var li = document.createElement('li');
-            li.innerHTML = '<span>' + item.entry.crop +
+            li.innerHTML = '<span>' + escapeHtml(item.entry.crop) +
                 (item.pending ? '<span class="pending-tag">⏳ pending</span>' : '') +
-                '</span><span class="qty">' + item.entry.weightKg + ' kg</span>';
+                '</span><span class="qty">' + escapeHtml(item.entry.weightKg) + ' kg</span>';
             list.appendChild(li);
         });
     }
@@ -510,7 +510,7 @@
                     var li = document.createElement('li');
                     var date = String(a.activityDate || '').slice(0, 10);
                     var thumb = (a.photos && a.photos[0])
-                        ? '<img class="activity-thumb" src="' + a.photos[0].url + '" alt="" loading="lazy">'
+                        ? '<img class="activity-thumb" src="' + escapeHtml(a.photos[0].url) + '" alt="" loading="lazy">'
                         : '';
                     li.innerHTML = thumb + '<div><div class="activity-date">' + date + '</div>' +
                         '<div>' + escapeHtml(a.description) + '</div></div>';
@@ -521,7 +521,9 @@
     }
 
     function escapeHtml(s) {
-        return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return String(s == null ? '' : s)
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
     // ── Bottom navigation ───────────────────────────────

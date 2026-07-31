@@ -2,7 +2,9 @@
     'use strict';
 
     // Cart, scroll lock, and escapeHtml provided by js/common.js
-    var FARM_API = 'https://script.google.com/macros/s/AKfycbxo11Ng9wAQb7Q9djhdyhDEiBoAL2NG-j5hGbQWyGbsk-oA3aQUP9lwA6DNa80WXtiyHQ/exec';
+    // Availability comes via the serverless proxy — the Apps Script URL
+    // lives in the FARM_API_URL env var, never in public JS.
+    var FARM_API = '/api/availability';
     var esc = window.escapeHtml;
     var isInCart = window.isInCart;
     var getCart = window.getCart;
@@ -404,9 +406,10 @@
     }
 
     function fetchAvailability() {
-        fetch(FARM_API + '?t=' + Date.now())
+        fetch(FARM_API)
             .then(function (res) { return res.json(); })
             .then(function (data) {
+                if (!Array.isArray(data)) throw new Error('bad availability payload');
                 try { sessionStorage.setItem(AVAIL_CACHE_KEY, JSON.stringify(data)); } catch (e) {}
                 mergeAvailability(data);
                 renderGrid();

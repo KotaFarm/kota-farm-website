@@ -8,6 +8,7 @@
     <meta property="og:description" content="A running record of life at Kovana Natural Farm — seedlings, harvests, trees, soil, and everything in between.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://kotaearth.com/farm-diary.html">
+    <meta property="og:image" content="https://kotaearth.com/gallery/the-land/farm-sunset.jpeg">
     <link rel="canonical" href="https://kotaearth.com/farm-diary.html">
     <title>Farm Diary | Kovana Natural Farm</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%232d3319'/%3E%3Cpath d='M16 6c-2 4-1 8 0 11 1-3 5-7 9-8-3 3-6 7-7 11 0 0-1 4-2 6-1-2-2-6-2-6-1-4-4-8-7-11 4 1 8 5 9 8C17 14 18 10 16 6z' fill='%23a8c686'/%3E%3C/svg%3E">
@@ -593,6 +594,13 @@
     var MONTHS = ['January','February','March','April','May','June',
                   'July','August','September','October','November','December'];
 
+    // Escape sheet-sourced data before injecting into innerHTML (XSS defense)
+    function esc(text) {
+        return String(text == null ? '' : text)
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
     function monthKey(iso) {
         var m = String(iso).match(/^(\d{4})-(\d{1,2})/);
         return m ? m[1] + '-' + m[2] : 'unknown';
@@ -653,14 +661,14 @@
     // Modal
     function openModal(entry) {
         modalContent.innerHTML =
-            (entry.photo ? '<img class="fd-modal-img" src="' + entry.photo + '" alt="' + entry.title + '">' : '') +
+            (entry.photo ? '<img class="fd-modal-img" src="' + esc(entry.photo) + '" alt="' + esc(entry.title) + '">' : '') +
             '<div class="fd-modal-body">' +
-                '<div class="fd-modal-title">' + entry.title + '</div>' +
+                '<div class="fd-modal-title">' + esc(entry.title) + '</div>' +
                 '<div class="fd-modal-meta">' +
-                    '<span class="fd-tile-tag">' + entry.tag + '</span>' +
-                    '<span>' + (entry.date || dayLabel(entry._dateIso)) + '</span>' +
+                    '<span class="fd-tile-tag">' + esc(entry.tag) + '</span>' +
+                    '<span>' + esc(entry.date || dayLabel(entry._dateIso)) + '</span>' +
                 '</div>' +
-                (entry.note ? '<div class="fd-modal-note">' + entry.note + '</div>' : '') +
+                (entry.note ? '<div class="fd-modal-note">' + esc(entry.note) + '</div>' : '') +
             '</div>';
         overlay.classList.add('open');
         document.body.style.overflow = 'hidden';
@@ -685,12 +693,12 @@
         tile.className = 'fd-tile';
         tile.innerHTML =
             (entry.photo
-                ? '<img class="fd-tile-img" src="' + entry.photo + '" alt="' + entry.title + '" loading="lazy">'
-                : '<div class="fd-tile-noimg" data-tag="' + entry.tag + '"></div>') +
+                ? '<img class="fd-tile-img" src="' + esc(entry.photo) + '" alt="' + esc(entry.title) + '" loading="lazy">'
+                : '<div class="fd-tile-noimg" data-tag="' + esc(entry.tag) + '"></div>') +
             '<div class="fd-tile-body">' +
-                '<div class="fd-tile-title">' + entry.title + '</div>' +
+                '<div class="fd-tile-title">' + esc(entry.title) + '</div>' +
                 '<div class="fd-tile-meta">' +
-                    '<span class="fd-tile-tag">' + entry.tag + '</span>' +
+                    '<span class="fd-tile-tag">' + esc(entry.tag) + '</span>' +
                     '<span>' + dayLabel(entry._dateIso) + '</span>' +
                 '</div>' +
             '</div>';
@@ -743,7 +751,7 @@
                 regular.forEach(function (e) { tagSet[e.tag] = true; });
                 var tagHtml = '';
                 for (var t in tagSet) {
-                    tagHtml += '<span class="fd-row-tag">' + t + '</span>';
+                    tagHtml += '<span class="fd-row-tag">' + esc(t) + '</span>';
                 }
 
                 var card = document.createElement('div');
@@ -753,7 +761,7 @@
                     '<div class="fd-month-card-count">' + regular.length + '</div>' +
                     '<div class="fd-month-card-body">' +
                         '<div class="fd-month-card-title">' + month.label + '</div>' +
-                        '<div class="fd-month-card-summary">' + summary + '</div>' +
+                        '<div class="fd-month-card-summary">' + esc(summary) + '</div>' +
                         '<div class="fd-month-card-tags">' + tagHtml + '</div>' +
                     '</div>' +
                     '<svg class="fd-month-card-chevron" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><polyline points="7,4 13,10 7,16"/></svg>';
@@ -912,11 +920,18 @@
     };
     var HEIGHT_COLORS = { 'High': '#27500A', 'Medium': '#639922', 'Low': '#C0DD97' };
 
+    // Escape sheet-sourced data before injecting into innerHTML (XSS defense)
+    function escP(text) {
+        return String(text == null ? '' : text)
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
     function buildBar(label, count, total, color) {
         var pct = total ? Math.round(count / total * 100) : 0;
         var width = total ? Math.max(pct, 1) : 0;
         return '<div class="fd-bar-group">' +
-            '<div class="fd-bar-label"><span>' + label + '</span><span>' + count + ' (' + pct + '%)</span></div>' +
+            '<div class="fd-bar-label"><span>' + escP(label) + '</span><span>' + count + ' (' + pct + '%)</span></div>' +
             '<div class="fd-bar-track"><div class="fd-bar-fill" style="width:' + width + '%;background:' + color + '"></div></div>' +
             '</div>';
     }
@@ -986,10 +1001,18 @@
         tbody.innerHTML = '';
         page.forEach(function (p) {
             var tr = document.createElement('tr');
-            tr.innerHTML =
-                '<td>' + p.name + '</td>' +
-                '<td class="date-col">' + p.dateDisplay + '</td>' +
-                '<td class="qty">' + p.qty + '</td>';
+            // textContent (not innerHTML) — sheet data must never execute (XSS defense)
+            var tdName = document.createElement('td');
+            tdName.textContent = p.name;
+            var tdDate = document.createElement('td');
+            tdDate.className = 'date-col';
+            tdDate.textContent = p.dateDisplay;
+            var tdQty = document.createElement('td');
+            tdQty.className = 'qty';
+            tdQty.textContent = p.qty;
+            tr.appendChild(tdName);
+            tr.appendChild(tdDate);
+            tr.appendChild(tdQty);
             tbody.appendChild(tr);
         });
 
