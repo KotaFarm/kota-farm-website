@@ -10,7 +10,7 @@
 //    - A change to SHELL_URLS below
 // ============================================================
 
-var CACHE_NAME = 'kovana-farm-v1';
+var CACHE_NAME = 'kovana-farm-v2';
 
 // App shell — cached on install for instant repeat loads.
 //
@@ -25,6 +25,7 @@ var SHELL_URLS = [
     '/index.html',
     '/produce.html',
     '/css/styles.css',
+    '/js/common.js',
     '/js/main.js',
     '/gallery-config.js',
     '/plants-config.js',
