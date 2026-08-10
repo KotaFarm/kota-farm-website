@@ -5,6 +5,10 @@
 (function (Harvest) {
     'use strict';
 
+    // Crop ID → { name, description }, populated from the Crops tab.
+    // Initialised up front so lookups are safe even if the fetch never runs.
+    Harvest.cropsById = Harvest.cropsById || {};
+
     /*
      * Caching note: we deliberately do NOT bust the cache with a
      * &t=Date.now() query string. Google Sheets serves published CSVs
@@ -70,14 +74,58 @@
         });
     }
 
+    // 3b. Crops lookup tab → { id: { name, description } }.
+    //     AppSheet's Crop column is a Ref, so the Harvest tab stores the Crops
+    //     row key rather than the label. Everything downstream (charts, search,
+    //     BASELINE matching) treats entry.crop as a display name, so IDs are
+    //     resolved here at ingest and never leak further into the app.
+    function cropsFromCsv(csv) {
+        var rows = parseCsv(csv);
+        if (!rows.length) return {};
+
+        var cols = Harvest.CROPS_COLUMNS || { id: 'id', name: 'crop', description: 'description' };
+        var headers = rows.shift().map(function (h) { return h.trim().toLowerCase(); });
+        var iId   = headers.indexOf(cols.id);
+        var iName = headers.indexOf(cols.name);
+        var iDesc = headers.indexOf(cols.description);
+
+        // Without both an id and a name column there's nothing to map.
+        if (iId === -1 || iName === -1) return {};
+
+        var map = {};
+        rows.forEach(function (r) {
+            var id   = String(r[iId] || '').trim();
+            var name = String(r[iName] || '').trim();
+            if (!id || !name) return;
+            map[id] = {
+                name: name,
+                description: iDesc >= 0 ? String(r[iDesc] || '').trim() : ''
+            };
+        });
+        return map;
+    }
+
+    // Look up a crop value. Unknown IDs and plain names both pass straight
+    // through, so the page still works if the Crops tab is missing or a row
+    // predates the Crops table.
+    function resolveCropName(value) {
+        var raw = String(value == null ? '' : value).trim();
+        if (!raw) return '';
+        var entry = Harvest.cropsById[raw];
+        return entry ? entry.name : raw;
+    }
+
     // 4. Normalize incoming rows (any shape) → internal model.
     //    Writes into Harvest.state.allData.
     function ingest(rawList) {
         var parseDate = Harvest.utils.parseDate;
         Harvest.state.allData = rawList.map(function (r) {
+            var cropName = resolveCropName(r.crop);
+            var cropInfo = Harvest.cropsById[String(r.crop || '').trim()];
             return {
                 date: r.date,
-                crop: r.crop,
+                crop: cropName,
+                cropDescription: cropInfo ? cropInfo.description : '',
                 weight: parseFloat(r.weight) || 0,
                 quality: r.quality || '',
                 photoUrl: r.photoUrl || r.photo || '',
@@ -94,24 +142,35 @@
         Harvest.ui.renderAll();
     }
 
-    // 6. Orchestrator — picks the live source, falls back to
-    //    SAMPLE_DATA if the network is unhappy. Add new sources
-    //    by adding another branch above the default.
-    function load() {
+    // 6a. Harvest rows from whichever source is configured.
+    function fetchRows() {
         var cfg = Harvest.config;
-        if (cfg.API) {
-            fetchJson(cfg.API)
-                .then(applyData)
-                .catch(function () { applyData(Harvest.SAMPLE_DATA); });
-            return;
-        }
-        if (cfg.CSV_URL) {
-            fetchText(cfg.CSV_URL)
-                .then(function (csv) { applyData(rowsFromCsv(csv)); })
-                .catch(function () { applyData(Harvest.SAMPLE_DATA); });
-            return;
-        }
-        applyData(Harvest.SAMPLE_DATA);
+        if (cfg.API) return fetchJson(cfg.API);
+        if (cfg.CSV_URL) return fetchText(cfg.CSV_URL).then(rowsFromCsv);
+        return Promise.resolve(Harvest.SAMPLE_DATA);
+    }
+
+    // 6b. Crops lookup. Never rejects — an unreachable or unpublished Crops
+    //     tab must not take the whole page down with it.
+    function fetchCrops() {
+        var url = Harvest.config.CROPS_CSV_URL;
+        if (!url) return Promise.resolve();
+        return fetchText(url)
+            .then(function (csv) { Harvest.cropsById = cropsFromCsv(csv); })
+            .catch(function () { Harvest.cropsById = {}; });
+    }
+
+    // 6c. Orchestrator — both sources load in parallel, then render.
+    //
+    //     Note the two-argument .then(): the rejection handler is attached to
+    //     the fetch, NOT chained after applyData. A .catch() here would also
+    //     swallow render-time errors and silently substitute SAMPLE_DATA,
+    //     which previously made a broken chart look like a data problem.
+    function load() {
+        Promise.all([fetchCrops(), fetchRows()]).then(
+            function (results) { applyData(results[1]); },
+            function () { applyData(Harvest.SAMPLE_DATA); }
+        );
     }
 
     Harvest.data = {
@@ -119,6 +178,8 @@
         fetchJson: fetchJson,
         parseCsv: parseCsv,
         rowsFromCsv: rowsFromCsv,
+        cropsFromCsv: cropsFromCsv,
+        resolveCropName: resolveCropName,
         ingest: ingest,
         applyData: applyData,
         load: load

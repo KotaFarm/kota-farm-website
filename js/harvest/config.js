@@ -9,9 +9,26 @@
     // ── Data sources ───────────────────────────────────
     // Set API to an Apps Script /exec URL that returns JSON, OR set CSV_URL
     // to a "Publish to web" CSV. API wins if both are set.
+    //
+    // CROPS_CSV_URL points at the "Crops" lookup tab (columns: ID | Crop |
+    // Description). Since the AppSheet Crop column is a Ref, the Harvest tab
+    // stores crop *IDs*; we resolve those to readable names at ingest time.
+    // Same publish ID as the harvest sheet, different gid.
+    //
+    // If this tab isn't published the fetch fails silently and crop values are
+    // shown as-is, so the page degrades instead of breaking. To publish it:
+    // File > Share > Publish to web > select "Crops" > CSV.
     Harvest.config = {
         API: '',
-        CSV_URL: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQZb8u89bi2HsIKPs5YVB-Sd8aeX7MiOWhTySr-K7K0mr977JfSOUIC84XEGjs4nQUmfnaDoNIBIPTR/pub?gid=100&single=true&output=csv'
+        CSV_URL: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQZb8u89bi2HsIKPs5YVB-Sd8aeX7MiOWhTySr-K7K0mr977JfSOUIC84XEGjs4nQUmfnaDoNIBIPTR/pub?gid=100&single=true&output=csv',
+        CROPS_CSV_URL: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQZb8u89bi2HsIKPs5YVB-Sd8aeX7MiOWhTySr-K7K0mr977JfSOUIC84XEGjs4nQUmfnaDoNIBIPTR/pub?gid=1369701246&single=true&output=csv'
+    };
+
+    // Header names in the Crops tab. Matched case-insensitively.
+    Harvest.CROPS_COLUMNS = {
+        id: 'id',
+        name: 'crop',
+        description: 'description'
     };
 
     // ── Brand colors (mirrored from css/harvest.css) ──
