@@ -260,13 +260,20 @@
         renderAll();
     }
 
-    function clearCrop() {
+    // opts.silent — skip the focus + suggestion popup. Used when the clear
+    // is triggered from elsewhere on the page (e.g. the calendar), where
+    // yanking focus into the search box would be jarring.
+    function clearCrop(opts) {
+        var silent = !!(opts && opts.silent);
         var input = document.getElementById('hv-crop-search');
         var clear = document.getElementById('hv-crop-clear');
-        if (input) { input.value = ''; input.focus(); }
+        if (input) {
+            input.value = '';
+            if (!silent) input.focus();
+        }
         if (clear) clear.classList.remove('visible');
         Harvest.state.currentCrop = '';
-        renderSuggestions('');
+        if (!silent) renderSuggestions('');
         renderAll();
     }
 
@@ -308,6 +315,9 @@
         Harvest.charts.renderCrops(filtered);
         Harvest.charts.renderRecent(filtered);
         Harvest.charts.renderTrend(filtered);
+        // Calendar reads allData itself — seasonality is always all-time —
+        // but re-renders so it can highlight the currently filtered crop.
+        if (Harvest.calendar) Harvest.calendar.render();
         renderGrid();
         updateShareLink();
     }
@@ -385,7 +395,11 @@
         wireFilters: wireFilters,
         buildCropList: buildCropList,
         openModal: openModal,
-        closeModal: closeModal
+        closeModal: closeModal,
+        // Exposed so the calendar (and any future component) can drive the
+        // crop filter through the same path as the search box.
+        selectCrop: selectCrop,
+        clearCrop: clearCrop
     };
 
 })(window.Harvest = window.Harvest || {});

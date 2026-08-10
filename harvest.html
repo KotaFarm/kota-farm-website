@@ -18,7 +18,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/harvest.css?v=20260810a">
+    <link rel="stylesheet" href="css/harvest.css?v=20260810c">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script src="js/vercel-analytics.js" defer></script>
     <script defer src="/_vercel/insights/script.js"></script>
@@ -92,6 +92,15 @@
             </div>
         </div>
 
+        <!-- Seasonality calendar — when each crop actually comes in.
+             Always all-time regardless of the period filter; clicking a
+             crop or cell filters the rest of the page. -->
+        <div class="hv-chart-card" style="margin-top: 2rem;">
+            <h3>When Each Crop Comes In</h3>
+            <p class="hv-cal-sub">Harvest weight by month, across every year we've logged. Tap a crop to filter the page.</p>
+            <div id="hv-calendar"></div>
+        </div>
+
         <!-- Recent harvest carousel -->
         <h2 class="hv-section-title">Recent Harvests</h2>
         <div class="hv-carousel-wrap">
@@ -129,11 +138,12 @@
          Order matters: config → utils → data + charts (need utils + state)
          → ui (defines state, render, wire) → main (boots once everything is loaded).
          Bump ?v=YYYYMMDD on each edit to bust browser caches. -->
-    <script src="js/harvest/config.js?v=20260810a"></script>
-    <script src="js/harvest/utils.js?v=20260810a"></script>
-    <script src="js/harvest/ui.js?v=20260810a"></script>
-    <script src="js/harvest/charts.js?v=20260810a"></script>
-    <script src="js/harvest/data.js?v=20260810a"></script>
-    <script src="js/harvest/main.js?v=20260810a"></script>
+    <script src="js/harvest/config.js?v=20260810c"></script>
+    <script src="js/harvest/utils.js?v=20260810c"></script>
+    <script src="js/harvest/ui.js?v=20260810c"></script>
+    <script src="js/harvest/charts.js?v=20260810c"></script>
+    <script src="js/harvest/calendar.js?v=20260810c"></script>
+    <script src="js/harvest/data.js?v=20260810c"></script>
+    <script src="js/harvest/main.js?v=20260810c"></script>
 </body>
 </html>
