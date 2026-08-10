@@ -602,3 +602,200 @@ body {
     padding: 0;
     line-height: 1;
 }
+
+/* ──────────────────────────────────────────────────────────────
+   Seasonality calendar (month × crop heatmap)
+   Cells carry both a colour level and a number, so the data reads
+   fine in greyscale and for colour-blind visitors.
+   ────────────────────────────────────────────────────────────── */
+
+.hv-visually-hidden {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.hv-cal-sub {
+    font-size: 0.85rem;
+    color: var(--earth-medium);
+    margin: -0.5rem 0 1rem;
+}
+
+/* Horizontal scroll on narrow screens; crop column stays pinned. */
+.hv-cal-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.hv-cal-table {
+    border-collapse: separate;
+    border-spacing: 3px;
+    width: 100%;
+    min-width: 560px;
+}
+
+.hv-cal-corner {
+    text-align: left;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--earth-light);
+    padding-bottom: 0.25rem;
+}
+
+.hv-cal-month {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--earth-light);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding-bottom: 0.25rem;
+    width: 7%;
+}
+.hv-cal-month.is-now {
+    color: var(--leaf);
+}
+
+.hv-cal-crop {
+    text-align: left;
+    font-weight: 500;
+    white-space: nowrap;
+    position: sticky;
+    left: 0;
+    background: var(--card);
+    z-index: 1;
+    padding-right: 0.5rem;
+}
+
+.hv-cal-crop-btn {
+    background: none;
+    border: 0;
+    padding: 0.15rem 0;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--earth-dark);
+    cursor: pointer;
+    text-align: left;
+    border-bottom: 1px solid transparent;
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+.hv-cal-crop-btn:hover,
+.hv-cal-crop-btn:focus-visible {
+    color: var(--leaf);
+    border-bottom-color: var(--sprout);
+    outline: none;
+}
+
+.hv-cal-cell {
+    height: 30px;
+    border-radius: 5px;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 0.62rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.hv-cal-cell:hover {
+    transform: scale(1.12);
+    box-shadow: 0 2px 8px rgba(45,51,25,0.22);
+    position: relative;
+    z-index: 2;
+}
+
+/* Colour ramp — level 0 is "no harvest that month". */
+.hv-cal-cell.lvl-0 { background: #f0eee8; color: transparent; cursor: default; }
+.hv-cal-cell.lvl-0:hover { transform: none; box-shadow: none; }
+.hv-cal-cell.lvl-1 { background: #dfe8cf; color: var(--earth-medium); }
+.hv-cal-cell.lvl-2 { background: #bcd3a0; color: var(--earth-dark); }
+.hv-cal-cell.lvl-3 { background: #8aae63; color: #fff; }
+.hv-cal-cell.lvl-4 { background: var(--leaf);   color: #fff; }
+
+/* Current month gets a subtle vertical highlight. */
+.hv-cal-cell.is-now { outline: 1.5px solid rgba(90,122,58,0.35); outline-offset: -1.5px; }
+
+/* Dim every row except the filtered crop. */
+.hv-cal-table:has(.hv-cal-row.is-selected) .hv-cal-row:not(.is-selected) {
+    opacity: 0.35;
+}
+.hv-cal-row.is-selected .hv-cal-crop-btn {
+    color: var(--leaf);
+    border-bottom-color: var(--leaf);
+}
+
+.hv-cal-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.hv-cal-legend {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+.hv-cal-legend-label {
+    font-size: 0.7rem;
+    color: var(--earth-light);
+}
+.hv-cal-legend-unit {
+    font-size: 0.7rem;
+    color: var(--earth-light);
+    margin-left: 0.4rem;
+}
+.hv-cal-swatch {
+    width: 16px;
+    height: 12px;
+    border-radius: 3px;
+    display: inline-block;
+}
+.hv-cal-swatch.lvl-0 { background: #f0eee8; }
+.hv-cal-swatch.lvl-1 { background: #dfe8cf; }
+.hv-cal-swatch.lvl-2 { background: #bcd3a0; }
+.hv-cal-swatch.lvl-3 { background: #8aae63; }
+.hv-cal-swatch.lvl-4 { background: var(--leaf); }
+
+.hv-cal-toggle {
+    background: none;
+    border: 1px solid var(--sand);
+    border-radius: 20px;
+    padding: 0.35rem 0.9rem;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--earth-medium);
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+.hv-cal-toggle:hover {
+    background: var(--sand);
+    border-color: var(--clay);
+}
+
+.hv-cal-empty {
+    color: var(--earth-light);
+    font-size: 0.9rem;
+    text-align: center;
+    padding: 2rem 0;
+}
+
+@media (max-width: 640px) {
+    .hv-cal-cell { height: 26px; font-size: 0.55rem; }
+    .hv-cal-crop-btn { font-size: 0.75rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hv-cal-cell { transition: none; }
+    .hv-cal-cell:hover { transform: none; }
+}

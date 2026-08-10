@@ -5,9 +5,21 @@
 (function (Harvest) {
     'use strict';
 
-    // Crop ID → { name, description }, populated from the Crops tab.
-    // Initialised up front so lookups are safe even if the fetch never runs.
+    // Crop lookups, populated from the Crops tab. Initialised up front so
+    // resolution is safe even if the fetch never runs.
+    //   cropsById   — "9" → { name, description }   (AppSheet Ref keys)
+    //   cropsByName — "cowpea" → { name, description }  (normalised names,
+    //                 so free-text rows typed before the Crops table existed
+    //                 still match: "Cow Pea", "cow-pea" and "Cowpea" all
+    //                 collapse to the same key)
     Harvest.cropsById = Harvest.cropsById || {};
+    Harvest.cropsByName = Harvest.cropsByName || {};
+
+    // Strip case, spaces and punctuation so spelling drift doesn't create
+    // duplicate crops in the charts and calendar.
+    function normalizeCropName(s) {
+        return String(s == null ? '' : s).toLowerCase().replace(/[^a-z0-9]/g, '');
+    }
 
     /*
      * Caching note: we deliberately do NOT bust the cache with a
@@ -92,27 +104,40 @@
         // Without both an id and a name column there's nothing to map.
         if (iId === -1 || iName === -1) return {};
 
-        var map = {};
+        var byId = {};
+        var byName = {};
         rows.forEach(function (r) {
             var id   = String(r[iId] || '').trim();
             var name = String(r[iName] || '').trim();
             if (!id || !name) return;
-            map[id] = {
+            var entry = {
                 name: name,
                 description: iDesc >= 0 ? String(r[iDesc] || '').trim() : ''
             };
+            byId[id] = entry;
+            byName[normalizeCropName(name)] = entry;
         });
-        return map;
+        return { byId: byId, byName: byName };
     }
 
-    // Look up a crop value. Unknown IDs and plain names both pass straight
-    // through, so the page still works if the Crops tab is missing or a row
-    // predates the Crops table.
-    function resolveCropName(value) {
+    // Resolve a Harvest "Crop" cell to a Crops-table entry.
+    //   1. Treat it as a Ref key   → "9" matches the Cowpea row
+    //   2. Treat it as a crop name → "Cow Pea" matches "Cowpea"
+    //   3. Give up; the raw value is displayed as typed
+    // Step 2 is what keeps rows logged before the Crops table existed from
+    // showing up as separate crops purely because of spelling.
+    function lookupCrop(value) {
         var raw = String(value == null ? '' : value).trim();
-        if (!raw) return '';
-        var entry = Harvest.cropsById[raw];
-        return entry ? entry.name : raw;
+        if (!raw) return null;
+        return Harvest.cropsById[raw]
+            || Harvest.cropsByName[normalizeCropName(raw)]
+            || null;
+    }
+
+    function resolveCropName(value) {
+        var entry = lookupCrop(value);
+        if (entry) return entry.name;
+        return String(value == null ? '' : value).trim();
     }
 
     // 4. Normalize incoming rows (any shape) → internal model.
@@ -120,11 +145,10 @@
     function ingest(rawList) {
         var parseDate = Harvest.utils.parseDate;
         Harvest.state.allData = rawList.map(function (r) {
-            var cropName = resolveCropName(r.crop);
-            var cropInfo = Harvest.cropsById[String(r.crop || '').trim()];
+            var cropInfo = lookupCrop(r.crop);
             return {
                 date: r.date,
-                crop: cropName,
+                crop: cropInfo ? cropInfo.name : String(r.crop == null ? '' : r.crop).trim(),
                 cropDescription: cropInfo ? cropInfo.description : '',
                 weight: parseFloat(r.weight) || 0,
                 quality: r.quality || '',
@@ -156,8 +180,15 @@
         var url = Harvest.config.CROPS_CSV_URL;
         if (!url) return Promise.resolve();
         return fetchText(url)
-            .then(function (csv) { Harvest.cropsById = cropsFromCsv(csv); })
-            .catch(function () { Harvest.cropsById = {}; });
+            .then(function (csv) {
+                var maps = cropsFromCsv(csv);
+                Harvest.cropsById = maps.byId;
+                Harvest.cropsByName = maps.byName;
+            })
+            .catch(function () {
+                Harvest.cropsById = {};
+                Harvest.cropsByName = {};
+            });
     }
 
     // 6c. Orchestrator — both sources load in parallel, then render.
@@ -180,6 +211,8 @@
         rowsFromCsv: rowsFromCsv,
         cropsFromCsv: cropsFromCsv,
         resolveCropName: resolveCropName,
+        lookupCrop: lookupCrop,
+        normalizeCropName: normalizeCropName,
         ingest: ingest,
         applyData: applyData,
         load: load
