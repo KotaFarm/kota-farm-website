@@ -10,7 +10,9 @@
 
     // ── State ─────────────────────────────────────────────
     var currentFilter = 'all';
-    var currentSort = 'name-asc';
+    // Default to availability: what someone can actually order today belongs
+    // at the top, not whatever happens to start with "B".
+    var currentSort = 'available';
     var currentSearch = '';
 
     // vegetables-config.js supplies the rich extras — photos, Hindi names,
@@ -138,8 +140,13 @@
                 case 'name-desc': return b.name.localeCompare(a.name);
                 case 'season': return a.season.localeCompare(b.season);
                 case 'available':
-                    if (a.available === b.available) return a.name.localeCompare(b.name);
-                    return a.available ? -1 : 1;
+                    // Three-way, not boolean: available before low before
+                    // unavailable, then alphabetical inside each group.
+                    var rank = function (v) {
+                        return v.status === 'available' ? 0 : v.status === 'low' ? 1 : 2;
+                    };
+                    if (rank(a) !== rank(b)) return rank(a) - rank(b);
+                    return a.name.localeCompare(b.name);
                 default: return 0;
             }
         });
