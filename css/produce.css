@@ -1017,19 +1017,27 @@ body.scroll-locked {
     display: inline-block;
 }
 
-/* "Just picked" marker — shown when the card image is a photo of the
-   actual harvest batch currently in stock, rather than a curated shot. */
+/* Real-harvest photo caption.
+   Shown only when the card image is an actual harvest shot rather than a
+   curated product photo. Wording is deliberately explicit — the point is
+   that visitors can trust it's the real batch, not a stock image. */
 .p-card-fresh {
     position: absolute;
     bottom: 0.6rem;
     left: 0.6rem;
-    padding: 0.22rem 0.55rem;
-    border-radius: 16px;
-    font-size: 0.64rem;
+    right: 0.6rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.32rem;
+    padding: 0.3rem 0.6rem;
+    border-radius: 8px;
+    font-size: 0.63rem;
     font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    background: rgba(45,51,25,0.82);
-    color: var(--sprout);
+    letter-spacing: 0.02em;
+    background: rgba(45,51,25,0.86);
+    color: #dfe8cf;
     backdrop-filter: blur(2px);
+    line-height: 1.2;
 }
+.p-card-fresh svg { flex-shrink: 0; color: var(--sprout); }
+.p-card-fresh-date { color: var(--sprout); font-weight: 500; }

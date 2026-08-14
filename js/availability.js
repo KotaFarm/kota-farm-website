@@ -224,7 +224,8 @@
                 daysSinceHarvest: c.lastHarvest ? Math.floor(daysAgo(c.lastHarvest)) : null,
                 // Only surfaced for sellable crops — a fresh-batch photo is a
                 // claim about what's in stock, so it shouldn't outlive the stock.
-                harvestPhoto: status !== 'unavailable' ? (c.photo || '') : ''
+                harvestPhoto: status !== 'unavailable' ? (c.photo || '') : '',
+                harvestPhotoDate: status !== 'unavailable' && c.photoDate ? c.photoDate : null
             };
         }).sort(function (a, b) { return a.name.localeCompare(b.name); });
     }
