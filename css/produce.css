@@ -279,6 +279,8 @@ body.scroll-locked {
 }
 .p-badge-available { background: var(--sprout); color: var(--earth-dark); }
 .p-badge-upcoming { background: var(--clay); color: white; }
+/* Third state: harvested recently but nearly cleared after the home reserve */
+.p-badge-low { background: #e8b04b; color: #3d3528; }
 .p-card-body {
     padding: 0.9rem 1rem 1rem;
     flex: 1;
