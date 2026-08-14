@@ -149,6 +149,22 @@
             order.push(rec);
         });
 
+        // Pull a browser-usable image URL out of a harvest row.
+        // "Photo Thumbnail" is the column the Apps Script fills with a real
+        // Drive thumbnail URL. "Photo URL" holds AppSheet's internal path
+        // (Harvest_Images/xyz.jpg), which is NOT fetchable, so it's only used
+        // when it happens to contain a genuine http(s) link or a Drive file id.
+        function harvestPhoto(r) {
+            var thumb = String(pick(r, ['photo thumbnail', 'thumbnail']) || '').trim();
+            if (/^https?:\/\//i.test(thumb)) return thumb;
+
+            var raw = String(pick(r, ['photo url', 'photo']) || '').trim();
+            var m = raw.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || raw.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+            if (m) return 'https://drive.google.com/thumbnail?id=' + m[1] + '&sz=w800';
+            if (/^https?:\/\/.+\.(jpe?g|png|webp|gif)(\?.*)?$/i.test(raw)) return raw;
+            return '';
+        }
+
         // A Crop cell may hold a Ref ID or a plain typed name.
         function resolve(value) {
             var raw = String(value == null ? '' : value).trim();
@@ -164,6 +180,17 @@
             var kg = parseFloat(pick(r, ['weight'])) || 0;
             if (!crop.lastHarvest || date > crop.lastHarvest) crop.lastHarvest = date;
             if (daysAgo(date) <= crop.shelfLifeDays) crop.harvestedKg += kg;
+
+            // Keep the newest usable photo from inside the freshness window,
+            // so an available crop can show the batch that's actually for sale
+            // rather than a stock photo from months ago.
+            if (daysAgo(date) <= crop.shelfLifeDays) {
+                var photo = harvestPhoto(r);
+                if (photo && (!crop.photoDate || date >= crop.photoDate)) {
+                    crop.photo = photo;
+                    crop.photoDate = date;
+                }
+            }
         });
 
         rowsToObjects(saleCsv).forEach(function (r) {
@@ -194,7 +221,10 @@
                 shelfLifeDays: c.shelfLifeDays,
                 shelfLifeFromSheet: c.shelfLifeFromSheet,
                 lastHarvest: c.lastHarvest,
-                daysSinceHarvest: c.lastHarvest ? Math.floor(daysAgo(c.lastHarvest)) : null
+                daysSinceHarvest: c.lastHarvest ? Math.floor(daysAgo(c.lastHarvest)) : null,
+                // Only surfaced for sellable crops — a fresh-batch photo is a
+                // claim about what's in stock, so it shouldn't outlive the stock.
+                harvestPhoto: status !== 'unavailable' ? (c.photo || '') : ''
             };
         }).sort(function (a, b) { return a.name.localeCompare(b.name); });
     }

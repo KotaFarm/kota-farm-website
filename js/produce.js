@@ -46,6 +46,17 @@
         return cropStatuses.map(function (s) {
             var cfg = findConfigFor(s.name);
             var base = cfg ? Object.assign({}, cfg) : {};
+
+            // Curated photos from the config, if any.
+            var configImages = base.images || (base.image ? [base.image] : []);
+
+            // When a crop is in stock and its harvest row carries a photo, lead
+            // with that shot — it's the actual batch someone would be buying.
+            // Curated images stay behind it in the detail gallery.
+            var images = s.harvestPhoto
+                ? [s.harvestPhoto].concat(configImages)
+                : configImages;
+
             return Object.assign(base, {
                 // Display name always comes from the sheet.
                 name: s.name,
@@ -54,9 +65,10 @@
                 desc: base.desc || s.description || 'Grown naturally on the farm, without chemicals.',
                 // No stand-in image: a crop without a real photo renders as a
                 // text-only card rather than showing something misleading.
-                images: base.images || (base.image ? [base.image] : []),
+                images: images,
                 unit: base.unit || 'kg',
-                hasPhoto: !!((base.images && base.images.length) || base.image),
+                hasPhoto: images.length > 0,
+                isFreshPhoto: !!s.harvestPhoto,
                 // Live status
                 available: s.status !== 'unavailable',
                 status: s.status,
@@ -180,7 +192,16 @@
                 // inline into the body instead of floating over an image.
                 (veg.hasPhoto
                     ? '<div class="p-card-img">' +
-                          '<img src="' + esc(firstImg) + '" alt="' + esc(veg.name) + '" loading="lazy">' +
+                          // referrerpolicy is required for Drive-hosted harvest
+                          // thumbnails; onerror hides a shot that 403s so the
+                          // card degrades to the tinted panel rather than a
+                          // broken-image icon.
+                          '<img src="' + esc(firstImg) + '" alt="' + esc(veg.name) + '" loading="lazy"' +
+                              ' referrerpolicy="no-referrer"' +
+                              ' onerror="this.style.display=\'none\'">' +
+                          (veg.isFreshPhoto
+                              ? '<span class="p-card-fresh">Just picked</span>'
+                              : '') +
                           badge +
                       '</div>'
                     : '') +

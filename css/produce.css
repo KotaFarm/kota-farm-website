@@ -1016,3 +1016,20 @@ body.scroll-locked {
     position: static;
     display: inline-block;
 }
+
+/* "Just picked" marker — shown when the card image is a photo of the
+   actual harvest batch currently in stock, rather than a curated shot. */
+.p-card-fresh {
+    position: absolute;
+    bottom: 0.6rem;
+    left: 0.6rem;
+    padding: 0.22rem 0.55rem;
+    border-radius: 16px;
+    font-size: 0.64rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    background: rgba(45,51,25,0.82);
+    color: var(--sprout);
+    backdrop-filter: blur(2px);
+}
