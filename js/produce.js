@@ -47,15 +47,15 @@
             var cfg = findConfigFor(s.name);
             var base = cfg ? Object.assign({}, cfg) : {};
 
-            // Curated photos from the config, if any.
+            // Curated photos from the config always win as the main image —
+            // harvest photos are stand-ins that change with every picking.
             var configImages = base.images || (base.image ? [base.image] : []);
+            var images = configImages.concat(s.harvestPhoto ? [s.harvestPhoto] : []);
 
-            // When a crop is in stock and its harvest row carries a photo, lead
-            // with that shot — it's the actual batch someone would be buying.
-            // Curated images stay behind it in the detail gallery.
-            var images = s.harvestPhoto
-                ? [s.harvestPhoto].concat(configImages)
-                : configImages;
+            // The harvest photo is only the *card* image when there's no
+            // curated shot yet. That's when it needs labelling as a real,
+            // temporary photo of the actual batch.
+            var showingHarvestPhoto = !configImages.length && !!s.harvestPhoto;
 
             return Object.assign(base, {
                 // Display name always comes from the sheet.
@@ -68,7 +68,8 @@
                 images: images,
                 unit: base.unit || 'kg',
                 hasPhoto: images.length > 0,
-                isFreshPhoto: !!s.harvestPhoto,
+                isFreshPhoto: showingHarvestPhoto,
+                harvestPhotoDate: s.harvestPhotoDate,
                 // Live status
                 available: s.status !== 'unavailable',
                 status: s.status,
@@ -200,7 +201,14 @@
                               ' referrerpolicy="no-referrer"' +
                               ' onerror="this.style.display=\'none\'">' +
                           (veg.isFreshPhoto
-                              ? '<span class="p-card-fresh">Just picked</span>'
+                              ? '<span class="p-card-fresh" title="Not a stock photo — this is the batch harvested on this date, and it changes with every picking.">' +
+                                    '<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">' +
+                                        '<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>' +
+                                        '<circle cx="12" cy="13" r="4"/>' +
+                                    '</svg>' +
+                                    'Real harvest photo' +
+                                    (harvestPhotoLabel(veg) ? '<span class="p-card-fresh-date"> · ' + esc(harvestPhotoLabel(veg)) + '</span>' : '') +
+                                '</span>'
                               : '') +
                           badge +
                       '</div>'
@@ -241,6 +249,16 @@
 
             gridEl.appendChild(card);
         });
+    }
+
+    // "12 Aug" for the harvest-photo caption. Empty if the date is unknown,
+    // so the label degrades to just "Real harvest photo".
+    function harvestPhotoLabel(veg) {
+        var d = veg.harvestPhotoDate;
+        if (!d) return '';
+        var date = (d instanceof Date) ? d : new Date(d);
+        if (isNaN(date.getTime())) return '';
+        return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
     }
 
     // ── Availability badge (three states) ─────────────────
