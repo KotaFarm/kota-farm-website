@@ -201,13 +201,8 @@
                               ' referrerpolicy="no-referrer"' +
                               ' onerror="this.style.display=\'none\'">' +
                           (veg.isFreshPhoto
-                              ? '<span class="p-card-fresh" title="Not a stock photo — this is the batch harvested on this date, and it changes with every picking.">' +
-                                    '<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">' +
-                                        '<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>' +
-                                        '<circle cx="12" cy="13" r="4"/>' +
-                                    '</svg>' +
-                                    'Real harvest photo' +
-                                    (harvestPhotoLabel(veg) ? '<span class="p-card-fresh-date"> · ' + esc(harvestPhotoLabel(veg)) + '</span>' : '') +
+                              ? '<span class="p-card-fresh" title="Photo of the batch picked on this date. Changes with every harvest.">' +
+                                    esc(harvestPhotoLabel(veg) ? 'Harvested ' + harvestPhotoLabel(veg) : 'From this harvest') +
                                 '</span>'
                               : '') +
                           badge +
