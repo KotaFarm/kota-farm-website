@@ -47,7 +47,7 @@
         // Used only when a crop has no "Shelf Life (days)" value in the sheet.
         // A single fallback on purpose — per-crop shelf life belongs in the
         // sheet where the farm can edit it without touching code.
-        defaultShelfLifeDays: 7,
+        defaultShelfLifeDays: 3,
         // Sales window = shelf life + this.
         saleWindowGraceDays: 3
     };
