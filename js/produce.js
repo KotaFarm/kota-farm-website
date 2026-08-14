@@ -20,8 +20,6 @@
     var config = typeof vegetablesList !== 'undefined' ? vegetablesList.slice() : [];
     var vegs = config.slice();   // replaced once the sheet loads
 
-    var PLACEHOLDER_IMAGE = 'site-images/farm-overview.webp';
-
     function normalize(s) {
         return String(s == null ? '' : s).toLowerCase().replace(/[^a-z0-9]/g, '');
     }
@@ -52,9 +50,11 @@
                 nameHi: base.nameHi || '',
                 season: base.season || 'Seasonal',
                 desc: base.desc || s.description || 'Grown naturally on the farm, without chemicals.',
-                images: base.images || (base.image ? [base.image] : [PLACEHOLDER_IMAGE]),
+                // No stand-in image: a crop without a real photo renders as a
+                // text-only card rather than showing something misleading.
+                images: base.images || (base.image ? [base.image] : []),
                 unit: base.unit || 'kg',
-                hasPhoto: !!(base.images || base.image),
+                hasPhoto: !!((base.images && base.images.length) || base.image),
                 // Live status
                 available: s.status !== 'unavailable',
                 status: s.status,
@@ -163,14 +163,22 @@
             var firstImg = getFirstImage(veg);
             var card = document.createElement('div');
             card.className = 'p-card';
+            var badge = '<span class="p-card-badge ' + badgeClass(veg) + '">'
+                      + esc(badgeLabel(veg)) + '</span>';
+
+            if (!veg.hasPhoto) card.classList.add('p-card-textonly');
+
             card.innerHTML =
-                '<div class="p-card-img">' +
-                    '<img src="' + esc(firstImg) + '" alt="' + esc(veg.name) + '" loading="lazy">' +
-                    '<span class="p-card-badge ' + badgeClass(veg) + '">' +
-                        esc(badgeLabel(veg)) +
-                    '</span>' +
-                '</div>' +
+                // Photo-less crops get no image area at all — the badge moves
+                // inline into the body instead of floating over an image.
+                (veg.hasPhoto
+                    ? '<div class="p-card-img">' +
+                          '<img src="' + esc(firstImg) + '" alt="' + esc(veg.name) + '" loading="lazy">' +
+                          badge +
+                      '</div>'
+                    : '') +
                 '<div class="p-card-body">' +
+                    (veg.hasPhoto ? '' : '<div class="p-card-badge-row">' + badge + '</div>') +
                     '<div class="p-card-name">' + esc(veg.name) +
                         '<span class="p-card-name-hi"> ' + esc(veg.nameHi) + '</span>' +
                     '</div>' +
@@ -186,7 +194,8 @@
                 '</div>';
 
             // Click card image or "View Details" → open detail
-            card.querySelector('.p-card-img').addEventListener('click', function () { openDetail(veg); });
+            var imgEl = card.querySelector('.p-card-img');
+            if (imgEl) imgEl.addEventListener('click', function () { openDetail(veg); });
             var viewBtn = card.querySelector('.p-card-view-btn');
             if (viewBtn) viewBtn.addEventListener('click', function (e) { e.stopPropagation(); openDetail(veg); });
 
@@ -301,10 +310,14 @@
 
     function openDetail(veg) {
         detailSlideIndex = 0;
-        detailImages = (veg.images || [veg.image]).map(function (item) {
-            if (typeof item === 'string') return { type: 'image', src: item };
-            return { type: item.type || 'image', src: item.src || item };
-        });
+        // Filter out empties so a photo-less crop opens a text-only panel
+        // rather than a broken image frame.
+        detailImages = (veg.images && veg.images.length ? veg.images : (veg.image ? [veg.image] : []))
+            .map(function (item) {
+                if (typeof item === 'string') return { type: 'image', src: item };
+                return { type: item.type || 'image', src: item.src || item };
+            })
+            .filter(function (i) { return !!i.src; });
 
         var galleryHtml = '';
         var dotsHtml = '';

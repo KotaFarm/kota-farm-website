@@ -995,3 +995,24 @@ body.scroll-locked {
         transition-duration: 0.01ms !important;
     }
 }
+
+/* ── Text-only cards ───────────────────────────────────────────
+   Crops with no photo yet. Rather than a stand-in image, the card
+   drops the image area entirely and the badge sits inline in the
+   body. A tinted top border keeps it visually anchored in a grid
+   that otherwise leads with photos.
+   ────────────────────────────────────────────────────────────── */
+.p-card-textonly {
+    border-top: 3px solid var(--sprout);
+}
+.p-card-textonly .p-card-body {
+    padding-top: 1rem;
+}
+.p-card-badge-row {
+    margin-bottom: 0.6rem;
+}
+/* Override the absolute positioning used when the badge overlays a photo. */
+.p-card-badge-row .p-card-badge {
+    position: static;
+    display: inline-block;
+}
