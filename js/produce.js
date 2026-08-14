@@ -2,9 +2,8 @@
     'use strict';
 
     // Cart, scroll lock, and escapeHtml provided by js/common.js
-    // Availability comes via the serverless proxy — the Apps Script URL
-    // lives in the FARM_API_URL env var, never in public JS.
-    var FARM_API = '/api/availability';
+    // Availability + the crop catalogue come from js/availability.js, which
+    // reads the Crops / Harvest / Sale tabs of the farm spreadsheet.
     var esc = window.escapeHtml;
     var isInCart = window.isInCart;
     var getCart = window.getCart;
@@ -13,11 +12,70 @@
     var currentFilter = 'all';
     var currentSort = 'name-asc';
     var currentSearch = '';
-    var vegs = typeof vegetablesList !== 'undefined' ? vegetablesList.slice() : [];
 
-    // Extract unique seasons for filter buttons
+    // vegetables-config.js supplies the rich extras — photos, Hindi names,
+    // nutrition, season. The Crops SHEET is the source of truth for which
+    // crops exist and what they're called; a config entry only decorates a
+    // crop that the sheet already knows about.
+    var config = typeof vegetablesList !== 'undefined' ? vegetablesList.slice() : [];
+    var vegs = config.slice();   // replaced once the sheet loads
+
+    var PLACEHOLDER_IMAGE = 'site-images/farm-overview.webp';
+
+    function normalize(s) {
+        return String(s == null ? '' : s).toLowerCase().replace(/[^a-z0-9]/g, '');
+    }
+
+    // Match a sheet crop to a config entry. Exact normalised match first,
+    // then containment either way so "Ridge Gourd" in the config lines up
+    // with "Ridge Gourd (Tori)" in the sheet without renaming either.
+    function findConfigFor(cropName) {
+        var target = normalize(cropName);
+        var exact = config.find(function (c) { return normalize(c.name) === target; });
+        if (exact) return exact;
+        return config.find(function (c) {
+            var n = normalize(c.name);
+            return n.length > 3 && (target.indexOf(n) === 0 || n.indexOf(target) === 0);
+        }) || null;
+    }
+
+    // Build the catalogue from the sheet. Every crop in the sheet gets a
+    // card; those without a config entry get a minimal one built from the
+    // sheet's own name and description.
+    function buildCatalogue(cropStatuses) {
+        return cropStatuses.map(function (s) {
+            var cfg = findConfigFor(s.name);
+            var base = cfg ? Object.assign({}, cfg) : {};
+            return Object.assign(base, {
+                // Display name always comes from the sheet.
+                name: s.name,
+                nameHi: base.nameHi || '',
+                season: base.season || 'Seasonal',
+                desc: base.desc || s.description || 'Grown naturally on the farm, without chemicals.',
+                images: base.images || (base.image ? [base.image] : [PLACEHOLDER_IMAGE]),
+                unit: base.unit || 'kg',
+                hasPhoto: !!(base.images || base.image),
+                // Live status
+                available: s.status !== 'unavailable',
+                status: s.status,
+                remainingKg: s.remainingKg,
+                daysSinceHarvest: s.daysSinceHarvest,
+                lastHarvest: s.lastHarvest
+            });
+        });
+    }
+
+    function rebuildSeasonFilters() {
+        var seen = [];
+        vegs.forEach(function (v) {
+            if (v.season && seen.indexOf(v.season) === -1) seen.push(v.season);
+        });
+        return seen;
+    }
+
+    // Seed the filter bar from config until the sheet arrives.
     var seasons = [];
-    vegs.forEach(function (v) {
+    config.forEach(function (v) {
         if (seasons.indexOf(v.season) === -1) seasons.push(v.season);
     });
 
@@ -108,8 +166,8 @@
             card.innerHTML =
                 '<div class="p-card-img">' +
                     '<img src="' + esc(firstImg) + '" alt="' + esc(veg.name) + '" loading="lazy">' +
-                    '<span class="p-card-badge ' + (veg.available ? 'p-badge-available' : 'p-badge-upcoming') + '">' +
-                        (veg.available ? 'Available' : 'Unavailable') +
+                    '<span class="p-card-badge ' + badgeClass(veg) + '">' +
+                        esc(badgeLabel(veg)) +
                     '</span>' +
                 '</div>' +
                 '<div class="p-card-body">' +
@@ -146,6 +204,16 @@
 
             gridEl.appendChild(card);
         });
+    }
+
+    // ── Availability badge (three states) ─────────────────
+    function badgeClass(veg) {
+        if (veg.status === 'low') return 'p-badge-low';
+        return veg.available ? 'p-badge-available' : 'p-badge-upcoming';
+    }
+    function badgeLabel(veg) {
+        if (veg.status === 'low') return 'Low stock';
+        return veg.available ? 'Available' : 'Unavailable';
     }
 
     function getFirstImage(veg) {
@@ -382,39 +450,45 @@
         if (diff > 80) closeDetail();
     }, { passive: true });
 
-    // ── Live availability from Google Sheet (cached per session) ──
-    var AVAIL_CACHE_KEY = 'kotaFarmAvail';
+    // ── Live catalogue + availability from the farm sheet ──
+    // Cached per session so navigating back doesn't refetch three CSVs.
+    var AVAIL_CACHE_KEY = 'kotaFarmCrops';
     var availLoaded = false;
 
-    function mergeAvailability(liveData) {
-        liveData.forEach(function (entry) {
-            var match = vegs.find(function (v) { return v.name === entry.name; });
-            if (match) match.available = entry.available;
-        });
+    // Apply a list of crop statuses: rebuild the catalogue, refresh the
+    // season filter buttons, and repaint.
+    function applyCropStatuses(statuses) {
+        if (!statuses || !statuses.length) return false;
+        vegs = buildCatalogue(statuses);
         availLoaded = true;
+        seasons = rebuildSeasonFilters();
+        renderGrid();
+        return true;
     }
 
     function loadCachedAvailability() {
         try {
             var cached = sessionStorage.getItem(AVAIL_CACHE_KEY);
-            if (cached) {
-                mergeAvailability(JSON.parse(cached));
-                return true;
-            }
-        } catch (e) {}
-        return false;
+            if (!cached) return false;
+            var parsed = JSON.parse(cached);
+            // Revive the Date that JSON flattened to a string.
+            parsed.forEach(function (s) {
+                if (s.lastHarvest) s.lastHarvest = new Date(s.lastHarvest);
+            });
+            return applyCropStatuses(parsed);
+        } catch (e) { return false; }
     }
 
     function fetchAvailability() {
-        fetch(FARM_API)
-            .then(function (res) { return res.json(); })
-            .then(function (data) {
-                if (!Array.isArray(data)) throw new Error('bad availability payload');
-                try { sessionStorage.setItem(AVAIL_CACHE_KEY, JSON.stringify(data)); } catch (e) {}
-                mergeAvailability(data);
-                renderGrid();
+        if (!window.Availability) return;
+        window.Availability.load()
+            .then(function (statuses) {
+                try { sessionStorage.setItem(AVAIL_CACHE_KEY, JSON.stringify(statuses)); } catch (e) {}
+                applyCropStatuses(statuses);
             })
             .catch(function () {
+                // Sheet unreachable — fall back to whatever vegetables-config
+                // declares rather than showing an empty shop.
                 if (!availLoaded) {
                     document.querySelectorAll('.p-card-badge.avail-loading').forEach(function (b) {
                         b.classList.remove('avail-loading');
