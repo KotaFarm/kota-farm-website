@@ -104,8 +104,12 @@ module.exports = async function handler(req, res) {
         }
 
         // File IDs never change once uploaded, so this is safe to cache hard.
+        //   max-age    — the browser skips the request entirely on a refresh
+        //   s-maxage   — Vercel's edge calls Drive at most once per 10 min
+        //   stale-*    — serve the old map while refreshing behind the scenes
         // New photos appear within the stale window.
-        res.setHeader('Cache-Control', 's-maxage=600, stale-while-revalidate=3600');
+        res.setHeader('Cache-Control',
+            'public, max-age=300, s-maxage=600, stale-while-revalidate=3600');
         return json(res, 200, { ok: true, count: files, folders, photos });
     } catch (err) {
         console.error('tree-photos failed:', err.message);

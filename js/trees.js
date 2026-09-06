@@ -104,11 +104,46 @@
         return String(path || '').split('/').pop().trim();
     }
 
+    // Drive file ids are immutable, so the map is worth keeping locally:
+    // a repeat visit renders photos with no network call at all, and a
+    // stale copy still beats blank cards if Drive or the endpoint is down.
+    var PHOTO_CACHE_KEY = 'kovanaTreePhotos';
+    var PHOTO_CACHE_TTL = 60 * 60 * 1000;   // 1 hour
+
+    function readPhotoCache(allowStale) {
+        try {
+            var raw = localStorage.getItem(PHOTO_CACHE_KEY);
+            if (!raw) return null;
+            var c = JSON.parse(raw);
+            if (!c || !c.photos) return null;
+            if (!allowStale && Date.now() - c.t > PHOTO_CACHE_TTL) return null;
+            return c.photos;
+        } catch (e) { return null; }
+    }
+
+    function writePhotoCache(photos) {
+        try {
+            localStorage.setItem(PHOTO_CACHE_KEY,
+                JSON.stringify({ t: Date.now(), photos: photos }));
+        } catch (e) {}   // private mode / quota — caching is optional
+    }
+
     function loadPhotoMap() {
+        var fresh = readPhotoCache(false);
+        if (fresh) return Promise.resolve(fresh);
+
         return fetch('/api/tree-photos')
             .then(function (r) { return r.ok ? r.json() : null; })
-            .then(function (d) { return (d && d.ok && d.photos) ? d.photos : {}; })
-            .catch(function () { return {}; });
+            .then(function (d) {
+                var photos = (d && d.ok && d.photos) ? d.photos : null;
+                if (!photos) throw new Error('no photo map');
+                writePhotoCache(photos);
+                return photos;
+            })
+            .catch(function () {
+                // Expired cache is still better than nothing.
+                return readPhotoCache(true) || {};
+            });
     }
 
     // ── Load + join ───────────────────────────────────────
