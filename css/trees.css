@@ -337,3 +337,47 @@ body {
     .tp-card { transition: none; }
     .tp-card:hover { transform: none; }
 }
+
+/* ── Full-size photo viewer ─────────────────────────────── */
+.tp-zoom { cursor: zoom-in; }
+.tp-zoom:focus-visible { outline: 3px solid var(--sprout); outline-offset: 2px; }
+
+.tp-lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    /* Above .tp-detail-overlay (9999) so the timeline stays open behind. */
+    z-index: 10001;
+    background: rgba(20,24,12,0.92);
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    cursor: zoom-out;
+}
+.tp-lightbox.open { display: flex; }
+.tp-lightbox img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 6px;
+    box-shadow: 0 12px 48px rgba(0,0,0,0.5);
+}
+.tp-lightbox-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 40px;
+    height: 40px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+}
+.tp-lightbox-close:hover { background: rgba(255,255,255,0.3); }
+
+@media (max-width: 560px) {
+    .tp-lightbox { padding: 1rem; }
+}

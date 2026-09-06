@@ -30,6 +30,36 @@
         return s === 'today' ? 'today' : s + ' ago';
     }
 
+    // Drive serves any width off the same file id, so the card thumbnail and
+    // the full-size view differ only by the sz parameter.
+    function fullSize(url) {
+        return String(url || '').replace(/([?&]sz=)w\d+/, '$1w2000');
+    }
+
+    function openLightbox(url, alt) {
+        var box = document.getElementById('tp-lightbox');
+        var img = document.getElementById('tp-lightbox-img');
+        if (!box || !img) return;
+        img.src = fullSize(url);
+        img.alt = alt || '';
+        box.classList.add('open');
+        document.body.style.overflow = 'hidden';
+        var close = document.getElementById('tp-lightbox-close');
+        if (close) close.focus();
+    }
+
+    function closeLightbox() {
+        var box = document.getElementById('tp-lightbox');
+        if (!box || !box.classList.contains('open')) return false;
+        box.classList.remove('open');
+        document.getElementById('tp-lightbox-img').src = '';
+        // The tree detail is still open underneath, so keep scroll locked.
+        if (!document.getElementById('tp-detail-overlay').classList.contains('open')) {
+            document.body.style.overflow = '';
+        }
+        return true;
+    }
+
     function leafPlaceholder() {
         return '<div class="tp-noimg" aria-hidden="true">'
              +   '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" '
@@ -174,7 +204,10 @@
               +     (photo
                         ? '<img src="' + esc(photo.url) + '" alt="' + esc(tree.species) + ' on '
                           + esc(T.fmtDate(visit.date)) + '" loading="lazy"'
-                          + ' referrerpolicy="no-referrer" onerror="this.style.display=\'none\'">'
+                          + ' referrerpolicy="no-referrer" onerror="this.style.display=\'none\'"'
+                          + ' class="tp-zoom" tabindex="0" role="button"'
+                          + ' aria-label="View full size photo from ' + esc(T.fmtDate(visit.date)) + '"'
+                          + ' data-full="' + esc(photo.url) + '">'
                         : leafPlaceholder())
               +   '</div>'
               +   '<div class="tp-visit-info">'
@@ -201,6 +234,18 @@
                 renderDetail();
             });
         });
+
+        Array.prototype.forEach.call(body.querySelectorAll('.tp-zoom'), function (img) {
+            img.addEventListener('click', function () {
+                openLightbox(img.dataset.full, img.alt);
+            });
+            img.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    openLightbox(img.dataset.full, img.alt);
+                }
+            });
+        });
     }
 
     // ── Boot ──────────────────────────────────────────────
@@ -224,8 +269,19 @@
         if (overlay) overlay.addEventListener('click', closeDetail);
         var close = document.getElementById('tp-detail-close');
         if (close) close.addEventListener('click', closeDetail);
+
+        var lb = document.getElementById('tp-lightbox');
+        if (lb) lb.addEventListener('click', closeLightbox);
+        var lbClose = document.getElementById('tp-lightbox-close');
+        if (lbClose) lbClose.addEventListener('click', function (e) {
+            e.stopPropagation();
+            closeLightbox();
+        });
+
+        // Escape closes the lightbox first, leaving the tree detail open.
         document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape') closeDetail();
+            if (e.key !== 'Escape') return;
+            if (!closeLightbox()) closeDetail();
         });
     }
 
