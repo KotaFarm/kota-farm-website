@@ -231,7 +231,24 @@
         if (tree) openDetail(tree);
     }
 
-    function openDetail(tree, skipHistory) {
+    // Prev/next walk the filtered list, so stepping through a zone stays
+    // inside that zone rather than jumping to a tree the user filtered out.
+    function siblings() {
+        var list = visible();
+        var i = -1;
+        list.forEach(function (t, n) { if (current && t.tag === current.tag) i = n; });
+        return {
+            prev: i > 0 ? list[i - 1] : null,
+            next: i > -1 && i < list.length - 1 ? list[i + 1] : null,
+            index: i,
+            total: list.length
+        };
+    }
+
+    // mode: 'push' adds a history entry (opening from the grid, so Back
+    // closes the detail), 'replace' swaps it (stepping between trees, so
+    // Back doesn't walk every tree visited).
+    function openDetail(tree, mode) {
         current = tree;
         currentKind = 0;
         renderDetail();
@@ -240,21 +257,36 @@
         var close = document.getElementById('tp-detail-close');
         if (close) close.focus();
 
-        // Deep link, so a tree can be shared or reopened from a bookmark.
-        if (!skipHistory) {
-            try {
-                history.replaceState(null, '', '?tree=' + encodeURIComponent(tree.tag));
-            } catch (e) {}
-        }
+        if (mode === 'none') return;
+        var url = '?tree=' + encodeURIComponent(tree.tag);
+        try {
+            if (mode === 'replace') history.replaceState({ tree: tree.tag }, '', url);
+            else history.pushState({ tree: tree.tag }, '', url);
+        } catch (e) {}
+    }
+
+    function hideDetail() {
+        document.getElementById('tp-detail-overlay').classList.remove('open');
+        document.body.style.overflow = '';
+        current = null;
     }
 
     function closeDetail(e) {
         if (e && e.target && e.target.id !== 'tp-detail-overlay'
             && e.target.id !== 'tp-detail-close') return;
-        document.getElementById('tp-detail-overlay').classList.remove('open');
-        document.body.style.overflow = '';
-        current = null;
-        try { history.replaceState(null, '', location.pathname); } catch (err) {}
+        // Going back pops the pushed entry, which fires popstate and hides
+        // the panel — so Back and the close button behave identically.
+        if (history.state && history.state.tree) {
+            history.back();
+        } else {
+            hideDetail();
+        }
+    }
+
+    function step(dir) {
+        var s = siblings();
+        var target = dir < 0 ? s.prev : s.next;
+        if (target) openDetail(target, 'replace');
     }
 
     function renderDetail() {
@@ -272,6 +304,8 @@
         if (currentKind >= available.length) currentKind = 0;
         var activeLabel = available[currentKind];
 
+        var sib = siblings();
+
         var html = ''
           + '<header class="tp-detail-head">'
           +   '<h2 class="tp-detail-title">' + esc(tree.species) + '</h2>'
@@ -281,6 +315,20 @@
           +      (tree.tagged ? ' · tagged ' + esc(T.fmtDate(tree.tagged)) : '')
           +   '</p>'
           + '</header>';
+
+        if (sib.total > 1) {
+            html += '<nav class="tp-nav" aria-label="Move between trees">'
+                 +   '<button type="button" class="tp-nav-btn" id="tp-prev"'
+                 +     (sib.prev ? '' : ' disabled')
+                 +     ' aria-label="Previous tree">‹ '
+                 +     esc(sib.prev ? sib.prev.tag : 'Prev') + '</button>'
+                 +   '<span class="tp-nav-pos">' + (sib.index + 1) + ' of ' + sib.total + '</span>'
+                 +   '<button type="button" class="tp-nav-btn" id="tp-next"'
+                 +     (sib.next ? '' : ' disabled')
+                 +     ' aria-label="Next tree">'
+                 +     esc(sib.next ? sib.next.tag : 'Next') + ' ›</button>'
+                 + '</nav>';
+        }
 
         if (available.length > 1) {
             html += '<div class="tp-tabs" role="tablist">'
@@ -327,6 +375,11 @@
         }
 
         body.innerHTML = html;
+
+        var prevBtn = body.querySelector('#tp-prev');
+        var nextBtn = body.querySelector('#tp-next');
+        if (prevBtn) prevBtn.addEventListener('click', function () { step(-1); });
+        if (nextBtn) nextBtn.addEventListener('click', function () { step(1); });
 
         Array.prototype.forEach.call(body.querySelectorAll('.tp-tab'), function (btn) {
             btn.addEventListener('click', function () {
@@ -383,9 +436,15 @@
                 renderFilters();
                 renderGrid();
 
-                // ?tree=S-001 opens that tree straight away.
+                // ?tree=S-001 opens that tree straight away. 'replace' keeps
+                // the entry the browser already has rather than adding one,
+                // so Back leaves the page as the visitor expects.
                 var m = location.search.match(/[?&]tree=([^&]+)/);
-                if (m) openByTag(decodeURIComponent(m[1]));
+                if (m) {
+                    var tag = decodeURIComponent(m[1]);
+                    var tree = trees.filter(function (t) { return t.tag === tag; })[0];
+                    if (tree) openDetail(tree, 'replace');
+                }
             },
             function () {
                 grid.innerHTML = '<p class="tp-empty">Tree records are temporarily '
@@ -414,10 +473,29 @@
             closeLightbox();
         });
 
-        // Escape closes the photo first, leaving the tree detail open.
+        // Back / forward drive the detail panel, so the browser's own
+        // navigation works — which is how most people close things on mobile.
+        window.addEventListener('popstate', function (e) {
+            var tag = e.state && e.state.tree;
+            if (tag) {
+                var tree = trees.filter(function (t) { return t.tag === tag; })[0];
+                if (tree) { openDetail(tree, 'none'); return; }
+            }
+            hideDetail();
+        });
+
         document.addEventListener('keydown', function (e) {
-            if (e.key !== 'Escape') return;
-            if (!closeLightbox()) closeDetail();
+            // Escape closes the photo first, leaving the tree detail open.
+            if (e.key === 'Escape') {
+                if (!closeLightbox()) closeDetail();
+                return;
+            }
+            // Arrow keys step between trees while the detail is open — but
+            // not while typing in the search box.
+            if (!current) return;
+            if (document.getElementById('tp-lightbox').classList.contains('open')) return;
+            if (e.key === 'ArrowLeft') { step(-1); e.preventDefault(); }
+            if (e.key === 'ArrowRight') { step(1); e.preventDefault(); }
         });
     }
 

@@ -10,7 +10,7 @@
 //    - A change to SHELL_URLS below
 // ============================================================
 
-var CACHE_NAME = 'kovana-farm-v2';
+var CACHE_NAME = 'kovana-farm-v3';
 
 // App shell — cached on install for instant repeat loads.
 //
