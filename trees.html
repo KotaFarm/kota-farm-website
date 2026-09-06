@@ -20,7 +20,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/site-nav.css">
     <link rel="stylesheet" href="css/practice.css">
-    <link rel="stylesheet" href="css/trees.css?v=20260906b">
+    <link rel="stylesheet" href="css/trees.css?v=20260906c">
     <script src="js/vercel-analytics.js" defer></script>
     <script defer src="/_vercel/insights/script.js"></script>
 </head>
@@ -57,6 +57,26 @@
     </header>
 
     <main class="tp-container">
+
+        <!-- Newest visits across all trees. Hidden until there's activity
+             beyond one entry per tree, so it never just mirrors the grid. -->
+        <section class="tp-latest-section" id="tp-latest-section" style="display:none;">
+            <h2 class="tp-section-title">Latest updates</h2>
+            <div class="tp-latest" id="tp-latest"></div>
+        </section>
+
+        <div class="tp-toolbar">
+            <div class="tp-search-wrap">
+                <svg class="tp-search-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <label for="tp-search" class="tp-sr-only">Search trees by tag or species</label>
+                <input type="search" id="tp-search" class="tp-search" placeholder="Search tag or species…" autocomplete="off">
+            </div>
+            <div id="tp-filters"></div>
+            <span class="tp-count" id="tp-count"></span>
+        </div>
+
         <div class="tp-grid" id="tp-grid">
             <p class="tp-empty">Loading trees…</p>
         </div>
@@ -90,7 +110,7 @@
         <p class="tp-footer-copyright">&copy; 2026 Kovana Natural Farm · Khedli Pandya, Kota, Rajasthan</p>
     </footer>
 
-    <script src="js/trees.js?v=20260906b"></script>
-    <script src="js/trees-ui.js?v=20260906b"></script>
+    <script src="js/trees.js?v=20260906c"></script>
+    <script src="js/trees-ui.js?v=20260906c"></script>
 </body>
 </html>
