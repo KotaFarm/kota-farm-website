@@ -1,30 +1,30 @@
 /* ──────────────────────────────────────────────────────────────
    Tree progress — rendering
 
-   Built to stay usable as the grove grows from 6 trees to 60+:
+   Three levels, because "how is Karanj doing across the farm?" is the
+   question people actually arrive with:
 
-     Latest updates — newest visits across all trees, so a new Progress
-                      entry surfaces on the page without anyone curating
-     Filters        — zone chips with live counts, plus tag/species search
-     Grove grid     — the filtered set
-     Tree detail    — per-tree timeline, deep-linkable via ?tree=S-001
+     1. Species index — one card per species (Sheesham, Karanj, Neem…)
+     2. Species view  — every tagged tree of that species, its zones
+                        and recent activity
+     3. Tree detail   — one tree's photo timeline
 
-   A before/after comparison belongs here once trees have two dated
-   "Whole tree" shots; deliberately absent until the data exists.
+   Each level is deep-linkable (?species=Sheesham, ?tree=S-001) and
+   pushes history, so Back walks out the way the visitor walked in.
    ────────────────────────────────────────────────────────────── */
 
 (function () {
     'use strict';
 
     var T = window.TreeProgress;
-
     var LATEST_COUNT = 6;
 
     var trees = [];
-    var current = null;
-    var currentKind = 0;
+    var activeSpecies = null;    // null = species index
     var activeZone = 'all';
     var query = '';
+    var current = null;          // tree open in the detail overlay
+    var currentKind = 0;
 
     function esc(s) {
         return String(s == null ? '' : s)
@@ -32,15 +32,11 @@
             .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    // sinceLabel returns a bare duration ("3 months") or "today" — only the
-    // former takes "ago".
     function agoLabel(d) {
         var s = T.sinceLabel(d);
         return s === 'today' ? 'today' : s + ' ago';
     }
 
-    // Drive serves any width off the same file id, so the card thumbnail and
-    // the full-size view differ only by the sz parameter.
     function fullSize(url) {
         return String(url || '').replace(/([?&]sz=)w\d+/, '$1w2000');
     }
@@ -60,67 +56,204 @@
         return latest && latest.photos.length ? latest.photos[0].url : '';
     }
 
-    // ── Filtering ─────────────────────────────────────────
-    function zonesWithCounts() {
-        var counts = {};
+    // ── Grouping ──────────────────────────────────────────
+    function speciesGroups() {
+        var by = {};
         trees.forEach(function (t) {
-            var z = t.zone || 'Unzoned';
-            counts[z] = (counts[z] || 0) + 1;
+            var name = t.species || 'Unidentified';
+            if (!by[name]) {
+                by[name] = { name: name, trees: [], zones: {}, visits: 0, latest: null, hero: '' };
+            }
+            var g = by[name];
+            g.trees.push(t);
+            if (t.zone) g.zones[t.zone] = true;
+            g.visits += t.visits.length;
+
+            var v = t.visits[0];
+            if (v && v.date && (!g.latest || v.date > g.latest)) g.latest = v.date;
+            if (!g.hero) g.hero = heroOf(t);
         });
-        return Object.keys(counts).sort().map(function (z) {
-            return { zone: z, count: counts[z] };
+
+        return Object.keys(by).sort().map(function (k) {
+            var g = by[k];
+            g.zoneList = Object.keys(g.zones).sort();
+            return g;
         });
     }
 
+    // Trees shown at the current level, after species / zone / search.
     function visible() {
         var q = query.trim().toLowerCase();
         return trees.filter(function (t) {
+            if (activeSpecies && (t.species || 'Unidentified') !== activeSpecies) return false;
             if (activeZone !== 'all' && (t.zone || 'Unzoned') !== activeZone) return false;
             if (!q) return true;
             return (t.tag + ' ' + t.species + ' ' + t.zone).toLowerCase().indexOf(q) !== -1;
         });
     }
 
+    // ── Toolbar (zone chips + count) ──────────────────────
     function renderFilters() {
         var mount = document.getElementById('tp-filters');
         if (!mount) return;
 
-        var zones = zonesWithCounts();
-        // A single zone needs no chips — don't show a filter that can't filter.
-        if (zones.length < 2 && !query) {
-            mount.innerHTML = '';
-            return;
-        }
+        // Zones only matter once you're inside a species.
+        if (!activeSpecies) { mount.innerHTML = ''; return; }
+
+        var pool = trees.filter(function (t) {
+            return (t.species || 'Unidentified') === activeSpecies;
+        });
+        var counts = {};
+        pool.forEach(function (t) {
+            var z = t.zone || 'Unzoned';
+            counts[z] = (counts[z] || 0) + 1;
+        });
+        var zones = Object.keys(counts).sort();
+
+        if (zones.length < 2) { mount.innerHTML = ''; return; }
 
         var html = '<div class="tp-chips" role="group" aria-label="Filter by area">'
                  + '<button type="button" class="tp-chip' + (activeZone === 'all' ? ' active' : '') + '"'
-                 + ' data-zone="all">All <span class="tp-chip-n">' + trees.length + '</span></button>';
-
+                 + ' data-zone="all">All areas <span class="tp-chip-n">' + pool.length + '</span></button>';
         zones.forEach(function (z) {
-            html += '<button type="button" class="tp-chip' + (activeZone === z.zone ? ' active' : '') + '"'
-                 +  ' data-zone="' + esc(z.zone) + '">' + esc(z.zone)
-                 +  ' <span class="tp-chip-n">' + z.count + '</span></button>';
+            html += '<button type="button" class="tp-chip' + (activeZone === z ? ' active' : '') + '"'
+                 +  ' data-zone="' + esc(z) + '">' + esc(z)
+                 +  ' <span class="tp-chip-n">' + counts[z] + '</span></button>';
         });
         html += '</div>';
-
         mount.innerHTML = html;
 
         Array.prototype.forEach.call(mount.querySelectorAll('.tp-chip'), function (btn) {
             btn.addEventListener('click', function () {
                 activeZone = btn.dataset.zone;
                 renderFilters();
-                renderGrid();
+                renderMain();
             });
         });
     }
 
-    // ── Latest updates ────────────────────────────────────
-    // Flattens visits across every tree so a newly logged entry appears here
-    // on the next page load, with no editing.
+    function renderBreadcrumb() {
+        var el = document.getElementById('tp-crumb');
+        if (!el) return;
+        if (!activeSpecies) { el.innerHTML = ''; el.style.display = 'none'; return; }
+
+        el.style.display = '';
+        el.innerHTML = '<button type="button" class="tp-crumb-back" id="tp-crumb-back">'
+                     +   '&larr; All species'
+                     + '</button>'
+                     + '<span class="tp-crumb-current">' + esc(activeSpecies) + '</span>';
+
+        var back = document.getElementById('tp-crumb-back');
+        if (back) back.addEventListener('click', function () { showAllSpecies('push'); });
+    }
+
+    // ── Level 1: species index ────────────────────────────
+    function renderSpeciesIndex() {
+        var mount = document.getElementById('tp-grid');
+        var info = document.getElementById('tp-count');
+        var groups = speciesGroups();
+
+        var q = query.trim().toLowerCase();
+        if (q) groups = groups.filter(function (g) {
+            return g.name.toLowerCase().indexOf(q) !== -1;
+        });
+
+        if (info) {
+            info.textContent = groups.length
+                ? groups.length + (groups.length === 1 ? ' species' : ' species')
+                : '';
+        }
+
+        if (!groups.length) {
+            mount.innerHTML = '<p class="tp-empty">No species match that search.</p>';
+            return;
+        }
+
+        mount.className = 'tp-grid';
+        mount.innerHTML = groups.map(function (g) {
+            return ''
+              + '<button type="button" class="tp-card tp-species-card" data-species="' + esc(g.name) + '">'
+              +   '<span class="tp-card-img">'
+              +     (g.hero
+                        ? '<img src="' + esc(g.hero) + '" alt="' + esc(g.name) + '" loading="lazy"'
+                          + ' referrerpolicy="no-referrer" onerror="this.style.display=\'none\'">'
+                        : leafPlaceholder())
+              +     '<span class="tp-card-tag">' + g.trees.length
+              +        (g.trees.length === 1 ? ' tree' : ' trees') + '</span>'
+              +   '</span>'
+              +   '<span class="tp-card-body">'
+              +     '<span class="tp-card-species">' + esc(g.name) + '</span>'
+              +     '<span class="tp-card-meta">' + esc(g.zoneList.join(' · ') || '—') + '</span>'
+              +     '<span class="tp-card-since">'
+              +        g.visits + (g.visits === 1 ? ' visit' : ' visits')
+              +        (g.latest ? ' · last ' + esc(agoLabel(g.latest)) : '')
+              +     '</span>'
+              +   '</span>'
+              + '</button>';
+        }).join('');
+
+        Array.prototype.forEach.call(mount.querySelectorAll('.tp-species-card'), function (el) {
+            el.addEventListener('click', function () { showSpecies(el.dataset.species, 'push'); });
+        });
+    }
+
+    // ── Level 2: trees of one species ─────────────────────
+    function renderTreeGrid() {
+        var mount = document.getElementById('tp-grid');
+        var info = document.getElementById('tp-count');
+        var list = visible();
+
+        if (info) {
+            info.textContent = list.length + (list.length === 1 ? ' tree' : ' trees');
+        }
+
+        if (!list.length) {
+            mount.innerHTML = '<p class="tp-empty">No trees match that filter.</p>';
+            return;
+        }
+
+        mount.className = 'tp-grid';
+        mount.innerHTML = list.map(function (tree) {
+            var hero = heroOf(tree);
+            var visits = tree.visits.length;
+            return ''
+              + '<button type="button" class="tp-card" data-tag="' + esc(tree.tag) + '">'
+              +   '<span class="tp-card-img">'
+              +     (hero
+                        ? '<img src="' + esc(hero) + '" alt="' + esc(tree.species) + ' ' + esc(tree.tag) + '"'
+                          + ' loading="lazy" referrerpolicy="no-referrer"'
+                          + ' onerror="this.style.display=\'none\'">'
+                        : leafPlaceholder())
+              +     '<span class="tp-card-tag">' + esc(tree.tag) + '</span>'
+              +   '</span>'
+              +   '<span class="tp-card-body">'
+              +     '<span class="tp-card-species">' + esc(tree.tag) + '</span>'
+              +     '<span class="tp-card-meta">' + esc(tree.zone) + '</span>'
+              +     '<span class="tp-card-since">'
+              +        visits + (visits === 1 ? ' visit' : ' visits')
+              +        (tree.visits[0] && tree.visits[0].date
+                            ? ' · last ' + esc(agoLabel(tree.visits[0].date))
+                            : '')
+              +     '</span>'
+              +   '</span>'
+              + '</button>';
+        }).join('');
+
+        Array.prototype.forEach.call(mount.querySelectorAll('.tp-card'), function (el) {
+            el.addEventListener('click', function () { openByTag(el.dataset.tag); });
+        });
+    }
+
+    function renderMain() {
+        if (activeSpecies) renderTreeGrid();
+        else renderSpeciesIndex();
+    }
+
+    // ── Latest updates (species index only) ───────────────
     function renderLatest() {
         var mount = document.getElementById('tp-latest');
         var section = document.getElementById('tp-latest-section');
-        if (!mount) return;
+        if (!mount || !section) return;
 
         var all = [];
         trees.forEach(function (tree) {
@@ -130,13 +263,13 @@
         });
         all.sort(function (a, b) { return b.visit.date - a.visit.date; });
 
-        // With one visit per tree this would just mirror the grid — only
-        // worth showing once there's genuine recent activity to surface.
-        if (all.length < 2 || all.length === trees.length) {
-            if (section) section.style.display = 'none';
+        // Only meaningful once there's activity beyond one visit per tree,
+        // and only on the index — inside a species it would repeat the grid.
+        if (activeSpecies || all.length < 2 || all.length === trees.length) {
+            section.style.display = 'none';
             return;
         }
-        if (section) section.style.display = '';
+        section.style.display = '';
 
         mount.innerHTML = all.slice(0, LATEST_COUNT).map(function (item) {
             var photo = item.visit.photos[0];
@@ -160,79 +293,66 @@
         });
     }
 
-    // ── Grove grid ────────────────────────────────────────
-    function renderGrid() {
-        var mount = document.getElementById('tp-grid');
-        var info = document.getElementById('tp-count');
-        if (!mount) return;
-
-        var list = visible();
-
-        if (info) {
-            info.textContent = list.length === trees.length
-                ? trees.length + (trees.length === 1 ? ' tree' : ' trees')
-                : list.length + ' of ' + trees.length + ' trees';
-        }
-
-        if (!list.length) {
-            mount.innerHTML = '<p class="tp-empty">No trees match that filter.</p>';
-            return;
-        }
-
-        mount.innerHTML = list.map(function (tree) {
-            var hero = heroOf(tree);
-            var visits = tree.visits.length;
-            return ''
-              + '<button type="button" class="tp-card" data-tag="' + esc(tree.tag) + '">'
-              +   '<span class="tp-card-img">'
-              +     (hero
-                        ? '<img src="' + esc(hero) + '" alt="' + esc(tree.species) + ' ' + esc(tree.tag) + '"'
-                          + ' loading="lazy" referrerpolicy="no-referrer"'
-                          + ' onerror="this.style.display=\'none\'">'
-                        : leafPlaceholder())
-              +     '<span class="tp-card-tag">' + esc(tree.tag) + '</span>'
-              +   '</span>'
-              +   '<span class="tp-card-body">'
-              +     '<span class="tp-card-species">' + esc(tree.species) + '</span>'
-              +     '<span class="tp-card-meta">' + esc(tree.zone) + '</span>'
-              +     '<span class="tp-card-since">'
-              +        visits + (visits === 1 ? ' visit' : ' visits')
-              +        (tree.visits[0] && tree.visits[0].date
-                            ? ' · last ' + esc(agoLabel(tree.visits[0].date))
-                            : '')
-              +     '</span>'
-              +   '</span>'
-              + '</button>';
-        }).join('');
-
-        Array.prototype.forEach.call(mount.querySelectorAll('.tp-card'), function (el) {
-            el.addEventListener('click', function () { openByTag(el.dataset.tag); });
-        });
-    }
-
     function renderIntro() {
         var el = document.getElementById('tp-intro');
         if (!el) return;
         var visits = trees.reduce(function (n, t) { return n + t.visits.length; }, 0);
-        var oldest = trees.map(function (t) { return t.tagged; })
-                          .filter(Boolean)
-                          .sort(function (a, b) { return a - b; })[0];
-
+        var species = speciesGroups().length;
         el.textContent = trees.length
-            ? trees.length + ' tagged trees · ' + visits + ' recorded visit'
+            ? species + (species === 1 ? ' species' : ' species') + ' · '
+              + trees.length + ' tagged trees · ' + visits + ' recorded visit'
               + (visits === 1 ? '' : 's')
-              + (oldest ? ' · following since ' + T.fmtDate(oldest) : '')
             : '';
     }
 
-    // ── Detail ────────────────────────────────────────────
-    function openByTag(tag) {
-        var tree = trees.filter(function (t) { return t.tag === tag; })[0];
-        if (tree) openDetail(tree);
+    // ── Level switching + history ─────────────────────────
+    // mode: 'push' adds a history entry, 'replace' swaps it, 'none' skips.
+    function writeState(mode, state, url) {
+        if (mode === 'none') return;
+        try {
+            if (mode === 'replace') history.replaceState(state, '', url);
+            else history.pushState(state, '', url);
+        } catch (e) {}
     }
 
-    // Prev/next walk the filtered list, so stepping through a zone stays
-    // inside that zone rather than jumping to a tree the user filtered out.
+    function showAllSpecies(mode) {
+        activeSpecies = null;
+        activeZone = 'all';
+        renderBreadcrumb();
+        renderFilters();
+        renderLatest();
+        renderMain();
+        writeState(mode, {}, location.pathname);
+    }
+
+    function showSpecies(name, mode) {
+        activeSpecies = name;
+        activeZone = 'all';
+        renderBreadcrumb();
+        renderFilters();
+        renderLatest();
+        renderMain();
+        writeState(mode, { species: name }, '?species=' + encodeURIComponent(name));
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ── Level 3: tree detail ──────────────────────────────
+    function openByTag(tag) {
+        var tree = trees.filter(function (t) { return t.tag === tag; })[0];
+        if (!tree) return;
+        // Opening from "Latest updates" can cross into another species —
+        // move the page there too, so closing lands somewhere coherent.
+        if (activeSpecies !== tree.species) {
+            activeSpecies = tree.species;
+            activeZone = 'all';
+            renderBreadcrumb();
+            renderFilters();
+            renderLatest();
+            renderMain();
+        }
+        openDetail(tree, 'push');
+    }
+
     function siblings() {
         var list = visible();
         var i = -1;
@@ -245,9 +365,6 @@
         };
     }
 
-    // mode: 'push' adds a history entry (opening from the grid, so Back
-    // closes the detail), 'replace' swaps it (stepping between trees, so
-    // Back doesn't walk every tree visited).
     function openDetail(tree, mode) {
         current = tree;
         currentKind = 0;
@@ -257,12 +374,8 @@
         var close = document.getElementById('tp-detail-close');
         if (close) close.focus();
 
-        if (mode === 'none') return;
-        var url = '?tree=' + encodeURIComponent(tree.tag);
-        try {
-            if (mode === 'replace') history.replaceState({ tree: tree.tag }, '', url);
-            else history.pushState({ tree: tree.tag }, '', url);
-        } catch (e) {}
+        writeState(mode, { species: tree.species, tree: tree.tag },
+                   '?tree=' + encodeURIComponent(tree.tag));
     }
 
     function hideDetail() {
@@ -274,13 +387,8 @@
     function closeDetail(e) {
         if (e && e.target && e.target.id !== 'tp-detail-overlay'
             && e.target.id !== 'tp-detail-close') return;
-        // Going back pops the pushed entry, which fires popstate and hides
-        // the panel — so Back and the close button behave identically.
-        if (history.state && history.state.tree) {
-            history.back();
-        } else {
-            hideDetail();
-        }
+        if (history.state && history.state.tree) history.back();
+        else hideDetail();
     }
 
     function step(dir) {
@@ -295,7 +403,6 @@
 
         var tree = current;
         var kinds = T.PHOTO_KINDS.map(function (k) { return k.label; });
-
         var available = kinds.filter(function (label) {
             return tree.visits.some(function (v) {
                 return v.photos.some(function (p) { return p.label === label; });
@@ -303,14 +410,13 @@
         });
         if (currentKind >= available.length) currentKind = 0;
         var activeLabel = available[currentKind];
-
         var sib = siblings();
 
         var html = ''
           + '<header class="tp-detail-head">'
-          +   '<h2 class="tp-detail-title">' + esc(tree.species) + '</h2>'
+          +   '<h2 class="tp-detail-title">' + esc(tree.tag) + '</h2>'
           +   '<p class="tp-detail-sub">'
-          +      esc(tree.tag) + ' · ' + esc(tree.zone)
+          +      esc(tree.species) + ' · ' + esc(tree.zone)
           +      (tree.status ? ' · ' + esc(tree.status) : '')
           +      (tree.tagged ? ' · tagged ' + esc(T.fmtDate(tree.tagged)) : '')
           +   '</p>'
@@ -319,13 +425,12 @@
         if (sib.total > 1) {
             html += '<nav class="tp-nav" aria-label="Move between trees">'
                  +   '<button type="button" class="tp-nav-btn" id="tp-prev"'
-                 +     (sib.prev ? '' : ' disabled')
-                 +     ' aria-label="Previous tree">‹ '
+                 +     (sib.prev ? '' : ' disabled') + ' aria-label="Previous tree">‹ '
                  +     esc(sib.prev ? sib.prev.tag : 'Prev') + '</button>'
-                 +   '<span class="tp-nav-pos">' + (sib.index + 1) + ' of ' + sib.total + '</span>'
+                 +   '<span class="tp-nav-pos">' + (sib.index + 1) + ' of ' + sib.total
+                 +     ' · ' + esc(tree.species) + '</span>'
                  +   '<button type="button" class="tp-nav-btn" id="tp-next"'
-                 +     (sib.next ? '' : ' disabled')
-                 +     ' aria-label="Next tree">'
+                 +     (sib.next ? '' : ' disabled') + ' aria-label="Next tree">'
                  +     esc(sib.next ? sib.next.tag : 'Next') + ' ›</button>'
                  + '</nav>';
         }
@@ -342,9 +447,7 @@
         }
 
         html += '<div class="tp-timeline">';
-        if (!tree.visits.length) {
-            html += '<p class="tp-empty">No visits recorded yet.</p>';
-        }
+        if (!tree.visits.length) html += '<p class="tp-empty">No visits recorded yet.</p>';
         tree.visits.forEach(function (visit) {
             var photo = visit.photos.filter(function (p) { return p.label === activeLabel; })[0]
                      || visit.photos[0];
@@ -423,6 +526,38 @@
         return true;
     }
 
+    // ── Restore a level from the URL / history state ──────
+    function applyState(state, mode) {
+        var tag = state && state.tree;
+        var species = state && state.species;
+
+        if (tag) {
+            var tree = trees.filter(function (t) { return t.tag === tag; })[0];
+            if (tree) {
+                activeSpecies = tree.species;
+                activeZone = 'all';
+                renderBreadcrumb(); renderFilters(); renderLatest(); renderMain();
+                openDetail(tree, mode);
+                return;
+            }
+        }
+        hideDetail();
+        if (species) showSpecies(species, mode);
+        else showAllSpecies(mode);
+    }
+
+    function stateFromUrl() {
+        var t = location.search.match(/[?&]tree=([^&]+)/);
+        if (t) {
+            var tag = decodeURIComponent(t[1]);
+            var tree = trees.filter(function (x) { return x.tag === tag; })[0];
+            return tree ? { species: tree.species, tree: tag } : {};
+        }
+        var s = location.search.match(/[?&]species=([^&]+)/);
+        if (s) return { species: decodeURIComponent(s[1]) };
+        return {};
+    }
+
     // ── Boot ──────────────────────────────────────────────
     function init() {
         var grid = document.getElementById('tp-grid');
@@ -432,19 +567,9 @@
             function (data) {
                 trees = data;
                 renderIntro();
-                renderLatest();
-                renderFilters();
-                renderGrid();
-
-                // ?tree=S-001 opens that tree straight away. 'replace' keeps
-                // the entry the browser already has rather than adding one,
-                // so Back leaves the page as the visitor expects.
-                var m = location.search.match(/[?&]tree=([^&]+)/);
-                if (m) {
-                    var tag = decodeURIComponent(m[1]);
-                    var tree = trees.filter(function (t) { return t.tag === tag; })[0];
-                    if (tree) openDetail(tree, 'replace');
-                }
+                // 'replace' — don't add an entry on first paint, so Back
+                // leaves the site rather than cycling within the page.
+                applyState(stateFromUrl(), 'replace');
             },
             function () {
                 grid.innerHTML = '<p class="tp-empty">Tree records are temporarily '
@@ -456,7 +581,7 @@
         if (search) {
             search.addEventListener('input', function () {
                 query = search.value;
-                renderGrid();
+                renderMain();
             });
         }
 
@@ -473,25 +598,15 @@
             closeLightbox();
         });
 
-        // Back / forward drive the detail panel, so the browser's own
-        // navigation works — which is how most people close things on mobile.
         window.addEventListener('popstate', function (e) {
-            var tag = e.state && e.state.tree;
-            if (tag) {
-                var tree = trees.filter(function (t) { return t.tag === tag; })[0];
-                if (tree) { openDetail(tree, 'none'); return; }
-            }
-            hideDetail();
+            applyState(e.state || stateFromUrl(), 'none');
         });
 
         document.addEventListener('keydown', function (e) {
-            // Escape closes the photo first, leaving the tree detail open.
             if (e.key === 'Escape') {
                 if (!closeLightbox()) closeDetail();
                 return;
             }
-            // Arrow keys step between trees while the detail is open — but
-            // not while typing in the search box.
             if (!current) return;
             if (document.getElementById('tp-lightbox').classList.contains('open')) return;
             if (e.key === 'ArrowLeft') { step(-1); e.preventDefault(); }

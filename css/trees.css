@@ -538,3 +538,42 @@ body {
     color: var(--earth-light);
     white-space: nowrap;
 }
+
+/* ── Breadcrumb: species index → one species ────────────── */
+.tp-crumb {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+}
+.tp-crumb-back {
+    border: 0;
+    background: none;
+    padding: 0.25rem 0;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--leaf);
+    cursor: pointer;
+}
+.tp-crumb-back:hover { text-decoration: underline; }
+.tp-crumb-current {
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--earth-dark);
+}
+.tp-crumb-current::before {
+    content: '/';
+    color: var(--earth-light);
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 400;
+    font-size: 0.9rem;
+    margin-right: 0.5rem;
+}
+
+/* A species card counts trees rather than naming one, so the corner
+   label reads as a quantity instead of a tag. */
+.tp-species-card .tp-card-tag {
+    background: rgba(90,122,58,0.88);
+}
