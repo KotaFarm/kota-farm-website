@@ -20,7 +20,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/site-nav.css">
     <link rel="stylesheet" href="css/practice.css">
-    <link rel="stylesheet" href="css/trees.css?v=20260906a">
+    <link rel="stylesheet" href="css/trees.css?v=20260906b">
     <script src="js/vercel-analytics.js" defer></script>
     <script defer src="/_vercel/insights/script.js"></script>
 </head>
@@ -70,6 +70,13 @@
         </div>
     </div>
 
+    <!-- Full-size photo viewer. Sits above the detail overlay so a tree's
+         timeline stays open behind it. -->
+    <div class="tp-lightbox" id="tp-lightbox" role="dialog" aria-modal="true" aria-label="Full size photo">
+        <button type="button" class="tp-lightbox-close" id="tp-lightbox-close" aria-label="Close photo">×</button>
+        <img id="tp-lightbox-img" src="" alt="" referrerpolicy="no-referrer">
+    </div>
+
     <footer class="tp-footer">
         <p class="tp-footer-name">Kovana Natural Farm</p>
         <p class="tp-footer-tagline">Growing regeneratively. Teaching sustainably.</p>
@@ -83,7 +90,7 @@
         <p class="tp-footer-copyright">&copy; 2026 Kovana Natural Farm · Khedli Pandya, Kota, Rajasthan</p>
     </footer>
 
-    <script src="js/trees.js?v=20260906a"></script>
-    <script src="js/trees-ui.js?v=20260906a"></script>
+    <script src="js/trees.js?v=20260906b"></script>
+    <script src="js/trees-ui.js?v=20260906b"></script>
 </body>
 </html>
