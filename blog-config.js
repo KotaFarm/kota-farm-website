@@ -44,6 +44,15 @@
 
 const BLOG_POSTS = [
     {
+        slug:        "soil-healed-itself",
+        date:        "October 3, 2026",
+        title:       "The Soil Healed Itself — We Mostly Got Out of the Way",
+        summary:     "A year ago our spade would not go into this soil without water. Today it slides in, full of earthworms. How mulch, cover, compost and patience turned hard clay into living soil — with almost no digging.",
+        cover:       "blog/images/soil-healed-itself/soil-living-cover.jpg",
+        tag:         "soil",
+        readingTime: "4 min read"
+    },
+    {
         slug:        "fire-didnt-start-here",
         date:        "April 20–21, 2026",
         title:       "The Fire Didn't Start Here",

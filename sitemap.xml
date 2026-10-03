@@ -55,4 +55,9 @@
         <changefreq>yearly</changefreq>
         <priority>0.5</priority>
     </url>
+    <url>
+        <loc>https://kotaearth.com/blog/soil-healed-itself.html</loc>
+        <changefreq>yearly</changefreq>
+        <priority>0.5</priority>
+    </url>
 </urlset>
