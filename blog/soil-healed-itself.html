@@ -118,6 +118,21 @@
             .soil-grid .practice-photo img { aspect-ratio: 4 / 3; }
         }
 
+        /* Before / after pair: same 3:4 ratio, captions fill to equal height */
+        .before-after .practice-photo { display: flex; flex-direction: column; }
+        .before-after .practice-photo-caption { flex: 1; }
+        .before-after .practice-photo img {
+            aspect-ratio: 3 / 4;
+            width: 100%;
+            height: auto;
+            max-height: none;
+            object-fit: cover;
+            object-position: center;
+        }
+        @media (max-width: 640px) {
+            .before-after .practice-photo img { aspect-ratio: 4 / 3; }
+        }
+
         /* Reactions + comments styles are injected by /js/blog-comments.js */
     </style>
 </head>
@@ -167,15 +182,26 @@
 
         <p>Today the phavda goes in by hand. The soil breaks into soft crumbs, and when you turn a clod over you find <em>kechua</em> — earthworms — wriggling in it. We have reached almost no-till farming: we no longer dig the soil, we just open a small hole and plant.</p>
 
+        <div class="practice-photo">
+            <img src="images/soil-healed-itself/soil-crumbs-roots.webp" alt="A handful of dark, crumbly soil laced with fine roots, held over ground covered in straw mulch" loading="lazy">
+            <div class="practice-photo-caption">Lifted by hand: soft, dark crumbs held together by fine roots, with the straw mulch that fed them just behind.</div>
+        </div>
+
         <blockquote class="blog-pullquote">We did not do anything clever. We mostly stopped doing things — and let the soil heal itself.</blockquote>
 
         <h2>Before and After</h2>
 
         <p><strong>March 2024, the day we first walked the land.</strong> It had been a conventional wheat field for years. Freshly ploughed, it broke into hard, fist-sized clods of pale grey clay. Nothing grew on it. No roots, no cover, nothing for soil life to eat.</p>
 
-        <div class="practice-photo">
-            <img src="images/soil-healed-itself/field-march-2024.webp" alt="The field in March 2024: bare, freshly ploughed ground with large hard clods of pale clay" loading="lazy">
-            <div class="practice-photo-caption">March 2024. Bare, ploughed, hard clods — the soil we started with.</div>
+        <div class="practice-photo-grid before-after">
+            <div class="practice-photo">
+                <img src="images/soil-healed-itself/field-march-2024.webp" alt="The field in March 2024: bare, freshly ploughed ground with large hard clods of pale clay" loading="lazy">
+                <div class="practice-photo-caption">March 2024. Bare, ploughed, hard clods — the soil we started with.</div>
+            </div>
+            <div class="practice-photo">
+                <img src="images/soil-healed-itself/soil-crumbs-hand.webp" alt="A close-up handful of the same clay soil, now broken into small, dark, crumbly granules" loading="lazy">
+                <div class="practice-photo-caption">October 2026. The same clay, now soft, dark crumbs that fall apart in the hand.</div>
+            </div>
         </div>
 
         <p><strong>October 2026, two and a half years later.</strong> No plough, no chemicals. The same clay now crumbles into small, dark granules. Roots, runners and old stems lace the top layer.</p>
