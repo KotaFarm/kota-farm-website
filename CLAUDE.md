@@ -6,7 +6,7 @@ Gagan Mani. Runs **Kovana Natural Farm** — a permaculture and regenerative agr
 ## People
 | Who | Role |
 |-----|------|
-| **Ajay Kumar** | Farm manager (Kisan Mitra), runs workshops for local farmers |
+| **Ajay Kumar** | Former farm manager (Kisan Mitra) — no longer with the farm (Nov 2026); keep his name and number off the website |
 | **Prabha Kaushik** | Farm director (संचालिका), manages operations |
 | **Gagan's brother** | Involved with the farm, appears in some photos |
 → Full profiles: memory/people/
@@ -20,7 +20,7 @@ Gagan Mani. Runs **Kovana Natural Farm** — a permaculture and regenerative agr
 | permaculture | Permanent agriculture — the farm's core philosophy |
 | food forest | Multi-layered planting system used on the farm |
 | shade net | Green mesh nursery structure on the farm |
-| Kisan Mitra | "Farmer's friend" — Ajay Kumar's title |
+| Kisan Mitra | "Farmer's friend" — title of the farm supervisor (formerly Ajay Kumar) |
 → Full glossary: memory/glossary.md
 
 ## Projects
@@ -34,6 +34,6 @@ Gagan Mani. Runs **Kovana Natural Farm** — a permaculture and regenerative agr
 - Wants non-technical people to be able to manage gallery content (drag & drop + simple config)
 - Don't ask to add more content — suggest ideas, let him decide
 - Has plant list info in Google Drive
-- Phone: +91 83406 84878
+- Active phone numbers on the site (only these two): +91 94608 13090 (Prabha Kaushik — vegetable orders, cart WhatsApp) and +91 93526 12939 (visits, schema telephone). +91 83406 84878 was Ajay's — removed.
 - Farm email: zplusedu@gmail.com
 - Takes farm photos on Galaxy S23

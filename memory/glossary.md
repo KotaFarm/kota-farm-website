@@ -14,7 +14,7 @@ Workplace shorthand, acronyms, and internal language for Kovana Natural Farm.
 | mulching | Thick organic layer on soil to retain moisture | Key farm practice |
 | drip irrigation | Water-efficient system delivering water to roots | Installed on the farm |
 | companion planting | Growing complementary plants together | Used across the farm |
-| Kisan Mitra | "Farmer's friend" — Ajay Kumar's official title | Used in press coverage |
+| Kisan Mitra | "Farmer's friend" — farm supervisor's title (was Ajay Kumar's, who has left the farm) | Used in press coverage |
 
 ## Locations
 | Term | Meaning |
@@ -36,7 +36,7 @@ Workplace shorthand, acronyms, and internal language for Kovana Natural Farm.
 ## Nicknames → Full Names
 | Nickname | Person |
 |----------|--------|
-| Ajay | Ajay Kumar (Farm Manager) |
+| Ajay | Ajay Kumar (former Farm Manager — no longer with the farm, keep off the website) |
 | Prabha | Prabha Kaushik (Farm Director) |
 
 ## Press
