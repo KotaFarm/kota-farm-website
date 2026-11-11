@@ -10,9 +10,9 @@
 
     // ── State ─────────────────────────────────────────────
     var currentFilter = 'all';
-    // Default to availability: what someone can actually order today belongs
-    // at the top, not whatever happens to start with "B".
-    var currentSort = 'available';
+    // Default to most recently harvested: what was just picked belongs at
+    // the top, and it changes as the farm logs each harvest.
+    var currentSort = 'harvest-recent';
     var currentSearch = '';
 
     // vegetables-config.js supplies the rich extras — photos, Hindi names,
@@ -168,6 +168,14 @@
                         return v.status === 'available' ? 0 : v.status === 'low' ? 1 : 2;
                     };
                     if (rank(a) !== rank(b)) return rank(a) - rank(b);
+                    return a.name.localeCompare(b.name);
+                case 'harvest-recent':
+                    // Most recently harvested first; anything without a
+                    // logged harvest goes last, then alphabetical on ties.
+                    var when = function (v) {
+                        return v.lastHarvest ? new Date(v.lastHarvest).getTime() : -Infinity;
+                    };
+                    if (when(a) !== when(b)) return when(b) > when(a) ? 1 : -1;
                     return a.name.localeCompare(b.name);
                 default: return 0;
             }
