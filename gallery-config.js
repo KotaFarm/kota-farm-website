@@ -3,6 +3,8 @@
 //  To add a new photo or video, see docs/HOW-TO-ADD-PHOTOS.txt
 //
 //  Each item has: file, caption, and category.
+//  Add  "featured": true  to show a photo in the homepage
+//  "Permaculture Cycle" preview (up to 6, in the order listed here).
 //  Categories follow the permaculture cycle — the natural rhythm
 //  of working with the land, from soil to harvest and back again.
 //
@@ -29,6 +31,17 @@ const galleryCategories = [
 const galleryItems = [
   // ── 🌍 The Land ─────────────────────────────────────────────
   // The farm as a whole — infrastructure, water systems, pathways
+  {
+    "file": "the-land/sunrise-shade-net-lawn.webp",
+    "caption": "Sunrise over the shade net nursery, with a young tree belt filling in behind",
+    "category": "the-land",
+    "featured": true
+  },
+  {
+    "file": "the-land/terrace-view-morning.webp",
+    "caption": "Morning from the terrace — lawn below, young trees lining the boundary, open fields beyond",
+    "category": "the-land"
+  },
   {
     "file": "the-land/farm-aerial-shade-net.webp",
     "caption": "Aerial view of the farm — shade net, crop patches, and open fields stretching to the horizon",
@@ -63,6 +76,12 @@ const galleryItems = [
   // ── 🌱 Prepare ──────────────────────────────────────────────
   // Building soil, cover crops, green manure — feeding the earth first
   {
+    "file": "prepare/chop-and-drop-mulch.webp",
+    "caption": "Chop-and-drop: cut grass left in place as mulch to shade and feed the soil",
+    "category": "prepare",
+    "featured": true
+  },
+  {
     "file": "prepare/cover-crops.webp",
     "caption": "Cover crops protect and nourish the soil between seasons",
     "category": "prepare"
@@ -70,7 +89,8 @@ const galleryItems = [
   {
     "file": "prepare/mulch-rows-overview.webp",
     "caption": "Mulch rings protect young trees — building soil one layer at a time",
-    "category": "prepare"
+    "category": "prepare",
+    "featured": true
   },
 
   // ── 🪴 Plant ────────────────────────────────────────────────
@@ -93,6 +113,23 @@ const galleryItems = [
 
   // ── 🌿 Nurture ──────────────────────────────────────────────
   // Growing crops, food forest thriving, polyculture in action
+  {
+    "file": "nurture/tree-belt-shade-net.webp",
+    "caption": "Around the shade net, young plantings have grown into a thick, layered belt",
+    "category": "nurture",
+    "featured": true
+  },
+  {
+    "file": "nurture/canopy-over-stone-path.webp",
+    "caption": "Young trees now arch over the stone path through the food forest",
+    "category": "nurture",
+    "featured": true
+  },
+  {
+    "file": "nurture/layered-boundary-bougainvillea.webp",
+    "caption": "A boundary in layers — bougainvillea on the fence, young trees above it, mulch sheet at the roots",
+    "category": "nurture"
+  },
   {
     "file": "nurture/vegetable-beds.webp",
     "caption": "Polyculture beds with drip irrigation — diversity is resilience",
@@ -149,7 +186,8 @@ const galleryItems = [
   {
     "file": "harvest/bountiful-harvest-spread.webp",
     "caption": "The day's bounty: tomatoes, brinjal, chillies, potatoes, carrots, and fresh greens",
-    "category": "harvest"
+    "category": "harvest",
+    "featured": true
   },
 
   // ── ✂️ Tend ──────────────────────────────────────────────────

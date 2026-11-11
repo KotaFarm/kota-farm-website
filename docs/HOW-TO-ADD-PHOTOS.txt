@@ -95,6 +95,25 @@ STEP 4:  Save the file and refresh the website
 
 
 ========================================================
+   TO CHOOSE THE 6 PHOTOS ON THE HOME PAGE
+========================================================
+   - The home page "Permaculture Cycle" section shows up to 6
+     photos. Pick them by adding  "featured": true  to an entry:
+
+     {
+       "file": "nurture/tree-belt-shade-net.webp",
+       "caption": "Around the shade net, young plantings have grown...",
+       "category": "nurture",
+       "featured": true
+     }
+
+   - Note the comma after "nurture" when you add the new line
+   - They appear in the same order as in gallery-config.js
+   - To take a photo off the home page, delete the "featured" line
+     (and the comma before it)
+
+
+========================================================
    TO CHANGE THE ORDER
 ========================================================
    - Move entries up or down in gallery-config.js

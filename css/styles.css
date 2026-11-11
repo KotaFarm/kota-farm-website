@@ -1520,6 +1520,13 @@ video.produce-slide {
     margin-top: var(--spacing-sm);
 }
 
+/* Homepage cycle preview: 6 photos read as two even rows of 3 on desktop */
+@media (min-width: 1024px) {
+    #gallery-preview .gallery-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
 .gallery-item {
     position: relative;
     overflow: hidden;

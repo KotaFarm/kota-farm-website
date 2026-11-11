@@ -16,7 +16,10 @@ function loadGallery() {
     if (typeof galleryItems === 'undefined' || !galleryItems.length) return;
 
     var photos = galleryItems.filter(function(item) { return !item.file.match(/\.(mp4|webm|mov)$/i); });
-    var sample = photos.slice(0, 6);
+    // Photos marked "featured": true in gallery-config.js tell the cycle on
+    // the homepage; if none are marked, fall back to the first six.
+    var featured = photos.filter(function(item) { return item.featured; });
+    var sample = (featured.length ? featured : photos).slice(0, 6);
 
     var grid = document.createElement('div');
     grid.className = 'gallery-grid';
