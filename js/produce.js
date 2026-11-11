@@ -39,11 +39,20 @@
         }) || null;
     }
 
-    // Build the catalogue from the sheet. Every crop in the sheet gets a
-    // card; those without a config entry get a minimal one built from the
-    // sheet's own name and description.
+    // Build the catalogue from the sheet. A crop gets a card once it has
+    // at least one harvest logged. The Crops tab is the whole farm's plant
+    // list, so it also holds trees and fodder that are tagged and tracked
+    // in the app but never picked for sale; those, and vegetables that
+    // haven't been harvested yet, stay off the page until a harvest is
+    // logged. Crops without a config entry get a minimal card built from
+    // the sheet's own name and description.
     function buildCatalogue(cropStatuses) {
-        return cropStatuses.map(function (s) {
+        // If no crop has a harvest at all, the Harvest tab failed to load;
+        // show everything (as Unavailable) rather than an empty page.
+        var harvestLoaded = cropStatuses.some(function (s) { return !!s.lastHarvest; });
+        return cropStatuses.filter(function (s) {
+            return !harvestLoaded || !!s.lastHarvest;
+        }).map(function (s) {
             var cfg = findConfigFor(s.name);
             var base = cfg ? Object.assign({}, cfg) : {};
 
