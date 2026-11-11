@@ -20,6 +20,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/site-nav.css">
     <link rel="stylesheet" href="css/produce.css?v=20260813f">
+    <link rel="stylesheet" href="css/harvest-highlight.css?v=20261111">
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -115,8 +116,13 @@
             <span style="font-size:0.95rem; color:#e8dcc4; line-height:1.5;">🌱 No chemicals. No synthetic fertiliser. No plowing. <strong style="color:#a8c686;">See exactly how we grow →</strong></span>
         </a>
 
-        <a href="harvest.html" style="display:flex; align-items:center; justify-content:space-between; gap:1rem; background:#e8dcc4; border:1px solid #c4a572; border-radius:10px; padding:1rem 1.4rem; margin-bottom:1.5rem; text-decoration:none;">
-            <span style="font-size:0.95rem; color:#2d3319; line-height:1.5;">📊 Curious what we've picked lately? <strong style="color:#5a7a3a;">See our live harvest meter →</strong></span>
+        <a class="harvest-highlight" href="harvest.html" data-harvest-highlight>
+            <span class="hh-main">
+                <span class="hh-label"><span class="hh-live-dot" aria-hidden="true"></span>Harvested at the farm so far</span>
+                <span class="hh-figure"><span data-hh-total>&mdash;</span><span class="hh-unit">kg</span></span>
+                <span class="hh-sub" data-hh-sub>Naturally grown, weighed and logged after every picking</span>
+            </span>
+            <span class="hh-cta">See the live harvest meter <span aria-hidden="true">&rarr;</span></span>
         </a>
 
         <div class="produce-results-info" id="produce-results-info"></div>
@@ -166,6 +172,9 @@
     <script src="js/common.js?v=20260730"></script>
     <script src="js/availability.js?v=20260813f"></script>
     <script src="js/produce.js?v=20261111c"></script>
+    <script src="js/harvest/config.js?v=20260810c"></script>
+    <script src="js/harvest/data.js?v=20260810c"></script>
+    <script src="js/harvest-highlight.js?v=20261111"></script>
     <script>
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {

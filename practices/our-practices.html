@@ -20,6 +20,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/site-nav.css">
     <link rel="stylesheet" href="../css/practice.css">
+    <link rel="stylesheet" href="../css/harvest-highlight.css?v=20261111">
     <script src="../js/vercel-analytics.js" defer></script>
     <script defer src="/_vercel/insights/script.js"></script>
     <style>
@@ -252,6 +253,15 @@
 
 <div class="practices-body">
 
+    <a class="harvest-highlight" href="../harvest.html" data-harvest-highlight>
+        <span class="hh-main">
+            <span class="hh-label"><span class="hh-live-dot" aria-hidden="true"></span>Harvested at the farm so far</span>
+            <span class="hh-figure"><span data-hh-total>&mdash;</span><span class="hh-unit">kg</span></span>
+            <span class="hh-sub" data-hh-sub>Naturally grown, weighed and logged after every picking</span>
+        </span>
+        <span class="hh-cta">See the live harvest meter <span aria-hidden="true">&rarr;</span></span>
+    </a>
+
     <!-- ══ WHAT WE NEVER USE ══ -->
     <div class="never-block">
         <h2>What We Never Use</h2>
@@ -412,6 +422,9 @@
     <p>© 2026 Kovana Natural Farm · Khedli Pandya, near Jhalipura, Kota, Rajasthan</p>
 </footer>
 
+<script src="../js/harvest/config.js?v=20260810c"></script>
+<script src="../js/harvest/data.js?v=20260810c"></script>
+<script src="../js/harvest-highlight.js?v=20261111"></script>
 <script>
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
